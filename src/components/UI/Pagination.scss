@@ -1,0 +1,44 @@
+.pagination {
+  margin-top: 16px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+
+  .pg__list {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .pg__btn {
+    min-width: 36px;
+    height: 36px;
+    padding: 0 10px;
+    border-radius: 18px;
+    border: 1px solid var(--accent);
+    background: var(--white);
+    color: var(--accent);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      background: var(--accent);
+      color: var(--white);
+    }
+    &.active {
+      background: var(--accent);
+      color: var(--white);
+    }
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  .pg__dots {
+    padding: 0 6px;
+    color: #555;
+  }
+}

@@ -1,0 +1,53 @@
+.hero {
+  min-height: 30vh; // 30% высоты экрана
+  display: flex;
+  align-items: center;
+  padding: 40px 0;
+  margin: 0;
+  background: var(--accentGradient);
+
+  .hero__container {
+    width: 100%;
+  }
+
+  .hero__content {
+    text-align: center;
+
+    h1 {
+      font-size: 42px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--white);
+    }
+
+    p {
+      font-size: 18px;
+      color: var(--white);
+      opacity: 0.9;
+      margin-bottom: 24px;
+    }
+
+    .hero__actions {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+
+      .btn--main {
+        background: var(--background);
+        color: var(--accent) !important;
+        border: 2px solid var(--accent);
+      }
+
+      .btn--secondary {
+        background: var(--white);
+        color: var(--accent) !important;
+        border: 2px solid var(--accent);
+
+        &:hover {
+          background: var(--accent);
+          color: var(--white) !important;
+        }
+      }
+    }
+  }
+}
