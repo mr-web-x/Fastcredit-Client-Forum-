@@ -1,25 +1,28 @@
 "use client";
 import "./Header.scss";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { basePath } from "@/src/constants/config";
+import { authService } from "@/src/services/client";
 
-export default function Header() {
-  const [me, setMe] = useState(null);
+export default function Header({ user = null }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  useEffect(() => {
-    fetch(`${basePath}/api/me`, { credentials: "include" })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => setMe(d?.data || null))
-      .catch(() => {});
-  }, []);
-
   const handleLogout = async () => {
-    await fetch(`${basePath}/api/auth/logout`, {
-      method: "POST",
-      credentials: "include",
-    });
-    window.location.href = `${basePath}/login`;
+    try {
+      await authService.logout();
+      // authService.logout() уже делает редирект
+    } catch (error) {
+      // Если ошибка, все равно редиректим
+      window.location.href = `${basePath}/login`;
+    }
+  };
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+
+  const closeMenu = () => {
+    setMenuOpen(false);
   };
 
   return (
@@ -27,8 +30,8 @@ export default function Header() {
       <div className="container">
         <div className="header__wrapper">
           {/* Лого */}
-          <a className="logo" href="/">
-            <img alt="logo" src={`${basePath}/logo.svg`} />
+          <a className="logo" href="/" onClick={closeMenu}>
+            <img alt="FastCredit Forum logo" src={`${basePath}/logo.svg`} />
           </a>
 
           {/* Навигация */}
@@ -39,61 +42,97 @@ export default function Header() {
           >
             <ul className="header__menu-list">
               <li>
-                <a itemProp="url" href="/#home">
+                <a itemProp="url" href="/#home" onClick={closeMenu}>
                   Hlavná
                 </a>
               </li>
               <li>
-                <a itemProp="url" href="/#about">
-                  O nás
-                </a>
-              </li>
-              <li>
-                <a itemProp="url" href="/caste-otazky.html">
+                <a itemProp="url" href="/caste-otazky.html" onClick={closeMenu}>
                   Časté otázky
                 </a>
               </li>
               <li>
-                <a itemProp="url" href="/#policy">
-                  Podmienky používania
-                </a>
-              </li>
-              <li>
-                <a itemProp="url" href="/blog.html">
+                <a itemProp="url" href="/blog.html" onClick={closeMenu}>
                   Blog
                 </a>
               </li>
-              <li className="row">
-                <a className="btn header-btn" itemProp="url" href="/#list">
-                  Získať pôžičku
+              {/* Добавляем ссылки форума */}
+              <li>
+                <a itemProp="url" href={`${basePath}/`} onClick={closeMenu}>
+                  Fórum
+                </a>
+              </li>
+              <li>
+                <a
+                  itemProp="url"
+                  href={`${basePath}/experts`}
+                  onClick={closeMenu}
+                >
+                  Experti
                 </a>
               </li>
             </ul>
           </nav>
-
           {/* Блок профиля */}
           <div className="header__profile">
-            {me ? (
+            {user ? (
               <div className="header__user">
-                <a className="header__user-name" href={`${basePath}/account`}>
-                  {me.firstName || me.username || "Profil"}
+                {/* Показываем роль если это эксперт или админ */}
+                {(user.role === "expert" || user.role === "admin") && (
+                  <span className={`header__role header__role--${user.role}`}>
+                    {user.role === "expert" ? "👨‍💼" : "⚙️"}
+                  </span>
+                )}
+
+                <a
+                  className="header__user-name"
+                  href={`${basePath}/profile`}
+                  title={`${user.firstName || user.username} - ${user.role}`}
+                >
+                  {user.firstName || user.username || "Profil"}
                 </a>
-                <button className="header__logout btn" onClick={handleLogout}>
-                  Выйти
+
+                {/* Кнопка "Задать вопрос" для авторизованных */}
+                <a
+                  className="header__ask-btn btn btn--secondary"
+                  href={`${basePath}/ask`}
+                >
+                  Spýtať sa
+                </a>
+
+                <button
+                  className="header__logout btn"
+                  onClick={handleLogout}
+                  title="Odhlásiť sa"
+                >
+                  Odhlásiť
                 </button>
               </div>
             ) : (
-              <a className="header__login btn" href={`${basePath}/login`}>
-                Войти
-              </a>
+              <div className="header__guest">
+                <a
+                  className="header__login btn btn--secondary"
+                  href={`${basePath}/login`}
+                >
+                  Prihlásiť sa
+                </a>
+              </div>
             )}
           </div>
-
           {/* Мобильное меню */}
           <div className="header__mobile-nav">
             <div
               className={`burger ${menuOpen ? "active" : ""}`}
-              onClick={() => setMenuOpen(!menuOpen)}
+              onClick={toggleMenu}
+              role="button"
+              tabIndex={0}
+              aria-label="Toggle navigation menu"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  toggleMenu();
+                }
+              }}
             >
               <figure></figure>
               <figure></figure>
@@ -102,6 +141,15 @@ export default function Header() {
           </div>
         </div>
       </div>
+
+      {/* Overlay для закрытия меню при клике вне его */}
+      {menuOpen && (
+        <div
+          className="header__overlay"
+          onClick={closeMenu}
+          aria-hidden="true"
+        />
+      )}
     </header>
   );
 }
