@@ -4,6 +4,74 @@
   --accent: #049ca1;
   --black: #000000;
   --accentGradient: linear-gradient(to bottom, #049ca1, #29e1d2);
+  --text-secondary: #666666;
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-card-hover: 0 8px 25px rgba(4, 156, 161, 0.15);
+  --accent-bg-light: rgba(4, 156, 161, 0.1);
+  --accent-border-light: rgba(4, 156, 161, 0.2);
+  --card-filter-bg: linear-gradient(135deg, var(--background) 0%, #f0fffe 100%);
+  --card-filter-hover: linear-gradient(135deg, var(--white) 0%, #f8ffff 100%);
+  --card-category-bg: linear-gradient(
+    135deg,
+    var(--background) 0%,
+    #f5ffff 100%
+  );
+  --card-category-hover: linear-gradient(135deg, var(--white) 0%, #fafffe 100%);
+  /* Новые для LatestQuestions */
+  --card-border: #e5e5e5;
+  --card-border-light: #f0f0f0;
+  --text-muted: #999999;
+
+  /* Категории */
+  --category-expert-bg: rgba(4, 156, 161, 0.1);
+  --category-expert-color: #045c68;
+  --category-expert-border: rgba(4, 156, 161, 0.3);
+  --category-pravnik-bg: rgba(139, 69, 19, 0.1);
+  --category-pravnik-color: #8b4513;
+  --category-pravnik-border: rgba(139, 69, 19, 0.3);
+
+  /* Приоритеты */
+  --priority-high-bg: rgba(255, 69, 0, 0.1);
+  --priority-high-color: #ff4500;
+  --priority-urgent-bg: rgba(220, 20, 60, 0.1);
+  --priority-urgent-color: #dc143c;
+  --priority-low-bg: rgba(34, 139, 34, 0.1);
+  --priority-low-color: #228b22;
+
+  /* Статусы */
+  --status-success-bg: rgba(34, 139, 34, 0.1);
+  --status-success-color: #228b22;
+  --status-secondary-bg: rgba(108, 117, 125, 0.1);
+  --status-secondary-color: #6c757d;
+  --status-primary-bg: rgba(4, 156, 161, 0.1);
+  --status-primary-color: var(--accent);
+
+  --shadow-login-card: 0 10px 40px rgba(4, 156, 161, 0.1),
+    0 4px 12px rgba(0, 0, 0, 0.05);
+  --shadow-google-hover: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-input-focus: 0 0 0 3px rgba(4, 156, 161, 0.1);
+  --shadow-input-error: 0 0 0 3px rgba(220, 53, 69, 0.1);
+  --shadow-submit-hover: 0 6px 20px rgba(4, 156, 161, 0.3);
+
+  /* Google button */
+  --google-border: #dadce0;
+  --google-text: #3c4043;
+  --google-hover-bg: #f8f9fa;
+  --google-hover-border: #c1c7cd;
+  --google-placeholder-bg: #f8f9fa;
+
+  /* Form elements */
+  --input-border: #e1e5e9;
+  --input-placeholder: #9aa0a6;
+  --input-disabled-bg: #f8f9fa;
+  --divider-color: #e8eaed;
+  --button-hover-light: rgba(0, 0, 0, 0.04);
+  --accent-dark: #037d82;
+
+  /* Error states */
+  --error-color: #dc3545;
+  --error-bg: rgba(220, 53, 69, 0.1);
+  --error-border: rgba(220, 53, 69, 0.2);
 }
 
 * {
@@ -81,6 +149,8 @@ a {
   justify-content: center;
   border-radius: 20px;
   transition: all 0.3s;
+  max-width: 320px;
+  margin: 0 auto;
 }
 
 .btn:hover {

@@ -2,96 +2,187 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { authService } from "@/src/services/client";
-import { basePath } from "@/src/constants/config";
+import GoogleAuthButton from "@/src/components/GoogleAuthButton/GoogleAuthButton";
+import "./LoginPage.scss";
 
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [login, setLogin] = useState(""); // email или username
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({ login: "", password: "" });
   const [loading, setLoading] = useState(false);
-  const [err, setErr] = useState("");
+  const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
 
-  // если уже авторизован на клиенте — уводим
   useEffect(() => {
     if (authService.isAuthenticated()) {
-      router.replace(searchParams.get("next") || `${basePath}/`);
+      const redirectTo = searchParams.get("next") || "/";
+      router.replace(redirectTo);
     }
   }, [router, searchParams]);
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    setErr("");
-    setLoading(true);
-    try {
-      const res = await authService.login({ login, password });
-      // если API вернул пользователя — сохраним локально (не критично)
-      if (res?.user) authService.setUserData(res.user);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((p) => ({ ...p, [name]: value }));
+    if (errors[name]) setErrors((p) => ({ ...p, [name]: "" }));
+  };
 
-      // редирект: ?next=/forum/xxx или на главную форума
-      const next = searchParams.get("next") || `${basePath}/`;
-      router.replace(next);
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.login.trim())
+      newErrors.login = "Email alebo používateľské meno je povinné";
+    if (!formData.password) newErrors.password = "Heslo je povinné";
+    else if (formData.password.length < 6)
+      newErrors.password = "Heslo musí mať aspoň 6 znakov";
+    return newErrors;
+  };
+
+  const handleLocalLogin = async (e) => {
+    e.preventDefault();
+    const formErrors = validateForm();
+    if (Object.keys(formErrors).length > 0) {
+      setErrors(formErrors);
+      return;
+    }
+    setLoading(true);
+    setErrors({});
+    try {
+      const res = await authService.login(formData);
+      if (res?.user) authService.setUserData(res.user);
+      const redirectTo = searchParams.get("next") || "/";
+      router.replace(redirectTo);
     } catch (error) {
-      setErr(error?.message || "Nepodarilo sa prihlásiť");
+      if (error.status === 401)
+        setErrors({ general: "Nesprávne prihlasovacie údaje" });
+      else if (error.status === 403)
+        setErrors({ general: "Váš účet nie je aktívny. Skontrolujte email." });
+      else if (error.status === 429)
+        setErrors({ general: "Príliš veľa pokusov. Skúste neskôr." });
+      else setErrors({ general: error?.message || "Nepodarilo sa prihlásiť" });
+    } finally {
       setLoading(false);
     }
   };
 
+  const handleGoogleSuccess = () => {
+    const redirectTo = searchParams.get("next") || "/";
+    router.replace(redirectTo);
+  };
+
+  const handleGoogleError = (err) => {
+    setErrors({ general: err?.message || "Ошибка входа через Google" });
+  };
+
   return (
-    <main className="container" style={{ padding: "48px 0" }}>
-      <div style={{ maxWidth: 420, margin: "0 auto" }}>
-        <h1 style={{ marginBottom: 16 }}>Prihlásenie</h1>
-        <p style={{ color: "#555", marginBottom: 24 }}>
-          Zadajte svoj e-mail alebo používateľské meno a heslo.
-        </p>
+    <section className="login-page">
+      <div className="container">
+        <div className="login-page__wrapper">
+          <div className="login-page__card">
+            <div className="login-page__header">
+              <h1 className="login-page__title">Prihlásenie</h1>
+              <p className="login-page__subtitle">
+                Prihláste sa do svojho účtu na FastCredit fóre
+              </p>
+            </div>
 
-        <form onSubmit={onSubmit} style={{ display: "grid", gap: 12 }}>
-          <label style={{ display: "grid", gap: 6 }}>
-            <span>Login (e-mail alebo používateľské meno)</span>
-            <input
-              type="text"
-              value={login}
-              onChange={(e) => setLogin(e.target.value)}
-              placeholder="napr. jan@domena.sk"
-              required
-              disabled={loading}
-              style={{ padding: "10px 12px" }}
-            />
-          </label>
+            {/* КАСТОМНАЯ КНОПКА GOOGLE (popup) */}
+            <div className="login-page__google-container">
+              <GoogleAuthButton
+                onSuccess={handleGoogleSuccess}
+                onError={handleGoogleError}
+              />
+            </div>
 
-          <label style={{ display: "grid", gap: 6 }}>
-            <span>Heslo</span>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              required
-              disabled={loading}
-              style={{ padding: "10px 12px" }}
-            />
-          </label>
+            <div className="login-page__divider">
+              <span>alebo</span>
+            </div>
 
-          {err && <div style={{ color: "#c00", fontSize: 14 }}>{err}</div>}
+            <form onSubmit={handleLocalLogin} className="login-page__form">
+              {errors.general && (
+                <div className="login-page__error login-page__error--general">
+                  {errors.general}
+                </div>
+              )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn"
-            style={{ padding: "10px 14px" }}
-          >
-            {loading ? "Prihlasovanie…" : "Prihlásiť sa"}
-          </button>
+              <div className="login-page__field">
+                <label className="login-page__label">
+                  Email alebo používateľské meno *
+                </label>
+                <input
+                  type="text"
+                  name="login"
+                  value={formData.login}
+                  onChange={handleInputChange}
+                  placeholder="napr. jan@example.com"
+                  className={`login-page__input ${
+                    errors.login ? "login-page__input--error" : ""
+                  }`}
+                  disabled={loading}
+                  autoComplete="username"
+                />
+                {errors.login && (
+                  <span className="login-page__error">{errors.login}</span>
+                )}
+              </div>
 
-          <div style={{ marginTop: 8, fontSize: 14 }}>
-            <a href={`${basePath}/register`} className="btn btn--secondary">
-              Nemáte účet? Registrácia
-            </a>
+              <div className="login-page__field">
+                <label className="login-page__label">Heslo *</label>
+                <div className="login-page__password-field">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    placeholder="Vaše heslo"
+                    className={`login-page__input ${
+                      errors.password ? "login-page__input--error" : ""
+                    }`}
+                    disabled={loading}
+                    autoComplete="current-password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="login-page__password-toggle"
+                    disabled={loading}
+                    aria-label={showPassword ? "Skryť heslo" : "Zobraziť heslo"}
+                  >
+                    {showPassword ? "🙈" : "👁️"}
+                  </button>
+                </div>
+                {errors.password && (
+                  <span className="login-page__error">{errors.password}</span>
+                )}
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="login-page__submit"
+              >
+                {loading ? "Prihlasovanie..." : "Prihlásiť sa"}
+              </button>
+            </form>
+
+            <div className="login-page__footer">
+              <Link href="/forgot-password" className="login-page__link">
+                Zabudli ste heslo?
+              </Link>
+              <div className="login-page__register">
+                <span>Nemáte účet? </span>
+                <Link
+                  href="/register"
+                  className="login-page__link login-page__link--primary"
+                >
+                  Zaregistrujte sa
+                </Link>
+              </div>
+            </div>
           </div>
-        </form>
+        </div>
       </div>
-    </main>
+    </section>
   );
 }

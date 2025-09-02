@@ -99,6 +99,8 @@ export default async function RootLayout({ children }) {
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
+
+        <script src="https://accounts.google.com/gsi/client" async defer />
       </head>
 
       <body>
