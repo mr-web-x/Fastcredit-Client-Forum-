@@ -154,7 +154,7 @@ a {
 }
 
 .btn:hover {
-  background: var(--accent);
+  filter: brightness(0.92);
 }
 
 .btn img {

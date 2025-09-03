@@ -1,325 +1,130 @@
+// Файл: src/features/RegisterPage/RegisterPage.jsx
+
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useActionState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { authService } from "@/src/services/client";
+import {
+  registerAction,
+  sendVerificationAction,
+  verifyEmailAction,
+} from "@/app/actions/auth";
 import GoogleAuthButton from "@/src/components/GoogleAuthButton/GoogleAuthButton";
+import { basePath } from "@/src/constants/config";
 import "./RegisterPage.scss";
 
 export default function RegisterPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    confirmPassword: "",
-    firstName: "",
-    lastName: "",
-    username: "",
-    agreeToTerms: false,
-  });
+  // Form states для разных Server Actions
+  const [registerState, registerFormAction] = useActionState(
+    registerAction,
+    null
+  );
+  const [verifyState, verifyFormAction] = useActionState(
+    verifyEmailAction,
+    null
+  );
+  const [resendState, resendFormAction] = useActionState(
+    sendVerificationAction,
+    null
+  );
 
-  const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState({});
+  // Local state
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [step, setStep] = useState("form"); // form, verification, success
-  const [verification, setVerification] = useState({
-    code: "",
-    loading: false,
-    canResend: false,
-    resendTimer: 0,
-  });
+  const [registrationEmail, setRegistrationEmail] = useState("");
 
-  // Проверки доступности (debounced)
-  const [availability, setAvailability] = useState({
-    email: { checking: false, available: null, message: "" },
-    username: { checking: false, available: null, message: "" },
-  });
+  // Resend timer
+  const [resendTimer, setResendTimer] = useState(0);
+  const [canResend, setCanResend] = useState(false);
 
-  // Редирект если уже залогинен
+  // Handle registration success -> switch to verification
   useEffect(() => {
-    if (authService.isAuthenticated()) {
-      const redirectTo = searchParams.get("next") || "/";
-      router.replace(redirectTo);
-    }
-  }, [router, searchParams]);
-
-  // Таймер для повторной отправки кода
-  useEffect(() => {
-    let timer;
-    if (verification.resendTimer > 0) {
-      timer = setTimeout(() => {
-        setVerification((prev) => ({
-          ...prev,
-          resendTimer: prev.resendTimer - 1,
-        }));
-      }, 1000);
-    } else if (verification.resendTimer === 0 && step === "verification") {
-      setVerification((prev) => ({ ...prev, canResend: true }));
-    }
-    return () => clearTimeout(timer);
-  }, [verification.resendTimer, step]);
-
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    const newValue = type === "checkbox" ? checked : value;
-
-    setFormData((prev) => ({ ...prev, [name]: newValue }));
-
-    // Очищаем ошибку для этого поля
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
-    }
-
-    // Real-time валидация для паролей
-    if (name === "password" || name === "confirmPassword") {
-      validatePasswords(
-        name === "password" ? newValue : formData.password,
-        name === "confirmPassword" ? newValue : formData.confirmPassword
-      );
-    }
-
-    // Debounced проверка доступности
-    if (name === "email" || name === "username") {
-      debouncedAvailabilityCheck(name, newValue);
-    }
-  };
-
-  const validatePasswords = (password, confirmPassword) => {
-    const newErrors = { ...errors };
-
-    if (password && password.length < 6) {
-      newErrors.password = "Heslo musí mať aspoň 6 znakov";
-    } else {
-      delete newErrors.password;
-    }
-
-    if (confirmPassword && password !== confirmPassword) {
-      newErrors.confirmPassword = "Heslá sa nezhodujú";
-    } else {
-      delete newErrors.confirmPassword;
-    }
-
-    setErrors(newErrors);
-  };
-
-  // Debounced availability check
-  const debouncedAvailabilityCheck = (() => {
-    const timeouts = {};
-    return (field, value) => {
-      clearTimeout(timeouts[field]);
-
-      if (!value.trim()) {
-        setAvailability((prev) => ({
-          ...prev,
-          [field]: { checking: false, available: null, message: "" },
-        }));
-        return;
-      }
-
-      setAvailability((prev) => ({
-        ...prev,
-        [field]: { checking: true, available: null, message: "" },
-      }));
-
-      timeouts[field] = setTimeout(async () => {
-        try {
-          const checkMethod =
-            field === "email"
-              ? authService.checkEmailAvailability
-              : authService.checkUsernameAvailability;
-
-          await checkMethod(value);
-
-          // Если метод не бросил ошибку, значит доступно
-          setAvailability((prev) => ({
-            ...prev,
-            [field]: {
-              checking: false,
-              available: true,
-              message:
-                field === "email"
-                  ? "Email je dostupný"
-                  : "Používateľské meno je dostupné",
-            },
-          }));
-        } catch (error) {
-          setAvailability((prev) => ({
-            ...prev,
-            [field]: {
-              checking: false,
-              available: false,
-              message: error.message || `${field} nie je dostupné`,
-            },
-          }));
-        }
-      }, 500);
-    };
-  })();
-
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (!formData.email.trim()) {
-      newErrors.email = "Email je povinný";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Neplatný formát emailu";
-    } else if (availability.email.available === false) {
-      newErrors.email = "Tento email sa už používa";
-    }
-
-    if (!formData.password) {
-      newErrors.password = "Heslo je povinné";
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Heslo musí mať aspoň 6 znakov";
-    }
-
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = "Potvrďte heslo";
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Heslá sa nezhodujú";
-    }
-
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = "Meno je povinné";
-    }
-
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = "Priezvisko je povinné";
-    }
-
-    if (!formData.username.trim()) {
-      newErrors.username = "Používateľské meno je povinné";
-    } else if (formData.username.length < 3) {
-      newErrors.username = "Používateľské meno musí mať aspoň 3 znaky";
-    } else if (!/^[a-zA-Z0-9_]+$/.test(formData.username)) {
-      newErrors.username =
-        "Používateľské meno môže obsahovať len písmená, číslice a podčiarkovník";
-    } else if (availability.username.available === false) {
-      newErrors.username = "Toto používateľské meno sa už používa";
-    }
-
-    if (!formData.agreeToTerms) {
-      newErrors.agreeToTerms = "Musíte súhlasiť s podmienkami použitia";
-    }
-
-    return newErrors;
-  };
-
-  const handleRegister = async (e) => {
-    e.preventDefault();
-    const formErrors = validateForm();
-
-    if (Object.keys(formErrors).length > 0) {
-      setErrors(formErrors);
-      return;
-    }
-
-    setLoading(true);
-    setErrors({});
-
-    try {
-      const registerData = {
-        email: formData.email.trim(),
-        password: formData.password,
-        confirmPassword: formData.confirmPassword,
-        firstName: formData.firstName.trim(),
-        lastName: formData.lastName.trim(),
-        username: formData.username.trim(),
-      };
-
-      await authService.register(registerData);
-
-      // Переходим к верификации email
+    if (registerState?.success && registerState?.step === "verification") {
+      setRegistrationEmail(registerState.email);
       setStep("verification");
-      setVerification((prev) => ({
-        ...prev,
-        resendTimer: 60,
-        canResend: false,
-      }));
-    } catch (error) {
-      if (error.status === 409) {
-        setErrors({
-          general:
-            "Používateľ s týmto emailom alebo používateľským menom už existuje",
-        });
-      } else if (error.status === 429) {
-        setErrors({ general: "Príliš veľa pokusov. Skúste neskôr." });
-      } else {
-        setErrors({ general: error?.message || "Nepodarilo sa zaregistrovať" });
-      }
-    } finally {
-      setLoading(false);
+      setResendTimer(60);
+      setCanResend(false);
     }
-  };
+  }, [registerState]);
 
-  const handleVerifyEmail = async (e) => {
-    e.preventDefault();
-
-    if (!verification.code.trim()) {
-      setErrors({ code: "Zadajte overovací kód" });
-      return;
-    }
-
-    setVerification((prev) => ({ ...prev, loading: true }));
-    setErrors({});
-
-    try {
-      await authService.verifyEmail(formData.email, verification.code);
+  // Handle verification success -> switch to success
+  useEffect(() => {
+    if (verifyState?.success && verifyState?.step === "success") {
       setStep("success");
-
-      // Редирект через 3 секунды
+      // Auto redirect после 3 секунд
       setTimeout(() => {
-        const redirectTo = searchParams.get("next") || "/";
+        const redirectTo = searchParams.get("next") || `${basePath}/`;
         router.replace(redirectTo);
       }, 3000);
-    } catch (error) {
-      if (error.status === 400) {
-        setErrors({ code: "Neplatný alebo expirovaný kód" });
-      } else {
-        setErrors({ code: error?.message || "Nepodarilo sa overiť email" });
-      }
+    }
+  }, [verifyState, router, searchParams]);
+
+  // Resend timer countdown
+  useEffect(() => {
+    let timer;
+    if (resendTimer > 0) {
+      timer = setTimeout(() => {
+        setResendTimer((prev) => prev - 1);
+      }, 1000);
+    } else if (resendTimer === 0 && step === "verification") {
+      setCanResend(true);
+    }
+    return () => clearTimeout(timer);
+  }, [resendTimer, step]);
+
+  // Handle resend code success
+  useEffect(() => {
+    if (resendState?.success) {
+      setResendTimer(60);
+      setCanResend(false);
+    }
+  }, [resendState]);
+
+  // Form submission handlers
+  const handleRegisterSubmit = async (formData) => {
+    setIsSubmitting(true);
+    try {
+      await registerFormAction(formData);
     } finally {
-      setVerification((prev) => ({ ...prev, loading: false }));
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleVerifySubmit = async (formData) => {
+    // Добавляем email в form data
+    formData.append("email", registrationEmail);
+    setIsSubmitting(true);
+    try {
+      await verifyFormAction(formData);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleResendCode = async () => {
-    if (!verification.canResend) return;
-
-    setVerification((prev) => ({ ...prev, loading: true }));
-
-    try {
-      await authService.sendVerificationCode(formData.email);
-      setVerification((prev) => ({
-        ...prev,
-        loading: false,
-        canResend: false,
-        resendTimer: 60,
-      }));
-      setErrors({});
-    } catch (error) {
-      setErrors({ general: error?.message || "Nepodarilo sa odoslať kód" });
-      setVerification((prev) => ({ ...prev, loading: false }));
-    }
+    if (!canResend) return;
+    const formData = new FormData();
+    formData.append("email", registrationEmail);
+    await resendFormAction(formData);
   };
 
-  const handleGoogleSuccess = () => {
+  const handleGoogleSuccess = ({ user }) => {
     const redirectTo = searchParams.get("next") || "/";
     router.replace(redirectTo);
   };
 
-  const handleGoogleError = (err) => {
-    setErrors({ general: err?.message || "Chyba pri registrácii cez Google" });
+  const handleGoogleError = (error) => {
+    console.error("[RegisterPage] Google auth error:", error);
   };
 
-  const getPasswordStrength = () => {
-    const password = formData.password;
+  const getPasswordStrength = (password) => {
     if (!password) return null;
-
     let strength = 0;
     if (password.length >= 6) strength += 1;
     if (password.length >= 8) strength += 1;
@@ -334,7 +139,7 @@ export default function RegisterPage() {
     return { level: "strong", text: "Silné", color: "#28a745" };
   };
 
-  // Render krokov
+  // VERIFICATION STEP
   if (step === "verification") {
     return (
       <section className="register-page">
@@ -345,17 +150,14 @@ export default function RegisterPage() {
                 <h1 className="register-page__title">Overte svoj email</h1>
                 <p className="register-page__subtitle">
                   Odoslali sme overovací kód na adresu{" "}
-                  <strong>{formData.email}</strong>
+                  <strong>{registrationEmail}</strong>
                 </p>
               </div>
 
-              <form
-                onSubmit={handleVerifyEmail}
-                className="register-page__form"
-              >
-                {errors.general && (
+              <form action={handleVerifySubmit} className="register-page__form">
+                {verifyState?.error && (
                   <div className="register-page__error register-page__error--general">
-                    {errors.general}
+                    {verifyState.error}
                   </div>
                 )}
 
@@ -365,50 +167,53 @@ export default function RegisterPage() {
                   </label>
                   <input
                     type="text"
-                    value={verification.code}
-                    onChange={(e) =>
-                      setVerification((prev) => ({
-                        ...prev,
-                        code: e.target.value,
-                      }))
-                    }
+                    name="code"
                     placeholder="Zadajte 6-miestny kód"
                     className={`register-page__input ${
-                      errors.code ? "register-page__input--error" : ""
+                      verifyState?.error ? "register-page__input--error" : ""
                     }`}
-                    disabled={verification.loading}
+                    disabled={isSubmitting}
                     maxLength={6}
                     autoFocus
+                    required
                   />
-                  {errors.code && (
-                    <span className="register-page__error">{errors.code}</span>
-                  )}
                 </div>
 
                 <button
                   type="submit"
-                  disabled={verification.loading}
+                  disabled={isSubmitting}
                   className="register-page__submit"
                 >
-                  {verification.loading ? "Overovanie..." : "Overiť email"}
+                  {isSubmitting ? "Overovanie..." : "Overiť email"}
                 </button>
               </form>
 
               <div className="register-page__verification-footer">
+                {resendState?.error && (
+                  <div className="register-page__error">
+                    {resendState.error}
+                  </div>
+                )}
+                {resendState?.success && (
+                  <div className="register-page__success">
+                    {resendState.message}
+                  </div>
+                )}
+
                 <p className="register-page__resend-text">
                   Nedostali ste kód?{" "}
-                  {verification.canResend ? (
+                  {canResend ? (
                     <button
                       type="button"
                       onClick={handleResendCode}
                       className="register-page__resend-btn"
-                      disabled={verification.loading}
+                      disabled={isSubmitting}
                     >
                       Odoslať znova
                     </button>
                   ) : (
                     <span className="register-page__resend-timer">
-                      Odoslať znova za {verification.resendTimer}s
+                      Odoslať znova za {resendTimer}s
                     </span>
                   )}
                 </p>
@@ -420,6 +225,7 @@ export default function RegisterPage() {
     );
   }
 
+  // SUCCESS STEP
   if (step === "success") {
     return (
       <section className="register-page">
@@ -440,7 +246,7 @@ export default function RegisterPage() {
     );
   }
 
-  // Главная форма регистрации
+  // MAIN REGISTRATION FORM
   return (
     <section className="register-page">
       <div className="container">
@@ -464,10 +270,16 @@ export default function RegisterPage() {
               <span>alebo</span>
             </div>
 
-            <form onSubmit={handleRegister} className="register-page__form">
-              {errors.general && (
+            <form action={handleRegisterSubmit} className="register-page__form">
+              {registerState?.error && (
                 <div className="register-page__error register-page__error--general">
-                  {errors.general}
+                  {registerState.error}
+                </div>
+              )}
+
+              {registerState?.errors && (
+                <div className="register-page__error register-page__error--general">
+                  Opravte chyby vo formulári
                 </div>
               )}
 
@@ -477,18 +289,19 @@ export default function RegisterPage() {
                   <input
                     type="text"
                     name="firstName"
-                    value={formData.firstName}
-                    onChange={handleInputChange}
                     placeholder="Vaše meno"
                     className={`register-page__input ${
-                      errors.firstName ? "register-page__input--error" : ""
+                      registerState?.errors?.firstName
+                        ? "register-page__input--error"
+                        : ""
                     }`}
-                    disabled={loading}
+                    disabled={isSubmitting}
                     autoComplete="given-name"
+                    required
                   />
-                  {errors.firstName && (
+                  {registerState?.errors?.firstName && (
                     <span className="register-page__error">
-                      {errors.firstName}
+                      {registerState.errors.firstName}
                     </span>
                   )}
                 </div>
@@ -498,18 +311,19 @@ export default function RegisterPage() {
                   <input
                     type="text"
                     name="lastName"
-                    value={formData.lastName}
-                    onChange={handleInputChange}
                     placeholder="Vaše priezvisko"
                     className={`register-page__input ${
-                      errors.lastName ? "register-page__input--error" : ""
+                      registerState?.errors?.lastName
+                        ? "register-page__input--error"
+                        : ""
                     }`}
-                    disabled={loading}
+                    disabled={isSubmitting}
                     autoComplete="family-name"
+                    required
                   />
-                  {errors.lastName && (
+                  {registerState?.errors?.lastName && (
                     <span className="register-page__error">
-                      {errors.lastName}
+                      {registerState.errors.lastName}
                     </span>
                   )}
                 </div>
@@ -517,47 +331,22 @@ export default function RegisterPage() {
 
               <div className="register-page__field">
                 <label className="register-page__label">Email *</label>
-                <div className="register-page__input-with-status">
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    placeholder="napr. jan@example.com"
-                    className={`register-page__input ${
-                      errors.email ? "register-page__input--error" : ""
-                    } ${
-                      availability.email.available === true
-                        ? "register-page__input--success"
-                        : ""
-                    }`}
-                    disabled={loading}
-                    autoComplete="email"
-                  />
-                  <div className="register-page__input-status">
-                    {availability.email.checking && (
-                      <span className="register-page__spinner">⏳</span>
-                    )}
-                    {availability.email.available === true && (
-                      <span className="register-page__success">✅</span>
-                    )}
-                    {availability.email.available === false && (
-                      <span className="register-page__error-icon">❌</span>
-                    )}
-                  </div>
-                </div>
-                {errors.email && (
-                  <span className="register-page__error">{errors.email}</span>
-                )}
-                {!errors.email && availability.email.message && (
-                  <span
-                    className={`register-page__availability ${
-                      availability.email.available
-                        ? "register-page__availability--success"
-                        : "register-page__availability--error"
-                    }`}
-                  >
-                    {availability.email.message}
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="napr. jan@example.com"
+                  className={`register-page__input ${
+                    registerState?.errors?.email
+                      ? "register-page__input--error"
+                      : ""
+                  }`}
+                  disabled={isSubmitting}
+                  autoComplete="email"
+                  required
+                />
+                {registerState?.errors?.email && (
+                  <span className="register-page__error">
+                    {registerState.errors.email}
                   </span>
                 )}
               </div>
@@ -566,49 +355,24 @@ export default function RegisterPage() {
                 <label className="register-page__label">
                   Používateľské meno *
                 </label>
-                <div className="register-page__input-with-status">
-                  <input
-                    type="text"
-                    name="username"
-                    value={formData.username}
-                    onChange={handleInputChange}
-                    placeholder="napr. jan123"
-                    className={`register-page__input ${
-                      errors.username ? "register-page__input--error" : ""
-                    } ${
-                      availability.username.available === true
-                        ? "register-page__input--success"
-                        : ""
-                    }`}
-                    disabled={loading}
-                    autoComplete="username"
-                  />
-                  <div className="register-page__input-status">
-                    {availability.username.checking && (
-                      <span className="register-page__spinner">⏳</span>
-                    )}
-                    {availability.username.available === true && (
-                      <span className="register-page__success">✅</span>
-                    )}
-                    {availability.username.available === false && (
-                      <span className="register-page__error-icon">❌</span>
-                    )}
-                  </div>
-                </div>
-                {errors.username && (
+                <input
+                  type="text"
+                  name="username"
+                  placeholder="napr. jan123"
+                  className={`register-page__input ${
+                    registerState?.errors?.username
+                      ? "register-page__input--error"
+                      : ""
+                  }`}
+                  disabled={isSubmitting}
+                  autoComplete="username"
+                  pattern="[a-zA-Z0-9_]+"
+                  minLength={3}
+                  required
+                />
+                {registerState?.errors?.username && (
                   <span className="register-page__error">
-                    {errors.username}
-                  </span>
-                )}
-                {!errors.username && availability.username.message && (
-                  <span
-                    className={`register-page__availability ${
-                      availability.username.available
-                        ? "register-page__availability--success"
-                        : "register-page__availability--error"
-                    }`}
-                  >
-                    {availability.username.message}
+                    {registerState.errors.username}
                   </span>
                 )}
               </div>
@@ -619,53 +383,30 @@ export default function RegisterPage() {
                   <input
                     type={showPassword ? "text" : "password"}
                     name="password"
-                    value={formData.password}
-                    onChange={handleInputChange}
                     placeholder="Vytvorte si bezpečné heslo"
                     className={`register-page__input ${
-                      errors.password ? "register-page__input--error" : ""
+                      registerState?.errors?.password
+                        ? "register-page__input--error"
+                        : ""
                     }`}
-                    disabled={loading}
+                    disabled={isSubmitting}
                     autoComplete="new-password"
+                    minLength={6}
+                    required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="register-page__password-toggle"
-                    disabled={loading}
+                    disabled={isSubmitting}
                     aria-label={showPassword ? "Skryť heslo" : "Zobraziť heslo"}
                   >
                     {showPassword ? "🙈" : "👁️"}
                   </button>
                 </div>
-                {formData.password && !errors.password && (
-                  <div className="register-page__password-strength">
-                    <div className="register-page__strength-bar">
-                      <div
-                        className="register-page__strength-fill"
-                        style={{
-                          width: `${
-                            getPasswordStrength()?.level === "weak"
-                              ? 33
-                              : getPasswordStrength()?.level === "medium"
-                              ? 66
-                              : 100
-                          }%`,
-                          backgroundColor: getPasswordStrength()?.color,
-                        }}
-                      ></div>
-                    </div>
-                    <span
-                      className="register-page__strength-text"
-                      style={{ color: getPasswordStrength()?.color }}
-                    >
-                      {getPasswordStrength()?.text}
-                    </span>
-                  </div>
-                )}
-                {errors.password && (
+                {registerState?.errors?.password && (
                   <span className="register-page__error">
-                    {errors.password}
+                    {registerState.errors.password}
                   </span>
                 )}
               </div>
@@ -676,22 +417,22 @@ export default function RegisterPage() {
                   <input
                     type={showConfirmPassword ? "text" : "password"}
                     name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleInputChange}
                     placeholder="Zopakujte heslo"
                     className={`register-page__input ${
-                      errors.confirmPassword
+                      registerState?.errors?.confirmPassword
                         ? "register-page__input--error"
                         : ""
                     }`}
-                    disabled={loading}
+                    disabled={isSubmitting}
                     autoComplete="new-password"
+                    minLength={6}
+                    required
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="register-page__password-toggle"
-                    disabled={loading}
+                    disabled={isSubmitting}
                     aria-label={
                       showConfirmPassword ? "Skryť heslo" : "Zobraziť heslo"
                     }
@@ -699,9 +440,9 @@ export default function RegisterPage() {
                     {showConfirmPassword ? "🙈" : "👁️"}
                   </button>
                 </div>
-                {errors.confirmPassword && (
+                {registerState?.errors?.confirmPassword && (
                   <span className="register-page__error">
-                    {errors.confirmPassword}
+                    {registerState.errors.confirmPassword}
                   </span>
                 )}
               </div>
@@ -711,10 +452,9 @@ export default function RegisterPage() {
                   <input
                     type="checkbox"
                     name="agreeToTerms"
-                    checked={formData.agreeToTerms}
-                    onChange={handleInputChange}
                     className="register-page__checkbox"
-                    disabled={loading}
+                    disabled={isSubmitting}
+                    required
                   />
                   <span className="register-page__checkbox-text">
                     Súhlasím s{" "}
@@ -727,19 +467,19 @@ export default function RegisterPage() {
                     </Link>
                   </span>
                 </label>
-                {errors.agreeToTerms && (
+                {registerState?.errors?.agreeToTerms && (
                   <span className="register-page__error">
-                    {errors.agreeToTerms}
+                    {registerState.errors.agreeToTerms}
                   </span>
                 )}
               </div>
 
               <button
                 type="submit"
-                disabled={loading}
+                disabled={isSubmitting}
                 className="register-page__submit"
               >
-                {loading ? "Registrovanie..." : "Zaregistrovať sa"}
+                {isSubmitting ? "Registrovanie..." : "Zaregistrovať sa"}
               </button>
             </form>
 

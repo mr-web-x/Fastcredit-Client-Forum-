@@ -1,4 +1,6 @@
-// Google Button
+/* === ВАШИ (как есть) === */
+
+/* Кастомная ручная кнопка (если где-то используете) */
 .GoogleAuthButton {
   width: 100%;
   height: 48px;
@@ -34,14 +36,74 @@
   }
 }
 
-// Плейсхолдер Google Button
-.GoogleAuthButtonWrapper {
+/* Старый плейсхолдер — переименовал, чтобы не путать с оболочкой */
+.GoogleAuthPlaceholder {
   width: 100%;
   height: 40px;
-  background: var(--google-placeholder-bg, #f5f5f5);
+  background: var(--google-placeholder-bg);
+  border: 1px solid #dadce0;
   border-radius: 25px;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 500;
-  color: var(--google-placeholder-text, #999);
+  color: var(--google-placeholder-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0 12px;
+  span {
+    display: block;
+    padding: 0 0 0 8px;
+    text-align: center;
+    width: 100%;
+  }
+}
+
+/* === НОВОЕ для GIS-кнопки === */
+
+.GoogleAuthShell {
+  position: relative;
+  width: 100%;
   margin-bottom: 24px;
+
+  &.is-loading {
+    .GoogleAuthHost {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+  }
+}
+
+.GoogleAuthHost {
+  width: 100%; /* обёртка под кнопку Google; сама кнопка имеет width по опции renderButton */
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.2s ease;
+  min-height: 40px; /* чтобы не прыгала верстка до отрисовки */
+
+  &.is-hidden {
+    visibility: hidden; /* сохраняем место в потоке */
+  }
+}
+
+/* Полупрозрачный оверлей на время запроса */
+.GoogleAuthOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--google-border);
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+/* (опционально) адаптер, чтобы кнопка занимала всю ширину контейнера */
+.GoogleAuthShell .google-signin-button {
+  width: 100%;
 }

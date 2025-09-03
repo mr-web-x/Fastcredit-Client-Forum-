@@ -1,79 +1,82 @@
+// Файл: src/features/LoginPage/LoginPage.jsx
+
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useActionState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { authService } from "@/src/services/client";
+import { loginAction } from "@/app/actions/auth";
 import GoogleAuthButton from "@/src/components/GoogleAuthButton/GoogleAuthButton";
+import { basePath } from "@/src/constants/config";
 import "./LoginPage.scss";
 
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  const [formData, setFormData] = useState({ login: "", password: "" });
-  const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState({});
+  
+  // useActionState для Server Action
+  const [formState, formAction] = useActionState(loginAction, null);
+  
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Обработка успешного входа
   useEffect(() => {
-    if (authService.isAuthenticated()) {
+    if (formState?.success) {
       const redirectTo = searchParams.get("next") || "/";
-      router.replace(redirectTo);
+      // Делаем небольшую задержку для показа success сообщения
+      setTimeout(() => {
+        router.replace(redirectTo);
+      }, 1000);
     }
-  }, [router, searchParams]);
+  }, [formState?.success, router, searchParams]);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((p) => ({ ...p, [name]: value }));
-    if (errors[name]) setErrors((p) => ({ ...p, [name]: "" }));
-  };
-
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.login.trim())
-      newErrors.login = "Email alebo používateľské meno je povinné";
-    if (!formData.password) newErrors.password = "Heslo je povinné";
-    else if (formData.password.length < 6)
-      newErrors.password = "Heslo musí mať aspoň 6 znakov";
-    return newErrors;
-  };
-
-  const handleLocalLogin = async (e) => {
-    e.preventDefault();
-    const formErrors = validateForm();
-    if (Object.keys(formErrors).length > 0) {
-      setErrors(formErrors);
-      return;
-    }
-    setLoading(true);
-    setErrors({});
+  // Обработка submit формы для показа loading состояния
+  const handleFormSubmit = async (formData) => {
+    setIsSubmitting(true);
     try {
-      const res = await authService.login(formData);
-      if (res?.user) authService.setUserData(res.user);
-      const redirectTo = searchParams.get("next") || "/";
-      router.replace(redirectTo);
-    } catch (error) {
-      if (error.status === 401)
-        setErrors({ general: "Nesprávne prihlasovacie údaje" });
-      else if (error.status === 403)
-        setErrors({ general: "Váš účet nie je aktívny. Skontrolujte email." });
-      else if (error.status === 429)
-        setErrors({ general: "Príliš veľa pokusov. Skúste neskôr." });
-      else setErrors({ general: error?.message || "Nepodarilo sa prihlásiť" });
+      await formAction(formData);
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
-  const handleGoogleSuccess = () => {
+  const handleGoogleSuccess = ({ user }) => {
     const redirectTo = searchParams.get("next") || "/";
     router.replace(redirectTo);
   };
 
-  const handleGoogleError = (err) => {
-    setErrors({ general: err?.message || "Ошибка входа через Google" });
+  const handleGoogleError = (error) => {
+    console.error("[LoginPage] Google auth error:", error);
   };
+
+  // Показываем success состояние
+  if (formState?.success) {
+    return (
+      <section className="login-page">
+        <div className="container">
+          <div className="login-page__wrapper">
+            <div className="login-page__card">
+              <div className="login-page__header">
+                <h1 className="login-page__title">Prihlásenie úspešné!</h1>
+                <p className="login-page__subtitle">
+                  Presmerúvame vás do systému...
+                </p>
+              </div>
+              <div style={{ 
+                textAlign: 'center', 
+                padding: '20px',
+                color: 'var(--status-success-color)',
+                fontSize: '48px' 
+              }}>
+                ✅
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="login-page">
@@ -87,7 +90,7 @@ export default function LoginPage() {
               </p>
             </div>
 
-            {/* КАСТОМНАЯ КНОПКА GOOGLE (popup) */}
+            {/* Google OAuth Button */}
             <div className="login-page__google-container">
               <GoogleAuthButton
                 onSuccess={handleGoogleSuccess}
@@ -99,10 +102,19 @@ export default function LoginPage() {
               <span>alebo</span>
             </div>
 
-            <form onSubmit={handleLocalLogin} className="login-page__form">
-              {errors.general && (
+            {/* Server Action Form */}
+            <form action={handleFormSubmit} className="login-page__form">
+              {/* Общая ошибка от Server Action */}
+              {formState?.error && (
                 <div className="login-page__error login-page__error--general">
-                  {errors.general}
+                  {formState.error}
+                </div>
+              )}
+
+              {/* Success сообщение */}
+              {formState?.message && !formState?.error && (
+                <div className="login-page__success">
+                  {formState.message}
                 </div>
               )}
 
@@ -113,18 +125,12 @@ export default function LoginPage() {
                 <input
                   type="text"
                   name="login"
-                  value={formData.login}
-                  onChange={handleInputChange}
                   placeholder="napr. jan@example.com"
-                  className={`login-page__input ${
-                    errors.login ? "login-page__input--error" : ""
-                  }`}
-                  disabled={loading}
+                  className="login-page__input"
+                  disabled={isSubmitting}
                   autoComplete="username"
+                  required
                 />
-                {errors.login && (
-                  <span className="login-page__error">{errors.login}</span>
-                )}
               </div>
 
               <div className="login-page__field">
@@ -133,36 +139,31 @@ export default function LoginPage() {
                   <input
                     type={showPassword ? "text" : "password"}
                     name="password"
-                    value={formData.password}
-                    onChange={handleInputChange}
                     placeholder="Vaše heslo"
-                    className={`login-page__input ${
-                      errors.password ? "login-page__input--error" : ""
-                    }`}
-                    disabled={loading}
+                    className="login-page__input"
+                    disabled={isSubmitting}
                     autoComplete="current-password"
+                    required
+                    minLength={6}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="login-page__password-toggle"
-                    disabled={loading}
+                    disabled={isSubmitting}
                     aria-label={showPassword ? "Skryť heslo" : "Zobraziť heslo"}
                   >
                     {showPassword ? "🙈" : "👁️"}
                   </button>
                 </div>
-                {errors.password && (
-                  <span className="login-page__error">{errors.password}</span>
-                )}
               </div>
 
               <button
                 type="submit"
-                disabled={loading}
+                disabled={isSubmitting}
                 className="login-page__submit"
               >
-                {loading ? "Prihlasovanie..." : "Prihlásiť sa"}
+                {isSubmitting ? "Prihlasovanie..." : "Prihlásiť sa"}
               </button>
             </form>
 

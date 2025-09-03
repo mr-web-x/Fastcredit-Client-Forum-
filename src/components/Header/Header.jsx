@@ -1,19 +1,35 @@
+// Файл: src/components/Header/Header.jsx
+
 "use client";
 import "./Header.scss";
 import { useState } from "react";
 import { basePath } from "@/src/constants/config";
-import { authService } from "@/src/services/client";
+import { logoutAction } from "@/app/actions/auth";
 
 export default function Header({ user = null }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
-      await authService.logout();
-      // authService.logout() уже делает редирект
+      // Используем Server Action для logout
+      await logoutAction();
+      // logoutAction уже делает redirect и очищает cookie
     } catch (error) {
-      // Если ошибка, все равно редиректим
-      window.location.href = `${basePath}/login`;
+      console.error("[Header] Logout error:", error);
+      // В случае ошибки пытаемся сделать fallback через Route Handler
+      try {
+        const response = await fetch(`${basePath}/api/auth/logout`, {
+          method: "POST",
+          credentials: "include",
+        });
+        if (response.ok) {
+          window.location.href = `${basePath}/`;
+        }
+      } catch (fallbackError) {
+        console.error("[Header] Fallback logout failed:", fallbackError);
+        // Последний fallback - просто редирект
+        window.location.href = `${basePath}/login`;
+      }
     }
   };
 
@@ -56,7 +72,7 @@ export default function Header({ user = null }) {
                   Blog
                 </a>
               </li>
-              {/* Добавляем ссылки форума */}
+              {/* Форумные ссылки */}
               <li>
                 <a itemProp="url" href={`${basePath}/`} onClick={closeMenu}>
                   Fórum
@@ -73,6 +89,7 @@ export default function Header({ user = null }) {
               </li>
             </ul>
           </nav>
+
           {/* Блок профиля */}
           <div className="header__profile">
             {user ? (
@@ -84,10 +101,12 @@ export default function Header({ user = null }) {
                   </span>
                 )}
 
+                {/* Ссылка на профиль */}
                 <a
                   className="header__user-name"
                   href={`${basePath}/profile`}
                   title={`${user.firstName || user.username} - ${user.role}`}
+                  onClick={closeMenu}
                 >
                   {user.firstName || user.username || "Profil"}
                 </a>
@@ -96,12 +115,72 @@ export default function Header({ user = null }) {
                 <a
                   className="header__ask-btn btn btn--secondary"
                   href={`${basePath}/ask`}
+                  onClick={closeMenu}
                 >
                   Spýtať sa
                 </a>
 
+                {/* Dropdown меню для больших возможностей */}
+                <div className="header__user-dropdown">
+                  <button
+                    className="header__user-toggle"
+                    onClick={() => setMenuOpen(!menuOpen)}
+                    aria-label="User menu"
+                  >
+                    <span className="header__user-avatar">
+                      {user.firstName
+                        ? user.firstName[0].toUpperCase()
+                        : user.username?.[0]?.toUpperCase() || "U"}
+                    </span>
+                  </button>
+
+                  <div
+                    className={`header__dropdown-menu ${
+                      menuOpen ? "active" : ""
+                    }`}
+                  >
+                    <a
+                      href={`${basePath}/profile`}
+                      className="header__dropdown-item"
+                      onClick={closeMenu}
+                    >
+                      👤 Môj profil
+                    </a>
+
+                    {user.role === "expert" && (
+                      <a
+                        href={`${basePath}/expert/dashboard`}
+                        className="header__dropdown-item"
+                        onClick={closeMenu}
+                      >
+                        👨‍💼 Expert panel
+                      </a>
+                    )}
+
+                    {user.role === "admin" && (
+                      <a
+                        href={`${basePath}/admin`}
+                        className="header__dropdown-item"
+                        onClick={closeMenu}
+                      >
+                        ⚙️ Admin panel
+                      </a>
+                    )}
+
+                    <hr className="header__dropdown-divider" />
+
+                    <button
+                      className="header__dropdown-item header__logout-btn"
+                      onClick={handleLogout}
+                    >
+                      🚪 Odhlásiť sa
+                    </button>
+                  </div>
+                </div>
+
+                {/* Простая кнопка logout для мобильных */}
                 <button
-                  className="header__logout btn"
+                  className="header__logout header__logout--mobile"
                   onClick={handleLogout}
                   title="Odhlásiť sa"
                 >
@@ -113,12 +192,22 @@ export default function Header({ user = null }) {
                 <a
                   className="header__login btn btn--secondary"
                   href={`${basePath}/login`}
+                  onClick={closeMenu}
                 >
                   Prihlásiť sa
+                </a>
+
+                <a
+                  className="header__register btn btn--main"
+                  href={`${basePath}/register`}
+                  onClick={closeMenu}
+                >
+                  Registrovať sa
                 </a>
               </div>
             )}
           </div>
+
           {/* Мобильное меню */}
           <div className="header__mobile-nav">
             <div
