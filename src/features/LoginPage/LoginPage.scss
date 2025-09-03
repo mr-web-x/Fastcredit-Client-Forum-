@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px 0;
+  padding: 60px 0;
   margin: 0;
 
   &__wrapper {
@@ -274,11 +274,9 @@
 // Responsive
 @media (max-width: 768px) {
   .login-page {
-    padding: 20px 0;
-    min-height: 100vh;
+    padding: 40px 0;
 
     &__card {
-      margin: 0 16px;
       padding: 32px 24px;
       border-radius: 20px;
     }
@@ -296,7 +294,6 @@
 @media (max-width: 480px) {
   .login-page {
     &__card {
-      margin: 0 12px;
       padding: 24px 20px;
       border-radius: 16px;
     }
@@ -316,12 +313,5 @@
       margin-top: 24px;
       gap: 12px;
     }
-  }
-}
-
-// Dark mode support (если планируете)
-@media (prefers-color-scheme: dark) {
-  .login-page {
-    // Можно добавить тёмную тему позже
   }
 }

@@ -1,0 +1,261 @@
+// Файл: src/features/RegisterPage/SuccessForm/SuccessForm.scss
+
+.success-form {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  text-align: center;
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  &__icon {
+    font-size: 64px;
+    margin-bottom: 8px;
+  }
+
+  &__message {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__congratulations {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--black);
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  &__description {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  &__account-info {
+    background: var(--background);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  &__email-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  &__email-label {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  &__email-value {
+    font-size: 14px;
+    color: var(--black);
+    font-weight: 600;
+    font-family: monospace;
+  }
+
+  &__benefits {
+    text-align: left;
+    background: var(--background);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  &__benefits-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--black);
+    margin: 0 0 12px 0;
+    text-align: center;
+  }
+
+  &__benefits-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    li {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+      position: relative;
+      padding-left: 20px;
+
+      &::before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: var(--status-success-color);
+        font-weight: 600;
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+  }
+
+  &__login-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    background: var(--accentGradient);
+    color: var(--white);
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    padding: 0 32px;
+    min-width: 200px;
+
+    &:hover {
+      background: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-submit-hover);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  &__auto-redirect {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0;
+    font-style: italic;
+  }
+
+  &__footer {
+    padding-top: 24px;
+    border-top: 1px solid var(--card-border);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &__help-text {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
+  &__back-link {
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: var(--accent-dark);
+    }
+  }
+
+  &__contact {
+    margin: 0;
+  }
+
+  &__contact-text {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  &__contact-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: var(--accent-dark);
+      text-decoration: underline;
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .success-form {
+    gap: 24px;
+
+    &__content {
+      gap: 20px;
+    }
+
+    &__icon {
+      font-size: 48px;
+    }
+
+    &__congratulations {
+      font-size: 24px;
+    }
+
+    &__description {
+      font-size: 15px;
+    }
+
+    &__benefits {
+      padding: 16px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .success-form {
+    &__icon {
+      font-size: 40px;
+    }
+
+    &__congratulations {
+      font-size: 20px;
+    }
+
+    &__login-btn {
+      height: 44px;
+      font-size: 15px;
+      min-width: 180px;
+      padding: 0 24px;
+    }
+
+    &__email-info {
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    &__account-info {
+      padding: 12px;
+    }
+
+    &__benefits {
+      padding: 12px;
+    }
+  }
+}

@@ -1,0 +1,174 @@
+.success-step {
+  &__content {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  &__icon {
+    font-size: 64px;
+    margin-bottom: 24px;
+    color: var(--success-color);
+  }
+
+  &__message {
+    margin-bottom: 24px;
+  }
+
+  &__title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+
+  &__description {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  &__security-info {
+    background: var(--background);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    text-align: left;
+  }
+
+  &__security-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--warning-color);
+  }
+
+  &__security-text {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+  }
+
+  &__login-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    background: var(--accentGradient);
+    color: var(--white);
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0 24px;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-submit-hover);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  &__auto-redirect {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  &__footer {
+    border-top: 1px solid var(--card-border);
+    padding-top: 24px;
+    text-align: center;
+  }
+
+  &__help-text {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+  }
+
+  &__back-link {
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: var(--accent-dark);
+    }
+  }
+
+  &__contact {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--card-border);
+  }
+
+  &__contact-text {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
+  &__contact-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: var(--accent-dark);
+      text-decoration: underline;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .success-step {
+    &__icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    &__title {
+      font-size: 24px;
+    }
+
+    &__description {
+      font-size: 15px;
+    }
+
+    &__login-btn {
+      height: 44px;
+      font-size: 15px;
+      padding: 0 20px;
+    }
+
+    &__security-info {
+      padding: 12px;
+    }
+  }
+}

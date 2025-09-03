@@ -1,5 +1,3 @@
-// Файл: src/features/LoginPage/LoginPage.jsx
-
 "use client";
 
 import { useState, useEffect, useActionState } from "react";
@@ -7,39 +5,33 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { loginAction } from "@/app/actions/auth";
 import GoogleAuthButton from "@/src/components/GoogleAuthButton/GoogleAuthButton";
-import { basePath } from "@/src/constants/config";
 import "./LoginPage.scss";
 
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
-  // useActionState для Server Action
-  const [formState, formAction] = useActionState(loginAction, null);
-  
   const [showPassword, setShowPassword] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Обработка успешного входа
+  // Правильное использование useActionState с isPending
+  const [formState, formAction, isPending] = useActionState(loginAction, {
+    success: false,
+    message: null,
+    error: null,
+    fieldErrors: null,
+  });
+
+  // Обработка успешного входа и редиректа
   useEffect(() => {
     if (formState?.success) {
       const redirectTo = searchParams.get("next") || "/";
-      // Делаем небольшую задержку для показа success сообщения
-      setTimeout(() => {
+      const timerId = setTimeout(() => {
         router.replace(redirectTo);
       }, 1000);
+
+      // Очистка таймера при размонтировании компонента
+      return () => clearTimeout(timerId);
     }
   }, [formState?.success, router, searchParams]);
-
-  // Обработка submit формы для показа loading состояния
-  const handleFormSubmit = async (formData) => {
-    setIsSubmitting(true);
-    try {
-      await formAction(formData);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   const handleGoogleSuccess = ({ user }) => {
     const redirectTo = searchParams.get("next") || "/";
@@ -63,12 +55,14 @@ export default function LoginPage() {
                   Presmerúvame vás do systému...
                 </p>
               </div>
-              <div style={{ 
-                textAlign: 'center', 
-                padding: '20px',
-                color: 'var(--status-success-color)',
-                fontSize: '48px' 
-              }}>
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: "20px",
+                  color: "var(--status-success-color)",
+                  fontSize: "48px",
+                }}
+              >
                 ✅
               </div>
             </div>
@@ -103,7 +97,7 @@ export default function LoginPage() {
             </div>
 
             {/* Server Action Form */}
-            <form action={handleFormSubmit} className="login-page__form">
+            <form action={formAction} className="login-page__form">
               {/* Общая ошибка от Server Action */}
               {formState?.error && (
                 <div className="login-page__error login-page__error--general">
@@ -111,59 +105,82 @@ export default function LoginPage() {
                 </div>
               )}
 
-              {/* Success сообщение */}
+              {/* Success сообщение (если нужно показать без редиректа) */}
               {formState?.message && !formState?.error && (
-                <div className="login-page__success">
-                  {formState.message}
-                </div>
+                <div className="login-page__success">{formState.message}</div>
               )}
 
               <div className="login-page__field">
-                <label className="login-page__label">
+                <label htmlFor="login" className="login-page__label">
                   Email alebo používateľské meno *
                 </label>
                 <input
+                  id="login"
                   type="text"
                   name="login"
                   placeholder="napr. jan@example.com"
                   className="login-page__input"
-                  disabled={isSubmitting}
+                  disabled={isPending}
                   autoComplete="username"
                   required
+                  aria-describedby={
+                    formState?.fieldErrors?.login ? "login-error" : undefined
+                  }
                 />
+                {/* Ошибка для конкретного поля */}
+                {formState?.fieldErrors?.login && (
+                  <div id="login-error" className="login-page__field-error">
+                    {formState.fieldErrors.login}
+                  </div>
+                )}
               </div>
 
               <div className="login-page__field">
-                <label className="login-page__label">Heslo *</label>
+                <label htmlFor="password" className="login-page__label">
+                  Heslo *
+                </label>
                 <div className="login-page__password-field">
                   <input
+                    id="password"
                     type={showPassword ? "text" : "password"}
                     name="password"
                     placeholder="Vaše heslo"
                     className="login-page__input"
-                    disabled={isSubmitting}
+                    disabled={isPending}
                     autoComplete="current-password"
                     required
                     minLength={6}
+                    aria-describedby={
+                      formState?.fieldErrors?.password
+                        ? "password-error"
+                        : undefined
+                    }
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="login-page__password-toggle"
-                    disabled={isSubmitting}
+                    disabled={isPending}
                     aria-label={showPassword ? "Skryť heslo" : "Zobraziť heslo"}
                   >
                     {showPassword ? "🙈" : "👁️"}
                   </button>
                 </div>
+                {/* Ошибка для конкретного поля */}
+                {formState?.fieldErrors?.password && (
+                  <div id="password-error" className="login-page__field-error">
+                    {formState.fieldErrors.password}
+                  </div>
+                )}
               </div>
 
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isPending}
                 className="login-page__submit"
+                aria-busy={isPending}
               >
-                {isSubmitting ? "Prihlasovanie..." : "Prihlásiť sa"}
+                {isPending ? "Prihlasovanie..." : "Prihlásiť sa"}
               </button>
             </form>
 

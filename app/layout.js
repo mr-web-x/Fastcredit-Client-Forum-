@@ -123,13 +123,6 @@ export default async function RootLayout({ children }) {
           crossOrigin="anonymous"
         />
 
-        {/* Google Sign-In script */}
-        {/* <script
-          src="https://accounts.google.com/gsi/client?hl=sk"
-          async
-          defer
-        ></script> */}
-
         {/* Preload критических ресурсов */}
         <link
           rel="preload"

@@ -60,9 +60,7 @@ export async function getServerUser() {
 export async function setAuthCookie(token) {
   const cookieStore = await cookies();
 
-  cookieStore.set({
-    name: "fc_jwt",
-    value: token,
+  cookieStore.set("fc_jwt", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
@@ -116,16 +114,14 @@ export async function requireAuth(redirectTo = "/login") {
 
 /**
  * Guard для гостевых страниц - перенаправляет авторизованных
- * @param {string} redirectTo - куда перенаправить если авторизован
+ * @param {string} redirectTo - куда перенаправить (относительный путь)
  */
 export async function requireGuest(redirectTo = "/") {
   const user = await getServerUser();
 
   if (user) {
-    const homeUrl = redirectTo.startsWith("/")
-      ? `${basePath}${redirectTo}`
-      : `${basePath}/${redirectTo}`;
-    redirect(homeUrl);
+    // Просто делаем редирект - middleware сам добавит basePath если нужно
+    redirect(redirectTo);
   }
 }
 

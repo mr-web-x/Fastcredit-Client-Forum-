@@ -1,10 +1,9 @@
 // Файл: middleware.js
-
 import { NextResponse } from "next/server";
 import { basePath } from "@/src/constants/config";
 
 export function middleware(request) {
-  const { pathname, searchParams } = request.nextUrl;
+  const { pathname, searchParams, origin } = request.nextUrl;
   const token = request.cookies.get("fc_jwt")?.value;
 
   // Проверяем, что мы находимся в forum части сайта
@@ -25,12 +24,10 @@ export function middleware(request) {
     "/forum/login",
     "/forum/register",
     "/forum/forgot-password",
-    "/forum/reset-password",
   ];
 
   // === API ROUTES PROTECTION ===
   if (pathname.startsWith("/forum/api/auth/")) {
-    // API auth routes доступны всем, но логируем для безопасности
     if (process.env.NODE_ENV === "development") {
       console.log(`[Middleware] Auth API access: ${pathname}`);
     }
@@ -51,7 +48,7 @@ export function middleware(request) {
     );
 
     console.log(
-      `[Middleware] Redirecting unauthenticated user from ${pathname} to login`
+      `[Middleware] Redirecting unauthenticated user from ${pathname} to ${loginUrl.toString()}`
     );
     return NextResponse.redirect(loginUrl);
   }
@@ -61,43 +58,44 @@ export function middleware(request) {
 
   if (isGuestRoute && token) {
     // Авторизованные пользователи не должны видеть страницы входа
-    const redirectTo = searchParams.get("next") || `${basePath}/`;
-    const homeUrl = new URL(redirectTo, request.url);
+    let redirectPath = searchParams.get("next");
+
+    if (!redirectPath || redirectPath === "/") {
+      // Редирект на главную страницу форума
+      redirectPath = `${basePath}`;
+    } else if (!redirectPath.startsWith(basePath)) {
+      // Если next параметр не содержит basePath, добавляем его
+      redirectPath = `${basePath}${
+        redirectPath.startsWith("/") ? "" : "/"
+      }${redirectPath}`;
+    }
+
+    const homeUrl = new URL(redirectPath, request.url);
 
     console.log(
-      `[Middleware] Redirecting authenticated user from ${pathname} to ${redirectTo}`
+      `[Middleware] Redirecting authenticated user from ${pathname} to ${homeUrl.toString()}`
     );
     return NextResponse.redirect(homeUrl);
   }
 
   // === РОЛЬ-СПЕЦИФИЧНЫЕ МАРШРУТЫ ===
-  // Для этого нужно декодировать JWT или сделать запрос к API
-  // Пока оставляем базовую проверку - более детальную проверку ролей делаем в Server Components
-
   if (pathname.startsWith("/forum/admin") && token) {
-    // Админ маршруты - дополнительная проверка будет в Server Components через requireRole()
-    // Здесь просто проверяем наличие токена
     console.log(`[Middleware] Admin route access attempt: ${pathname}`);
   }
 
   if (pathname.startsWith("/forum/expert") && token) {
-    // Эксперт маршруты - дополнительная проверка будет в Server Components
     console.log(`[Middleware] Expert route access attempt: ${pathname}`);
   }
 
   // === ДОБАВЛЯЕМ ЗАГОЛОВКИ ДЛЯ SERVER COMPONENTS ===
   const requestHeaders = new Headers(request.headers);
 
-  // Передаем информацию о наличии токена в Server Components
   if (token) {
     requestHeaders.set("x-has-auth-token", "true");
-    // НЕ передаем сам токен в заголовках - это небезопасно
-    // Server Components будут получать user данные через getServerUser()
   } else {
     requestHeaders.set("x-has-auth-token", "false");
   }
 
-  // Передаем текущий path для логики в компонентах
   requestHeaders.set("x-current-path", pathname);
 
   // === SECURITY HEADERS ===
@@ -121,16 +119,10 @@ export function middleware(request) {
     ].join("; ")
   );
 
-  // Защита от clickjacking
   response.headers.set("X-Frame-Options", "DENY");
-
-  // Предотвращение MIME type sniffing
   response.headers.set("X-Content-Type-Options", "nosniff");
-
-  // XSS Protection
   response.headers.set("X-XSS-Protection", "1; mode=block");
 
-  // Strict Transport Security (только в production)
   if (process.env.NODE_ENV === "production") {
     response.headers.set(
       "Strict-Transport-Security",
@@ -141,14 +133,10 @@ export function middleware(request) {
   return response;
 }
 
-// Конфигурация middleware - на какие маршруты применяется
 export const config = {
   matcher: [
-    // Применяется ко всем forum маршрутам
     "/forum/:path*",
-    // API routes
     "/api/auth/:path*",
-    // Исключаем статические файлы
     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };
