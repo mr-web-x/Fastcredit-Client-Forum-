@@ -139,6 +139,9 @@ header {
   header {
     .header__mobile-nav {
       display: flex;
+      width: 46px;
+      justify-content: flex-end;
+      order: 3;
     }
 
     .header__menu {
@@ -172,6 +175,20 @@ header {
 
     .header__profile {
       margin-left: auto;
+      order: 2;
+      position: relative;
+      z-index: 50;
+      &.loggined {
+        order: 1;
+        margin-left: 0;
+      }
+    }
+    .logo {
+      order: 2;
+    }
+
+    .header__registracia {
+      display: none;
     }
   }
 }
@@ -183,5 +200,31 @@ header {
       font-size: 12px;
       padding: 5px 10px;
     }
+  }
+}
+
+/* Дополнительные стили только для Material UI компонентов */
+.header__profile {
+  /* Обеспечиваем что Material UI Menu имеет правильный z-index */
+  .MuiMenu-root {
+    z-index: 1300;
+  }
+
+  /* Стилизация Avatar в header */
+  .MuiAvatar-root {
+    border: 2px solid rgba(4, 156, 161, 0.2);
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      border-color: rgba(4, 156, 161, 0.4);
+      transform: scale(1.05);
+    }
+  }
+
+  /* Стилизация кнопок */
+  .MuiButtonBase-root {
+    border-radius: 16px !important;
+    font-family: inherit;
+    margin-left: 0 !important;
   }
 }

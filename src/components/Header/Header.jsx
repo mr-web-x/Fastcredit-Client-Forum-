@@ -6,11 +6,61 @@ import { useState } from "react";
 import { basePath } from "@/src/constants/config";
 import { logoutAction } from "@/app/actions/auth";
 
+// Material UI imports
+import {
+  IconButton,
+  Menu,
+  MenuItem,
+  Avatar,
+  Typography,
+  Divider,
+  Button,
+  Box,
+} from "@mui/material";
+import {
+  Person as PersonIcon,
+  ExitToApp as ExitToAppIcon,
+  AdminPanelSettings as AdminIcon,
+  Work as WorkIcon,
+} from "@mui/icons-material";
+
 export default function Header({ user = null }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const profileMenuOpen = Boolean(anchorEl);
+
+  // Сохраняем ориентацию меню в состоянии
+  const [menuPosition, setMenuPosition] = useState({
+    anchorOrigin: { vertical: "bottom", horizontal: "left" },
+    transformOrigin: { vertical: "top", horizontal: "left" },
+  });
+
+  const handleProfileMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+
+    const rect = event.currentTarget.getBoundingClientRect();
+    const middle = window.innerWidth / 2;
+
+    // Если иконка справа от середины экрана → меню открываем влево
+    if (rect.left > middle) {
+      setMenuPosition({
+        anchorOrigin: { vertical: "bottom", horizontal: "right" },
+        transformOrigin: { vertical: "top", horizontal: "right" },
+      });
+    } else {
+      // Иначе вправо
+      setMenuPosition({
+        anchorOrigin: { vertical: "bottom", horizontal: "left" },
+        transformOrigin: { vertical: "top", horizontal: "left" },
+      });
+    }
+  };
 
   const handleLogout = async () => {
     try {
+      // Закрываем меню перед logout
+      handleCloseProfileMenu();
+
       // Используем Server Action для logout
       await logoutAction();
       // logoutAction уже делает redirect и очищает cookie
@@ -39,6 +89,35 @@ export default function Header({ user = null }) {
 
   const closeMenu = () => {
     setMenuOpen(false);
+  };
+
+  const handleCloseProfileMenu = () => {
+    setAnchorEl(null);
+  };
+
+  // Получаем инициалы пользователя
+  const getUserInitials = () => {
+    if (user?.firstName) {
+      return user.firstName[0].toUpperCase();
+    }
+    if (user?.username) {
+      return user.username[0].toUpperCase();
+    }
+    return "U";
+  };
+
+  // Получаем полное имя пользователя
+  const getUserFullName = () => {
+    if (user?.firstName && user?.lastName) {
+      return `${user.firstName} ${user.lastName}`;
+    }
+    if (user?.firstName) {
+      return user.firstName;
+    }
+    if (user?.username) {
+      return user.username;
+    }
+    return "User";
   };
 
   return (
@@ -90,8 +169,8 @@ export default function Header({ user = null }) {
             </ul>
           </nav>
 
-          {/* Блок профиля */}
-          <div className="header__profile">
+          {/* Блок авторизации/профиля */}
+          <div className={`header__profile ${user ? "loggined" : ""}`}>
             {user ? (
               <div className="header__user">
                 {/* Показываем роль если это эксперт или админ */}
@@ -101,114 +180,170 @@ export default function Header({ user = null }) {
                   </span>
                 )}
 
-                {/* Ссылка на профиль */}
-                <a
-                  className="header__user-name"
-                  href={`${basePath}/profile`}
-                  title={`${user.firstName || user.username} - ${user.role}`}
-                  onClick={closeMenu}
-                >
-                  {user.firstName || user.username || "Profil"}
-                </a>
-
-                {/* Кнопка "Задать вопрос" для авторизованных */}
-                <a
-                  className="header__ask-btn btn btn--secondary"
-                  href={`${basePath}/ask`}
-                  onClick={closeMenu}
-                >
-                  Spýtať sa
-                </a>
-
-                {/* Dropdown меню для больших возможностей */}
-                <div className="header__user-dropdown">
-                  <button
-                    className="header__user-toggle"
-                    onClick={() => setMenuOpen(!menuOpen)}
-                    aria-label="User menu"
+                {/* Material UI Avatar с dropdown menu */}
+                <Box>
+                  <IconButton
+                    onClick={handleProfileMenuClick}
+                    size="small"
+                    sx={{
+                      ml: 2,
+                      "&:hover": {
+                        backgroundColor: "rgba(4, 156, 161, 0.08)",
+                      },
+                    }}
+                    aria-controls={profileMenuOpen ? "account-menu" : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={profileMenuOpen ? "true" : undefined}
                   >
-                    <span className="header__user-avatar">
-                      {user.firstName
-                        ? user.firstName[0].toUpperCase()
-                        : user.username?.[0]?.toUpperCase() || "U"}
-                    </span>
-                  </button>
-
-                  <div
-                    className={`header__dropdown-menu ${
-                      menuOpen ? "active" : ""
-                    }`}
-                  >
-                    <a
-                      href={`${basePath}/profile`}
-                      className="header__dropdown-item"
-                      onClick={closeMenu}
+                    <Avatar
+                      sx={{
+                        width: 36,
+                        height: 36,
+                        backgroundColor: "#049ca1",
+                        fontSize: "16px",
+                        fontWeight: 600,
+                      }}
                     >
-                      👤 Môj profil
-                    </a>
+                      {getUserInitials()}
+                    </Avatar>
+                  </IconButton>
 
+                  <Menu
+                    anchorEl={anchorEl}
+                    id="account-menu"
+                    open={profileMenuOpen}
+                    onClose={handleCloseProfileMenu}
+                    onClick={handleCloseProfileMenu}
+                    anchorOrigin={menuPosition.anchorOrigin}
+                    transformOrigin={menuPosition.transformOrigin}
+                  >
+                    {/* Информация о пользователе */}
+                    <Box
+                      sx={{ px: 2, py: 1.5, borderBottom: "1px solid #e0e0e0" }}
+                    >
+                      <Typography
+                        variant="body1"
+                        sx={{ fontWeight: 600, color: "#333" }}
+                      >
+                        {getUserFullName()}
+                      </Typography>
+                      {user?.email && (
+                        <Typography
+                          variant="body2"
+                          sx={{ color: "#666", fontSize: "13px" }}
+                        >
+                          {user.email}
+                        </Typography>
+                      )}
+                    </Box>
+
+                    {/* Ссылка на профиль */}
+                    <MenuItem
+                      onClick={() =>
+                        (window.location.href = `${basePath}/profile`)
+                      }
+                      sx={{ py: 1.5 }}
+                    >
+                      <PersonIcon sx={{ mr: 2, color: "#666" }} />
+                      <Typography variant="body2">Môj profil</Typography>
+                    </MenuItem>
+
+                    {/* Expert panel для экспертов */}
                     {user.role === "expert" && (
-                      <a
-                        href={`${basePath}/expert/dashboard`}
-                        className="header__dropdown-item"
-                        onClick={closeMenu}
+                      <MenuItem
+                        onClick={() =>
+                          (window.location.href = `${basePath}/expert/dashboard`)
+                        }
+                        sx={{ py: 1.5 }}
                       >
-                        👨‍💼 Expert panel
-                      </a>
+                        <WorkIcon sx={{ mr: 2, color: "#666" }} />
+                        <Typography variant="body2">Expert panel</Typography>
+                      </MenuItem>
                     )}
 
+                    {/* Admin panel для админов */}
                     {user.role === "admin" && (
-                      <a
-                        href={`${basePath}/admin`}
-                        className="header__dropdown-item"
-                        onClick={closeMenu}
+                      <MenuItem
+                        onClick={() =>
+                          (window.location.href = `${basePath}/admin`)
+                        }
+                        sx={{ py: 1.5 }}
                       >
-                        ⚙️ Admin panel
-                      </a>
+                        <AdminIcon sx={{ mr: 2, color: "#666" }} />
+                        <Typography variant="body2">Admin panel</Typography>
+                      </MenuItem>
                     )}
 
-                    <hr className="header__dropdown-divider" />
-
-                    <button
-                      className="header__dropdown-item header__logout-btn"
+                    {/* Выход */}
+                    <MenuItem
                       onClick={handleLogout}
+                      sx={{
+                        py: 1.5,
+                        color: "#d32f2f",
+                        "&:hover": {
+                          backgroundColor: "rgba(211, 47, 47, 0.08)",
+                        },
+                      }}
                     >
-                      🚪 Odhlásiť sa
-                    </button>
-                  </div>
-                </div>
-
-                {/* Простая кнопка logout для мобильных */}
-                <button
-                  className="header__logout header__logout--mobile"
-                  onClick={handleLogout}
-                  title="Odhlásiť sa"
-                >
-                  Odhlásiť
-                </button>
+                      <ExitToAppIcon sx={{ mr: 2, color: "#d32f2f" }} />
+                      <Typography variant="body2" sx={{ color: "#d32f2f" }}>
+                        Odhlásiť sa
+                      </Typography>
+                    </MenuItem>
+                  </Menu>
+                </Box>
               </div>
             ) : (
+              /* Компактные кнопки для неавторизованных пользователей */
               <div className="header__guest">
-                <a
-                  className="header__login btn btn--secondary"
+                <Button
+                  variant="outlined"
+                  size="small"
+                  sx={{
+                    borderColor: "#049ca1",
+                    color: "#049ca1",
+                    fontWeight: 500,
+                    fontSize: "13px",
+                    textTransform: "none",
+                    minWidth: "70px",
+                    height: "32px",
+                    "&:hover": {
+                      borderColor: "#037d81",
+                      backgroundColor: "rgba(4, 156, 161, 0.04)",
+                    },
+                  }}
                   href={`${basePath}/login`}
-                  onClick={closeMenu}
                 >
                   Prihlásiť sa
-                </a>
+                </Button>
 
-                <a
-                  className="header__register btn btn--main"
-                  href={`${basePath}/register`}
-                  onClick={closeMenu}
-                >
-                  Registrovať sa
-                </a>
+                <div className="header__registracia">
+                  <Button
+                    variant="contained"
+                    size="small"
+                    sx={{
+                      backgroundColor: "#049ca1",
+                      color: "white",
+                      fontWeight: 500,
+                      fontSize: "13px",
+                      textTransform: "none",
+                      minWidth: "90px",
+                      height: "32px",
+                      marginLeft: "8px",
+                      "&:hover": {
+                        backgroundColor: "#037d81",
+                      },
+                    }}
+                    href={`${basePath}/register`}
+                  >
+                    Registrovať sa
+                  </Button>
+                </div>
               </div>
             )}
           </div>
 
-          {/* Мобильное меню */}
+          {/* Мобильное меню (остается как было) */}
           <div className="header__mobile-nav">
             <div
               className={`burger ${menuOpen ? "active" : ""}`}
@@ -230,15 +365,6 @@ export default function Header({ user = null }) {
           </div>
         </div>
       </div>
-
-      {/* Overlay для закрытия меню при клике вне его */}
-      {menuOpen && (
-        <div
-          className="header__overlay"
-          onClick={closeMenu}
-          aria-hidden="true"
-        />
-      )}
     </header>
   );
 }

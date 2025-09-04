@@ -13,13 +13,12 @@ export default async function Profile() {
   // Получаем авторизованного пользователя (redirect если нет авторизации)
   const user = await requireAuth();
 
-  //   const { items: questions } = await questionsService.getUserQuestions(
-  //     user._id,
-  //     {
-  //       limit: 1,
-  //       page: 1,
-  //     }
-  //   );
+  const data = await questionsService.getUserQuestions(user.id, {
+    limit: 1,
+    page: 1,
+  });
 
-  return <ProfilePage user={user} latestQuestion={false} />;
+  const latestQuestion = data.data.length > 0 ? data.data[0] : null;
+
+  return <ProfilePage user={user} latestQuestion={latestQuestion} />;
 }
