@@ -1,0 +1,52 @@
+// Файл: app/profile/profile-layout.scss
+
+.profile-layout {
+  min-height: calc(100vh - 100px);
+  padding: 40px 0;
+  background: var(--background);
+
+  &__content {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+
+  &__main {
+    min-width: 0; // Предотвращает overflow в flexbox/grid
+    width: 100%;
+  }
+}
+
+// === RESPONSIVE ===
+@media (max-width: 1024px) {
+  .profile-layout {
+    padding: 32px 0;
+
+    &__content {
+      grid-template-columns: 300px 1fr;
+      gap: 24px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-layout {
+    padding: 24px 0;
+
+    &__content {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-layout {
+    padding: 20px 0;
+
+    &__content {
+      gap: 20px;
+    }
+  }
+}

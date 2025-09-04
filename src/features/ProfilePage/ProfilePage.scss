@@ -1,0 +1,563 @@
+/* Файл: src/features/ProfilePage/ProfilePage.scss */
+
+.profile-page {
+  max-width: 960px;
+  width: 100%;
+  margin: 0 auto;
+
+  &__last-question__top {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+
+  /* ===== GENERIC SECTION ===== */
+  &__section {
+    background: var(--white);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-login-card);
+    padding: 24px;
+    margin-bottom: 24px;
+    animation: slideIn 0.25s ease-out;
+  }
+
+  &__section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--black);
+    letter-spacing: -0.01em;
+  }
+
+  &__section-icon {
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  /* ===== LATEST QUESTION ===== */
+  &__latest-question {
+    background: var(--background);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  &__question-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--black);
+    margin: 0 0 8px 0;
+    line-height: 1.3;
+  }
+
+  &__question-preview {
+    font-size: 14px;
+    color: #4b5563;
+    margin: 0 0 12px 0;
+    line-height: 1.55;
+  }
+
+  &__question-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    font-size: 12px;
+    margin-bottom: 12px;
+
+    span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #f3f4f6;
+      color: #374151;
+      border: 1px solid var(--card-border);
+      font-weight: 600;
+    }
+  }
+
+  &__question-date::before {
+    content: "🗓";
+  }
+  &__question-answers::before {
+    content: "💬";
+  }
+  &__question-likes::before {
+    content: "👍";
+  }
+
+  &__question-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+    padding: 8px 0;
+
+    &:hover {
+      text-decoration: underline;
+    }
+    &:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+      border-radius: 6px;
+    }
+  }
+
+  /* ===== EMPTY STATE ===== */
+  &__no-questions {
+    display: grid;
+    place-items: center;
+    text-align: center;
+    gap: 8px;
+    padding: 24px;
+    background: var(--background);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+  }
+
+  &__no-questions-icon {
+    font-size: 28px;
+    line-height: 1;
+  }
+
+  &__no-questions-title {
+    margin: 6px 0 4px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--black);
+  }
+
+  &__no-questions-text {
+    margin: 0 0 12px;
+    font-size: 14px;
+    color: #6b7280;
+  }
+
+  &__ask-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--white);
+    background: var(--accent);
+    border-radius: 10px;
+    text-decoration: none;
+    transition: transform 0.15s ease, filter 0.15s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      filter: brightness(0.95);
+    }
+    &:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+  }
+
+  /* ===== QUESTIONS ACTIONS ===== */
+  &__questions-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  &__action-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--black);
+    background: var(--white);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    text-decoration: none;
+    transition: background 0.15s ease, transform 0.15s ease;
+
+    &:hover {
+      background: var(--background);
+      transform: translateY(-1px);
+    }
+    &:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    &--primary {
+      color: var(--white);
+      background: var(--accent);
+      border-color: transparent;
+
+      &:hover {
+        filter: brightness(0.95);
+      }
+    }
+  }
+
+  /* ===== TWO COLUMNS LAYOUT ===== */
+  &__two-columns {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  &__column {
+    min-width: 0;
+    height: 100%;
+  }
+
+  /* ===== INFO CARD ===== */
+  &__info-card {
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: var(--shadow-login-card);
+    padding: 24px;
+    border: 1px solid var(--card-border);
+    height: 100%;
+
+    &--statistic {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  &__info-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--black);
+    margin: 0 0 16px 0;
+  }
+
+  &__info-icon {
+    font-size: 20px;
+  }
+
+  /* ===== ROLE INFO ===== */
+  &__role-info {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &__current-role {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--background);
+    border-radius: 12px;
+    border: 1px solid var(--card-border);
+  }
+
+  &__role-label {
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: 600;
+  }
+
+  &__role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--card-border);
+    background: #f3f4f6;
+    color: #374151;
+
+    &--expert {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+    &--moderator {
+      background: #fef3c7;
+      color: #b45309;
+    }
+    &--admin {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+  }
+
+  &__role-description p {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  &__role-tip {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 16px;
+    background: #fffbeb;
+    border: 1px solid #fed7aa;
+    border-radius: 12px;
+    color: #92400e;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  &__tip-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* ===== STATS ===== */
+  &__stats-grid {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    flex: 1;
+  }
+
+  &__stat {
+    width: 100%;
+    max-width: calc(50% - 5px);
+    text-align: center;
+    padding: 12px;
+    background: var(--background);
+    border-radius: 12px;
+    border: 1px solid var(--card-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  &__stat-value {
+    display: block;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+  }
+
+  &__stat-label {
+    font-size: 12px;
+    color: #6b7280;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  &__stats-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+  }
+
+  &__stats-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+    padding: 6px 0;
+
+    &:hover {
+      text-decoration: underline;
+    }
+    &:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+  }
+
+  /* ===== QUICK ACTIONS ===== */
+  &__quick-actions {
+    margin-top: 8px;
+    background: var(--white);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-login-card);
+    padding: 20px 24px;
+  }
+
+  &__actions-title {
+    margin: 0 0 12px;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--black);
+    letter-spacing: 0.02em;
+  }
+
+  &__actions-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  &__action-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    background: var(--background);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--black);
+    transition: transform 0.15s ease, background 0.15s ease;
+
+    &:hover {
+      background: #eef2f7;
+      transform: translateY(-1px);
+    }
+    &:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+  }
+
+  &__action-icon {
+    font-size: 18px;
+    line-height: 1;
+  }
+  &__action-text {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--black);
+  }
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .profile-page {
+    &__two-columns {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    &__actions-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-page {
+    &__title {
+      font-size: 28px;
+    }
+    &__subtitle {
+      font-size: 15px;
+    }
+
+    &__section,
+    &__info-card,
+    &__quick-actions {
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    &__stat {
+      padding: 12px;
+    }
+    &__stat-value {
+      font-size: 20px;
+    }
+
+    &__actions-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    &__questions-actions {
+      gap: 10px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-page {
+    &__header {
+      margin-bottom: 24px;
+    }
+    &__title {
+      font-size: 24px;
+    }
+    &__subtitle {
+      font-size: 14px;
+    }
+
+    &__section-title {
+      font-size: 16px;
+      gap: 8px;
+    }
+    &__question-title {
+      font-size: 16px;
+    }
+
+    &__actions-grid {
+      grid-template-columns: 1fr;
+    }
+    &__question-meta span {
+      font-weight: 600;
+    }
+
+    &__ask-button,
+    &__action-button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+  .profile-page {
+    &,
+    * {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+}
+
+/* ===== OPTIONAL DARK THEME (если используете data-theme="dark") ===== */
+[data-theme="dark"] .profile-page {
+  &__subtitle,
+  &__no-questions-text,
+  &__role-description p {
+    color: #9ca3af;
+  }
+  &__question-meta span {
+    background: #111827;
+    color: #e5e7eb;
+  }
+  &__action-card:hover {
+    background: #0f172a;
+  }
+}
