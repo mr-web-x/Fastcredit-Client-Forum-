@@ -22,13 +22,6 @@ export default async function LatestQuestions() {
     });
   };
 
-  const truncateText = (text, maxLength = 150) => {
-    if (!text) return "";
-    return text.length > maxLength
-      ? text.substring(0, maxLength) + "..."
-      : text;
-  };
-
   const getStatusColor = (status) => {
     switch (status) {
       case "answered":
@@ -56,12 +49,24 @@ export default async function LatestQuestions() {
   };
 
   const getCategoryName = (slug) => {
-    // Используем статический маппинг из вашего categories service
     const categoryMap = {
       expert: "Expert",
       pravnik: "Právnik",
     };
     return categoryMap[slug] || slug;
+  };
+
+  const getPriorityText = (priority) => {
+    switch (priority) {
+      case "high":
+        return "Vysoká";
+      case "urgent":
+        return "Urgentná";
+      case "low":
+        return "Nízka";
+      default:
+        return null;
+    }
   };
 
   return (
@@ -76,76 +81,66 @@ export default async function LatestQuestions() {
 
         {questions.length === 0 ? (
           <div className="latest-questions__empty">
-            <p>Zatiaľ nie su žiadne otázky.</p>
+            <p>Zatiaľ nie sú žiadne otázky.</p>
             <Link href="/ask" className="btn">
               Položiť prvú otázku
             </Link>
           </div>
         ) : (
           <>
-            <div className="latest-questions__grid">
+            <div className="latest-questions__list">
               {questions.map((question) => (
-                <article key={question._id} className="latest-questions__card">
-                  <div className="latest-questions__card-header">
-                    {question.category && (
-                      <span
-                        className={`latest-questions__category latest-questions__category--${question.category}`}
-                      >
-                        {getCategoryName(question.category)}
-                      </span>
-                    )}
-                    {question.priority && question.priority !== "medium" && (
-                      <span
-                        className={`latest-questions__priority latest-questions__priority--${question.priority}`}
-                      >
-                        {question.priority === "high"
-                          ? "Vysoká"
-                          : question.priority === "urgent"
-                          ? "Urgentná"
-                          : "Nízka"}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="latest-questions__card-content">
-                    <h3 className="latest-questions__card-title">
-                      <Link
-                        href={`/questions/${question.slug || question._id}`}
-                      >
-                        {question.title}
-                      </Link>
+                <Link
+                  key={question._id}
+                  href={`/questions/${question.slug || question._id}`}
+                  className="latest-questions__item"
+                >
+                  {/* Первый ряд: Заголовок + бейджи (на ПК) */}
+                  <div className="latest-questions__row latest-questions__row--title">
+                    <h3 className="latest-questions__question-title">
+                      {question.title}
                     </h3>
 
-                    <p className="latest-questions__card-description">
-                      {truncateText(question.content)}
-                    </p>
-                  </div>
-
-                  <div className="latest-questions__card-meta">
-                    <div className="latest-questions__card-author">
-                      <span className="latest-questions__author-name">
-                        {question.author?.firstName ||
-                          question.author?.username ||
-                          "Anonymný"}
-                      </span>
-                      <span className="latest-questions__date">
-                        {formatDate(question.createdAt)}
-                      </span>
-                    </div>
-
-                    <div className="latest-questions__card-stats">
-                      <span className="latest-questions__stat">
-                        <span className="latest-questions__stat-icon">💬</span>
-                        {question.answersCount || 0}
-                      </span>
-                      <span className="latest-questions__stat">
-                        <span className="latest-questions__stat-icon">👍</span>
-                        {question.likesCount || 0}
-                      </span>
+                    {/* Бейджи показываются только на ПК */}
+                    <div className="latest-questions__badges latest-questions__badges--desktop">
+                      {question.category && (
+                        <span
+                          className={`latest-questions__category latest-questions__category--${question.category}`}
+                        >
+                          {getCategoryName(question.category)}
+                        </span>
+                      )}
+                      {question.priority && question.priority !== "medium" && (
+                        <span
+                          className={`latest-questions__priority latest-questions__priority--${question.priority}`}
+                        >
+                          {getPriorityText(question.priority)}
+                        </span>
+                      )}
                     </div>
                   </div>
 
-                  <div className="latest-questions__card-status">
+                  {/* Второй ряд: Мета-информация */}
+                  <div className="latest-questions__row latest-questions__row--meta">
+                    <span className="latest-questions__meta-item">
+                      👤{" "}
+                      {question.author?.firstName ||
+                        question.author?.username ||
+                        "Anonymný"}
+                    </span>
+
+                    <span className="latest-questions__meta-item">
+                      📅 {formatDate(question.createdAt)}
+                    </span>
+
+                    <span className="latest-questions__meta-item">
+                      💬 {question.answersCount || 0}
+                    </span>
+
+                    <span className="latest-questions__meta-item">
+                      👍 {question.likesCount || 0}
+                    </span>
+
                     <span
                       className={`latest-questions__status latest-questions__status--${getStatusColor(
                         question.status
@@ -154,7 +149,34 @@ export default async function LatestQuestions() {
                       {getStatusText(question.status)}
                     </span>
                   </div>
-                </article>
+
+                  {/* Третий ряд: Все бейджи + статус (только на мобильных) */}
+                  <div className="latest-questions__row latest-questions__row--badges">
+                    <div className="latest-questions__badges latest-questions__badges--mobile">
+                      {question.category && (
+                        <span
+                          className={`latest-questions__category latest-questions__category--${question.category}`}
+                        >
+                          {getCategoryName(question.category)}
+                        </span>
+                      )}
+                      {question.priority && question.priority !== "medium" && (
+                        <span
+                          className={`latest-questions__priority latest-questions__priority--${question.priority}`}
+                        >
+                          {getPriorityText(question.priority)}
+                        </span>
+                      )}
+                      <span
+                        className={`latest-questions__status latest-questions__status--mobile latest-questions__status--${getStatusColor(
+                          question.status
+                        )}`}
+                      >
+                        {getStatusText(question.status)}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
               ))}
             </div>
 
