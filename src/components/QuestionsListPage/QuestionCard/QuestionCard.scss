@@ -1,0 +1,419 @@
+// Файл: src/features/QuestionsListPage/QuestionCard/QuestionCard.scss
+
+.question-card {
+  border-bottom: 1px solid var(--card-border);
+  transition: all 0.2s ease;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: var(--background);
+  }
+
+  // === MAIN LINK ===
+  &__link {
+    display: block;
+    padding: 20px 24px;
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.2s ease;
+
+    &:hover {
+      .question-card__title {
+        color: var(--accent);
+      }
+    }
+  }
+
+  // === CONTENT WRAPPER ===
+  &__content {
+    width: 100%;
+  }
+
+  // === HEADER ===
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  &__title {
+    flex: 1;
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--black);
+    line-height: 1.4;
+    min-width: 0;
+    transition: color 0.2s ease;
+
+    // Ограничение по строкам
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  // === BADGES ===
+  &__badges {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+    align-items: flex-start;
+    flex-wrap: wrap;
+
+    &--desktop {
+      display: flex;
+    }
+
+    &--mobile {
+      display: none;
+    }
+  }
+
+  &__category {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid;
+
+    &--expert {
+      background: var(--category-expert-bg);
+      color: var(--category-expert-color);
+      border-color: var(--category-expert-border);
+    }
+
+    &--pravnik,
+    &--lawyer {
+      background: var(--category-pravnik-bg);
+      color: var(--category-pravnik-color);
+      border-color: var(--category-pravnik-border);
+    }
+  }
+
+  &__priority {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 6px;
+    border-radius: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    &--high {
+      background: var(--priority-high-bg);
+      color: var(--priority-high-color);
+    }
+
+    &--urgent {
+      background: var(--priority-urgent-bg);
+      color: var(--priority-urgent-color);
+    }
+
+    &--low {
+      background: var(--priority-low-bg);
+      color: var(--priority-low-color);
+    }
+  }
+
+  &__status {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+
+    &--success {
+      background: var(--status-success-bg);
+      color: var(--status-success-color);
+    }
+
+    &--secondary {
+      background: var(--status-secondary-bg);
+      color: var(--status-secondary-color);
+    }
+
+    &--primary {
+      background: var(--status-primary-bg);
+      color: var(--status-primary-color);
+    }
+  }
+
+  // === PREVIEW TEXT ===
+  &__preview {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0 0 16px 0;
+
+    // Ограничение по строкам
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  // === FOOTER ===
+  &__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  // === AUTHOR ===
+  &__author {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  &__avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accentGradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--white);
+    flex-shrink: 0;
+  }
+
+  &__author-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--black);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  // === DATE ===
+  &__date {
+    font-size: 13px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  // === STATS ===
+  &__stats {
+    display: flex;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  &__stat {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  &__stat-icon {
+    font-size: 14px;
+  }
+
+  // === RESPONSIVE ===
+
+  // Планшети
+  @media (max-width: 1024px) {
+    &__link {
+      padding: 18px 20px;
+    }
+
+    &__title {
+      font-size: 17px;
+    }
+
+    &__preview {
+      font-size: 14px;
+    }
+
+    &__meta {
+      gap: 12px;
+    }
+  }
+
+  // Мобільні пристрої
+  @media (max-width: 768px) {
+    &__link {
+      padding: 16px 18px;
+    }
+
+    &__header {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+    }
+
+    &__title {
+      font-size: 16px;
+      -webkit-line-clamp: 3;
+    }
+
+    &__badges {
+      &--desktop {
+        display: none;
+      }
+
+      &--mobile {
+        display: flex;
+        margin-top: 8px;
+      }
+    }
+
+    &__preview {
+      font-size: 14px;
+      -webkit-line-clamp: 2;
+      margin-bottom: 12px;
+    }
+
+    &__footer {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+    }
+
+    &__meta {
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    &__author {
+      flex: 1;
+      min-width: 0;
+    }
+
+    &__author-name {
+      font-size: 13px;
+    }
+
+    &__date {
+      font-size: 12px;
+    }
+
+    &__stats {
+      gap: 8px;
+    }
+
+    &__stat {
+      font-size: 12px;
+    }
+
+    &__avatar {
+      width: 28px;
+      height: 28px;
+      font-size: 12px;
+    }
+  }
+
+  // Дуже маленькі екрани
+  @media (max-width: 480px) {
+    &__link {
+      padding: 14px 16px;
+    }
+
+    &__title {
+      font-size: 15px;
+    }
+
+    &__preview {
+      font-size: 13px;
+    }
+
+    &__category,
+    &__status {
+      font-size: 10px;
+      padding: 3px 6px;
+    }
+
+    &__priority {
+      font-size: 9px;
+      padding: 2px 5px;
+    }
+  }
+}
+
+// === ANIMATIONS ===
+.question-card {
+  animation: fadeInCard 0.3s ease-out;
+}
+
+@keyframes fadeInCard {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// === FOCUS STATES ===
+.question-card__link {
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
+}
+
+// === REDUCED MOTION ===
+@media (prefers-reduced-motion: reduce) {
+  .question-card {
+    animation: none;
+
+    &,
+    * {
+      transition: none !important;
+    }
+  }
+}
+
+// === DARK THEME SUPPORT (optional) ===
+[data-theme="dark"] .question-card {
+  border-color: #374151;
+
+  &:hover {
+    background: #111827;
+  }
+
+  &__title {
+    color: #f9fafb;
+  }
+
+  &__preview {
+    color: #9ca3af;
+  }
+
+  &__author-name {
+    color: #e5e7eb;
+  }
+
+  &__date,
+  &__stat {
+    color: #6b7280;
+  }
+}

@@ -1,0 +1,163 @@
+// Файл: src/features/QuestionsListPage/QuestionsList/QuestionsList.scss
+
+.questions-list {
+  margin-bottom: 32px;
+
+  // === MAIN CONTAINER ===
+  &__container {
+    background: var(--white);
+    border-radius: 16px;
+    border: 1px solid var(--card-border);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+  }
+
+  // === LOADING STATE ===
+  &__loading {
+    background: var(--white);
+    border-radius: 16px;
+    border: 1px solid var(--card-border);
+    padding: 80px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  &__loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--card-border);
+    border-top: 3px solid var(--accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  &__loading-text {
+    font-size: 16px;
+    color: var(--text-secondary);
+    margin: 0;
+    font-weight: 500;
+  }
+
+  // === RESPONSIVE ===
+
+  // Планшети
+  @media (max-width: 1024px) {
+    &__loading {
+      padding: 60px 20px;
+    }
+
+    &__loading-spinner {
+      width: 36px;
+      height: 36px;
+    }
+
+    &__loading-text {
+      font-size: 15px;
+    }
+  }
+
+  // Мобільні пристрої
+  @media (max-width: 768px) {
+    margin-bottom: 20px;
+
+    &__container {
+      border-radius: 12px;
+    }
+
+    &__loading {
+      border-radius: 12px;
+      padding: 40px 16px;
+    }
+
+    &__loading-spinner {
+      width: 32px;
+      height: 32px;
+      border-width: 2px;
+    }
+
+    &__loading-text {
+      font-size: 14px;
+    }
+  }
+
+  // Дуже маленькі екрани
+  @media (max-width: 480px) {
+    &__loading {
+      padding: 32px 12px;
+    }
+
+    &__loading-spinner {
+      width: 28px;
+      height: 28px;
+    }
+
+    &__loading-text {
+      font-size: 13px;
+    }
+  }
+}
+
+// === ANIMATIONS ===
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// Плавна поява контейнера
+.questions-list__container {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// === REDUCED MOTION ===
+@media (prefers-reduced-motion: reduce) {
+  .questions-list {
+    &__loading-spinner {
+      animation: none;
+      border-top-color: var(--accent);
+    }
+
+    &__container {
+      animation: none;
+    }
+  }
+}
+
+// === DARK THEME SUPPORT (optional) ===
+[data-theme="dark"] .questions-list {
+  &__loading {
+    background: #1f2937;
+    border-color: #374151;
+  }
+
+  &__loading-text {
+    color: #9ca3af;
+  }
+
+  &__loading-spinner {
+    border-color: #374151;
+    border-top-color: var(--accent);
+  }
+
+  &__container {
+    background: #1f2937;
+    border-color: #374151;
+  }
+}
