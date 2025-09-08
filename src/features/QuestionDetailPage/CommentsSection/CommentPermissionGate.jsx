@@ -1,5 +1,5 @@
 // Файл: src/features/QuestionDetailPage/CommentsSection/CommentPermissionGate.jsx
-
+"use client";
 import Link from "next/link";
 import { basePath } from "@/src/constants/config";
 
@@ -142,7 +142,7 @@ function ExpertAnswerRequiredGate({ answers }) {
             ich otázky!
           </p>
           <Link
-            href={`${basePath}/experts/apply`}
+            href={`/experts/apply`}
             className="comment-permission-gate__expert-action"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">

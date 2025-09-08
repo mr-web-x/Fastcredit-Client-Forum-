@@ -24,7 +24,6 @@ export default function QuestionsEmpty() {
 
     const categoryNames = {
       expert: "kategórii Expert",
-      pravnik: "kategórii Právnik",
       lawyer: "kategórii Právnik",
     };
 
@@ -93,10 +92,7 @@ export default function QuestionsEmpty() {
 
         {/* Akcie */}
         <div className="questions-empty__actions">
-          <Link
-            href={`${basePath}/ask`}
-            className="btn questions-empty__ask-btn"
-          >
+          <Link href={`/ask`} className="btn questions-empty__ask-btn">
             ➕ Položiť otázku
           </Link>
 
@@ -116,17 +112,13 @@ export default function QuestionsEmpty() {
             <h4 className="questions-empty__suggestions-title">Môžete tiež:</h4>
             <ul className="questions-empty__suggestions-list">
               <li>
-                <Link href={`${basePath}/questions`}>
-                  Prehliadnuť všetky otázky
-                </Link>
+                <Link href={`/questions`}>Prehliadnuť všetky otázky</Link>
               </li>
               <li>
-                <Link href={`${basePath}/experts`}>
-                  Pozrieť si našich expertov
-                </Link>
+                <Link href={`/experts`}>Pozrieť si našich expertov</Link>
               </li>
               <li>
-                <Link href={`${basePath}/`}>Návrat na hlavnú stránku fóra</Link>
+                <Link href={`/`}>Návrat na hlavnú stránku fóra</Link>
               </li>
             </ul>
           </div>

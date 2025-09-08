@@ -68,7 +68,7 @@ export default function ProfilePage({ user, latestQuestion }) {
             <p className="profile-page__no-questions-text">
               Začnite sa pýtať a získajte odpovede od našich expertov
             </p>
-            <Link href="/forum/ask" className="profile-page__ask-button">
+            <Link href="/ask" className="profile-page__ask-button">
               🌟 Zadať prvú otázku
             </Link>
           </div>
@@ -202,7 +202,7 @@ export default function ProfilePage({ user, latestQuestion }) {
             <span className="profile-page__action-text">Moje otázky</span>
           </Link>
 
-          <Link href="/forum/ask" className="profile-page__action-card">
+          <Link href="/ask" className="profile-page__action-card">
             <span className="profile-page__action-icon">🌟</span>
             <span className="profile-page__action-text">Nová otázka</span>
           </Link>

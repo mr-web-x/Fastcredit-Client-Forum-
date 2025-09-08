@@ -76,7 +76,7 @@ export default function QuestionCard({ question, index = 0 }) {
   };
 
   // URL pre otázku
-  const questionUrl = `${basePath}/questions/${question.slug || question._id}`;
+  const questionUrl = `/questions/${question.slug || question._id}`;
 
   const statusInfo = getStatusInfo(question.status);
   const priorityInfo = getPriorityInfo(question.priority);

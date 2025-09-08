@@ -11,7 +11,7 @@ import QuestionStats from "./QuestionStats/QuestionStats";
 import AnswersList from "./AnswersList/AnswersList";
 import AnswerForm from "./AnswerForm/AnswerForm";
 import CommentsSection from "./CommentsSection/CommentsSection";
-import SimilarQuestions from "./SimilarQuestions/SimilarQuestions";
+// import SimilarQuestions from "./SimilarQuestions/SimilarQuestions";
 import QuestionActions from "./QuestionActions/QuestionActions";
 import "./QuestionDetailPage.scss";
 
@@ -179,10 +179,7 @@ export default function QuestionDetailPage({
           className="question-detail-page__breadcrumbs"
           aria-label="Breadcrumb"
         >
-          <Link
-            href={`${basePath}/`}
-            className="question-detail-page__breadcrumb-link"
-          >
+          <Link href={`/`} className="question-detail-page__breadcrumb-link">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
             </svg>
@@ -194,7 +191,7 @@ export default function QuestionDetailPage({
             </svg>
           </span>
           <Link
-            href={`${basePath}/questions`}
+            href={`/questions`}
             className="question-detail-page__breadcrumb-link"
           >
             Otázky
@@ -340,12 +337,12 @@ export default function QuestionDetailPage({
             </div>
 
             {/* Similar Questions */}
-            {similarQuestions.length > 0 && (
+            {/* {similarQuestions.length > 0 && (
               <SimilarQuestions
                 questions={similarQuestions}
                 currentQuestion={question}
               />
-            )}
+            )} */}
 
             {/* Expert CTA (for non-experts) */}
             {!permissions.canAnswer && user && (

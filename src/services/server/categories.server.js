@@ -19,7 +19,7 @@ class CategoriesServiceServer {
       {
         id: "lawyer",
         name: "Otázka právnikovi",
-        slug: "pravnik",
+        slug: "lawyer",
         description: "Právne otázky a právne poradenstvo",
         icon: "⚖️",
         questionsCount: 0,
