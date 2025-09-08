@@ -315,3 +315,98 @@ export async function deleteQuestionAction(questionId) {
     throw error;
   }
 }
+
+/**
+ * Server Action для получения вопросов пользователя
+ */
+export async function getUserQuestionsAction(filters = {}) {
+  try {
+    const currentUser = await getServerUser();
+    if (!currentUser) {
+      return {
+        success: false,
+        error: "Unauthorized",
+        data: null,
+      };
+    }
+
+    // Получаем параметры фильтрации
+    const { page = 1, limit = 10, status = "" } = filters;
+
+    // API вызов
+    const backendUrl =
+      process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+    const { cookies } = await import("next/headers");
+    const cookieStore = await cookies();
+    const jwtCookie = cookieStore.get("fc_jwt");
+
+    if (!jwtCookie?.value) {
+      return {
+        success: false,
+        error: "No authentication token",
+        data: null,
+      };
+    }
+
+    // Формируем URL с параметрами
+    const params = new URLSearchParams({
+      page: String(page),
+      limit: String(limit),
+    });
+    if (status) params.set("status", status);
+
+    const response = await fetch(
+      `${backendUrl}/questions/user/${currentUser.id}?${params.toString()}`,
+      {
+        method: "GET",
+        headers: {
+          Cookie: `fc_jwt=${jwtCookie.value}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const data = await response.json();
+      return {
+        success: false,
+        error: data.message || "Failed to load questions",
+        data: null,
+      };
+    }
+
+    const result = await response.json();
+
+    // Обработка структуры ответа: { success: true, data: { data: [...], pagination: {...} } }
+    if (!result.success || !result.data) {
+      return {
+        success: false,
+        error: result.message || "Failed to load questions",
+        data: null,
+      };
+    }
+
+    const questionsData = {
+      items: result.data.data || [],
+      pagination: {
+        page: result.data.pagination.current,
+        totalPages: result.data.pagination.total,
+        totalItems: result.data.pagination.totalItems,
+        hasNext: result.data.pagination.hasNext,
+        hasPrev: result.data.pagination.hasPrev,
+      },
+    };
+
+    return {
+      success: true,
+      error: null,
+      data: questionsData,
+    };
+  } catch (error) {
+    console.error("[getUserQuestionsAction] Error:", error);
+    return {
+      success: false,
+      error: "Server error. Please try again.",
+      data: null,
+    };
+  }
+}

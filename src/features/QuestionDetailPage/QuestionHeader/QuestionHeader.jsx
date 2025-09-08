@@ -66,7 +66,7 @@ export default function QuestionHeader({
       case "closed":
         return { text: "Uzavreté", type: "secondary" };
       case "pending":
-        return { text: "Čaká na odpoveď", type: "primary" };
+        return { text: "Nezodpovedané", type: "primary" };
       default:
         return { text: "Aktívne", type: "primary" };
     }

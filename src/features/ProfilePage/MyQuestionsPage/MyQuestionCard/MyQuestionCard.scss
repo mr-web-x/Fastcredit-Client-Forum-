@@ -1,0 +1,493 @@
+// Файл: src/features/ProfilePage/MyQuestionsPage/MyQuestionCard/MyQuestionCard.scss
+
+//////////////////////////////////////////////////
+// MyQuestionCard Styles
+//////////////////////////////////////////////////
+
+.my-question-card {
+  background: var(--white);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    border-color: var(--accent-border);
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-2px);
+
+    .my-question-card__title {
+      color: var(--accent);
+    }
+  }
+
+  // === CONTENT ===
+  &__content {
+    padding: 20px;
+    position: relative;
+  }
+
+  // === HEADER ===
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  &__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    flex: 1;
+  }
+
+  // === STATUS BADGE ===
+  &__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    &--success {
+      background: #e8f5e8;
+      color: #2e7d32;
+      border: 1px solid #c8e6c9;
+    }
+
+    &--primary {
+      background: #e3f2fd;
+      color: #1976d2;
+      border: 1px solid #bbdefb;
+    }
+
+    &--secondary {
+      background: #f5f5f5;
+      color: #616161;
+      border: 1px solid #e0e0e0;
+    }
+  }
+
+  &__status-icon {
+    font-size: 10px;
+  }
+
+  // === PRIORITY BADGE ===
+  &__priority {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+
+    &--high {
+      background: #fff3e0;
+      color: #f57c00;
+      border: 1px solid #ffcc02;
+    }
+
+    &--urgent {
+      background: #ffebee;
+      color: #d32f2f;
+      border: 1px solid #ef5350;
+    }
+
+    &--low {
+      background: #f3e5f5;
+      color: #7b1fa2;
+      border: 1px solid #ce93d8;
+    }
+  }
+
+  &__priority-icon {
+    font-size: 10px;
+  }
+
+  // === CATEGORY BADGE ===
+  &__category {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 4px 10px;
+    background: var(--background);
+    border: 1px solid var(--card-border-light);
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  // === MENU ===
+  &__menu {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  &__menu-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: 1px solid var(--card-border-light);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: var(--background);
+      border-color: var(--accent-border);
+      color: var(--accent);
+    }
+
+    .material-icons {
+      font-size: 18px;
+    }
+  }
+
+  &__dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 1000;
+    background: var(--white);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    box-shadow: var(--shadow-dropdown);
+    padding: 8px 0;
+    min-width: 140px;
+    margin-top: 4px;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: -6px;
+      right: 8px;
+      width: 12px;
+      height: 12px;
+      background: var(--white);
+      border: 1px solid var(--card-border);
+      border-bottom: none;
+      border-right: none;
+      transform: rotate(45deg);
+    }
+  }
+
+  &__menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 8px 16px;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+
+    &:hover {
+      background: var(--background);
+      color: var(--accent);
+
+      .material-icons {
+        color: var(--accent);
+      }
+    }
+
+    &--danger {
+      &:hover {
+        background: #ffebee;
+        color: #d32f2f;
+
+        .material-icons {
+          color: #d32f2f;
+        }
+      }
+    }
+
+    .material-icons {
+      font-size: 16px;
+      color: var(--text-secondary);
+      transition: color 0.2s ease;
+    }
+  }
+
+  // === TITLE ===
+  &__title-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    margin-bottom: 8px;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--black);
+    line-height: 1.4;
+    transition: color 0.3s ease;
+
+    // Ограничение по строкам для длинных заголовков
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  // === PREVIEW ===
+  &__preview {
+    margin: 0 0 16px 0;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+
+    // Ограничение по строкам
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  // === FOOTER ===
+  &__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--card-border-light);
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__date {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  // === STATS ===
+  &__stats {
+    display: flex;
+    gap: 16px;
+  }
+
+  &__stat {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  &__stat-icon {
+    font-size: 14px;
+    opacity: 0.8;
+  }
+
+  &__stat-value {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  // === RESPONSIVE ===
+
+  // Tablets
+  @media (max-width: 1024px) {
+    &__content {
+      padding: 18px;
+    }
+
+    &__title {
+      font-size: 15px;
+    }
+
+    &__preview {
+      font-size: 13px;
+    }
+
+    &__stats {
+      gap: 12px;
+    }
+  }
+
+  // Mobile
+  @media (max-width: 768px) {
+    &__content {
+      padding: 16px;
+    }
+
+    &__header {
+      gap: 12px;
+    }
+
+    &__badges {
+      gap: 6px;
+    }
+
+    &__status,
+    &__priority,
+    &__category {
+      font-size: 10px;
+      padding: 3px 8px;
+    }
+
+    &__menu-trigger {
+      width: 28px;
+      height: 28px;
+
+      .material-icons {
+        font-size: 16px;
+      }
+    }
+
+    &__title {
+      font-size: 14px;
+    }
+
+    &__preview {
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+
+    &__footer {
+      align-items: stretch;
+      gap: 8px;
+    }
+
+    &__meta {
+      justify-content: center;
+    }
+
+    &__stats {
+      justify-content: center;
+      gap: 12px;
+    }
+
+    &__stat {
+      font-size: 12px;
+    }
+
+    &__dropdown {
+      right: -8px;
+      min-width: 120px;
+    }
+
+    &__menu-item {
+      padding: 10px 12px;
+      font-size: 13px;
+
+      .material-icons {
+        font-size: 14px;
+      }
+    }
+  }
+
+  // Very small screens
+  @media (max-width: 480px) {
+    &__content {
+      padding: 14px;
+    }
+
+    &__title {
+      font-size: 13px;
+      -webkit-line-clamp: 3; // Больше строк на маленьких экранах
+    }
+
+    &__preview {
+      font-size: 11px;
+      -webkit-line-clamp: 3;
+    }
+
+    &__status,
+    &__priority,
+    &__category {
+      font-size: 9px;
+      padding: 2px 6px;
+    }
+
+    &__badges {
+      align-items: flex-start;
+    }
+
+    &__stats {
+      gap: 8px;
+    }
+
+    &__stat {
+      font-size: 11px;
+    }
+  }
+}
+
+// === HOVER EFFECTS ===
+.my-question-card {
+  &__title-link {
+    &:hover {
+      .my-question-card__title {
+        color: var(--accent);
+      }
+    }
+  }
+}
+
+// === FOCUS STATES ===
+.my-question-card {
+  &__title-link,
+  &__menu-trigger,
+  &__menu-item {
+    &:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+  }
+
+  &__menu-trigger {
+    &:focus-visible {
+      outline-offset: 1px;
+    }
+  }
+}
+
+// === ACCESSIBILITY ===
+@media (prefers-reduced-motion: reduce) {
+  .my-question-card {
+    * {
+      transition: none !important;
+    }
+
+    &:hover {
+      transform: none;
+    }
+  }
+}
+
+// === DARK MODE SUPPORT (if needed) ===
+@media (prefers-color-scheme: dark) {
+  .my-question-card {
+    &__dropdown {
+      &::before {
+        background: var(--white);
+      }
+    }
+  }
+}

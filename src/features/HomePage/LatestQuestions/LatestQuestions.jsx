@@ -42,7 +42,7 @@ export default async function LatestQuestions() {
       case "closed":
         return "Uzavreté";
       case "pending":
-        return "Čaká na odpoveď";
+        return "Nezodpovedané";
       default:
         return "Aktívne";
     }

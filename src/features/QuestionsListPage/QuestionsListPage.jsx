@@ -4,7 +4,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { basePath } from "@/src/constants/config";
 import QuestionsFilters from "./QuestionsFilters/QuestionsFilters";
 import QuestionsList from "./QuestionsList/QuestionsList";
 import QuestionsPagination from "./QuestionsPagination/QuestionsPagination";

@@ -1,7 +1,6 @@
 // Файл: src/features/QuestionsListPage/QuestionCard/QuestionCard.jsx
 
 import Link from "next/link";
-import { basePath } from "@/src/constants/config";
 import "./QuestionCard.scss";
 
 export default function QuestionCard({ question, index = 0 }) {
@@ -39,7 +38,7 @@ export default function QuestionCard({ question, index = 0 }) {
       case "closed":
         return { text: "Uzavreté", type: "secondary" };
       case "pending":
-        return { text: "Čaká na odpoveď", type: "primary" };
+        return { text: "Nezodpovedané", type: "primary" };
       default:
         return { text: "Aktívne", type: "primary" };
     }

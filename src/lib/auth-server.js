@@ -67,6 +67,14 @@ export async function setAuthCookie(token) {
     maxAge: 7 * 24 * 60 * 60, // 7 дней
     path: "/forum",
   });
+
+  cookieStore.set("fc_jwt_client", token, {
+    httpOnly: false, // Для клиента (доступно через JS)
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 7 * 24 * 60 * 60,
+    path: "/", // Доступно везде
+  });
 }
 
 /**

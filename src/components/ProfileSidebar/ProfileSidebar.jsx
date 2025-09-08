@@ -122,9 +122,9 @@ export default function ProfileSidebar({ user }) {
 
         {/* Ссылка на мои вопросы */}
         <Link
-          href="/my/questions"
-          className={`profile-sidebar__nav-link ${
-            isActiveLink("/my/questions")
+          href="/profile/questions"
+          className={`profile-sidebar__nav-link profile-sidebar__nav-link--myquestions ${
+            isActiveLink("/profile/questions")
               ? "profile-sidebar__nav-link--active"
               : ""
           }`}
@@ -138,7 +138,7 @@ export default function ProfileSidebar({ user }) {
 
         <Link
           href="/profile"
-          className={`profile-sidebar__nav-link ${
+          className={`profile-sidebar__nav-link profile-sidebar__nav-link--dashboard ${
             isActiveLink("/profile") ? "profile-sidebar__nav-link--active" : ""
           }`}
         >
@@ -150,7 +150,7 @@ export default function ProfileSidebar({ user }) {
 
         <Link
           href="/profile/my-data"
-          className={`profile-sidebar__nav-link ${
+          className={`profile-sidebar__nav-link profile-sidebar__nav-link--mydata ${
             isActiveLink("/profile/my-data")
               ? "profile-sidebar__nav-link--active"
               : ""

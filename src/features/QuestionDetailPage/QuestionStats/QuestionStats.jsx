@@ -232,7 +232,7 @@ export default function QuestionStats({ question, stats, answers = [], user }) {
             <div className="question-stats__activity-dot"></div>
             <span className="question-stats__activity-text">
               {answers.length === 0
-                ? "Čaká na odpoveď"
+                ? "Nezodpovedané"
                 : expertAnswers.length === 0
                 ? "Čaká na experta"
                 : hasAcceptedAnswer

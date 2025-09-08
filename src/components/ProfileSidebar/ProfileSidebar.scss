@@ -251,6 +251,18 @@
     &__nav-link {
       padding: 10px 12px;
       font-size: 13px;
+
+      &--dashboard {
+        order: 1;
+      }
+
+      &--myquestions {
+        order: 2;
+      }
+
+      &--mydata {
+        order: 3;
+      }
     }
 
     &__stats {
