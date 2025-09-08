@@ -166,6 +166,9 @@
     font-size: 16px;
     flex-shrink: 0;
     transition: transform 0.2s ease;
+    display: block;
+    width: 24px;
+    height: 24px;
   }
 
   &__nav-divider {
@@ -221,22 +224,28 @@
 
 @media (max-width: 768px) {
   .profile-sidebar {
-    position: static;
+    position: fixed;
     width: 100%;
-    margin-bottom: 24px;
+    margin-bottom: 0;
+    bottom: 0;
+    left: 0;
+    top: auto;
+    z-index: 10;
 
     &__user-top {
-      align-items: flex-start;
+      display: none;
+    }
+    &__nav-divider {
+      display: none;
+    }
+    &__nav {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0;
     }
 
-    &__avatar {
-      width: 50px;
-      height: 50px;
-      font-size: 18px;
-    }
-
-    &__user-name {
-      font-size: 16px;
+    &__nav-label {
+      display: none;
     }
 
     &__nav-link {
@@ -245,7 +254,7 @@
     }
 
     &__stats {
-      padding: 12px;
+      display: none;
     }
   }
 }
@@ -253,7 +262,7 @@
 @media (max-width: 480px) {
   .profile-sidebar {
     border-radius: 12px;
-    padding: 16px;
+    padding: 10px 16px;
 
     &__avatar {
       width: 45px;

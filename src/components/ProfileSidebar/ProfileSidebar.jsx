@@ -3,6 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import "./ProfileSidebar.scss";
+import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import HelpIcon from "@mui/icons-material/Help";
 
 export default function ProfileSidebar({ user }) {
   const pathname = usePathname();
@@ -99,7 +102,7 @@ export default function ProfileSidebar({ user }) {
             }`}
           >
             <span className="profile-sidebar__nav-icon">📊</span>
-            Expert Dashboard
+            <span className="profile-sidebar__nav-label">Expert Dashboard</span>
           </Link>
         )}
 
@@ -111,7 +114,9 @@ export default function ProfileSidebar({ user }) {
             }`}
           >
             <span className="profile-sidebar__nav-icon">🛡️</span>
-            {user.role === "admin" ? "Admin Panel" : "Moderation"}
+            <span className="profile-sidebar__nav-label">
+              {user.role === "admin" ? "Admin Panel" : "Moderation"}
+            </span>
           </Link>
         )}
 
@@ -124,8 +129,10 @@ export default function ProfileSidebar({ user }) {
               : ""
           }`}
         >
-          <span className="profile-sidebar__nav-icon">❓</span>
-          Moje otázky
+          <span className="profile-sidebar__nav-icon">
+            <HelpIcon />
+          </span>
+          <span className="profile-sidebar__nav-label">Moje otázky</span>
         </Link>
         <div className="profile-sidebar__nav-divider"></div>
 
@@ -135,32 +142,24 @@ export default function ProfileSidebar({ user }) {
             isActiveLink("/profile") ? "profile-sidebar__nav-link--active" : ""
           }`}
         >
-          <span className="profile-sidebar__nav-icon">👤</span>
-          Môj profil
+          <span className="profile-sidebar__nav-icon">
+            <SpaceDashboardIcon />
+          </span>
+          <span className="profile-sidebar__nav-label">Dashboard</span>
         </Link>
 
         <Link
-          href="/profile/settings"
+          href="/profile/my-data"
           className={`profile-sidebar__nav-link ${
-            isActiveLink("/profile/settings")
+            isActiveLink("/profile/my-data")
               ? "profile-sidebar__nav-link--active"
               : ""
           }`}
         >
-          <span className="profile-sidebar__nav-icon">⚙️</span>
-          Nastavenia účtu
-        </Link>
-
-        <Link
-          href="/profile/security"
-          className={`profile-sidebar__nav-link ${
-            isActiveLink("/profile/security")
-              ? "profile-sidebar__nav-link--active"
-              : ""
-          }`}
-        >
-          <span className="profile-sidebar__nav-icon">🔒</span>
-          Bezpečnosť
+          <span className="profile-sidebar__nav-icon">
+            <AccountCircleIcon />
+          </span>
+          <span className="profile-sidebar__nav-label">Moje údaje</span>
         </Link>
       </nav>
 

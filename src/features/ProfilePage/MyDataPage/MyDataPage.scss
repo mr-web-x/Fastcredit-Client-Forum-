@@ -1,0 +1,92 @@
+/* Файл: src/features/ProfilePage/MyDataPage/MyDataPage.scss */
+
+.my-data-page {
+  max-width: 960px;
+  width: 100%;
+  margin: 0 auto;
+
+  /* ===== HEADER SECTION ===== */
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  &__title-section {
+    flex: 1;
+  }
+
+  &__title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--black);
+    margin: 0 0 8px 0;
+    line-height: 1.2;
+  }
+
+  &__title-icon {
+    font-size: 32px;
+    line-height: 1;
+  }
+
+  &__subtitle {
+    font-size: 16px;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.5;
+  }
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .my-data-page {
+    &__header {
+      flex-direction: column;
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    &__title {
+      font-size: 24px;
+    }
+
+    &__title-icon {
+      font-size: 28px;
+    }
+
+    &__subtitle {
+      font-size: 15px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .my-data-page {
+    &__header {
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+    }
+
+    &__title {
+      font-size: 22px;
+    }
+  }
+}

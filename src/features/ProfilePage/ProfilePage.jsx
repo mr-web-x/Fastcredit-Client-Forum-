@@ -17,14 +17,14 @@ export default function ProfilePage({ user, latestQuestion }) {
 
           <div className="profile-page__questions-actions">
             <Link
-              href="/forum/ask"
+              href="/ask"
               className="profile-page__action-button profile-page__action-button--primary"
             >
               ➕ Zadať novú otázku
             </Link>
             {latestQuestion && (
               <Link
-                href="/forum/profile/questions"
+                href="/profile/questions"
                 className="profile-page__action-button"
               >
                 📋 Zobraziť všetky otázky
@@ -53,7 +53,7 @@ export default function ProfilePage({ user, latestQuestion }) {
               </span>
             </div>
             <Link
-              href={`/forum/questions/${latestQuestion._id}`}
+              href={`/questions/${latestQuestion._id}`}
               className="profile-page__question-link"
             >
               Zobraziť celú otázku →
@@ -163,10 +163,7 @@ export default function ProfilePage({ user, latestQuestion }) {
             </div>
 
             <div className="profile-page__stats-footer">
-              <Link
-                href="/forum/profile/stats"
-                className="profile-page__stats-link"
-              >
+              <Link href="/profile/stats" className="profile-page__stats-link">
                 📈 Detailné štatistiky →
               </Link>
             </div>
@@ -178,26 +175,12 @@ export default function ProfilePage({ user, latestQuestion }) {
       <div className="profile-page__quick-actions">
         <h3 className="profile-page__actions-title">Rýchle akcie</h3>
         <div className="profile-page__actions-grid">
-          <Link
-            href="/forum/profile/edit"
-            className="profile-page__action-card"
-          >
+          <Link href="/profile/my-data" className="profile-page__action-card">
             <span className="profile-page__action-icon">✏️</span>
             <span className="profile-page__action-text">Upraviť profil</span>
           </Link>
 
-          <Link
-            href="/forum/profile/security"
-            className="profile-page__action-card"
-          >
-            <span className="profile-page__action-icon">🔒</span>
-            <span className="profile-page__action-text">Bezpečnosť</span>
-          </Link>
-
-          <Link
-            href="/forum/profile/questions"
-            className="profile-page__action-card"
-          >
+          <Link href="/profile/questions" className="profile-page__action-card">
             <span className="profile-page__action-icon">📋</span>
             <span className="profile-page__action-text">Moje otázky</span>
           </Link>
