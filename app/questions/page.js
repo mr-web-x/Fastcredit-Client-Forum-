@@ -24,17 +24,10 @@ export default async function QuestionsPage({ searchParams }) {
   const sortBy = params.sortBy || "createdAt";
   const sortOrder = params.sortOrder || "-1";
 
-  // Отладочная информация
-  console.log("🔍 Filter params:", {
-    category,
-    status,
-    period,
-    priority,
-    sortBy,
-  });
 
   // Исправляем маппинг статусов для backend
   let backendStatus = status;
+
   if (status === "unanswered") {
     // Backend может ожидать другое значение
     backendStatus = "pending"; // или "open", или просто "unanswered"

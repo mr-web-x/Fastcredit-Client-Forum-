@@ -6,11 +6,13 @@ export default async function LatestQuestions() {
   // Получаем последние вопросы с сервера
   let questions = [];
   try {
-    const result = await questionsService.getLatest({ limit: 15 });
+    const result = await questionsService.getLatest({
+      limit: 15,
+      status: "answered",
+    });
     questions = result.items || [];
   } catch (error) {
     console.error("Failed to load latest questions:", error);
-    // Fallback - показываем пустой массив
   }
 
   // Функции для форматирования
