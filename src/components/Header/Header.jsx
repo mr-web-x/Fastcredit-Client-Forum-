@@ -13,7 +13,6 @@ import {
   MenuItem,
   Avatar,
   Typography,
-  Divider,
   Button,
   Box,
 } from "@mui/material";
@@ -173,13 +172,6 @@ export default function Header({ user = null }) {
           <div className={`header__profile ${user ? "loggined" : ""}`}>
             {user ? (
               <div className="header__user">
-                {/* Показываем роль если это эксперт или админ */}
-                {(user.role === "expert" || user.role === "admin") && (
-                  <span className={`header__role header__role--${user.role}`}>
-                    {user.role === "expert" ? "👨‍💼" : "⚙️"}
-                  </span>
-                )}
-
                 {/* Material UI Avatar с dropdown menu */}
                 <Box>
                   <IconButton

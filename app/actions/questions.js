@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { getServerUser } from "@/src/lib/auth-server";
 import { basePath } from "@/src/constants/config";
+import { questionsService } from "@/src/services/server";
 
 /**
  * Server Action для создания вопроса
@@ -406,6 +407,97 @@ export async function getUserQuestionsAction(filters = {}) {
     return {
       success: false,
       error: "Server error. Please try again.",
+      data: null,
+    };
+  }
+}
+
+/**
+ * Получение новых вопросов для экспертов/правников/админов
+ */
+export async function getNewQuestionsAction(params = {}) {
+  try {
+    const user = await getServerUser();
+    if (!user) {
+      return {
+        success: false,
+        error: "Neprihlásený používateľ",
+        data: null,
+      };
+    }
+
+    // Проверка прав доступа
+    if (!["expert", "lawyer", "admin", "moderator"].includes(user.role)) {
+      return {
+        success: false,
+        error: "Nemáte oprávnenie na zobrazenie nových otázok",
+        data: null,
+      };
+    }
+
+    const {
+      page = 1,
+      limit = 10,
+      priority = "",
+      sortBy = "createdAt",
+      sortOrder = "-1",
+    } = params;
+
+    console.log(`🔍 Loading new questions for ${user.role} ${user.id}:`, {
+      page,
+      limit,
+      priority,
+      sortBy,
+      sortOrder,
+    });
+
+    // Определяем фильтрацию по роли
+    let category = "";
+    if (user.role === "expert") {
+      category = "expert";
+    } else if (user.role === "lawyer") {
+      category = "lawyer";
+    }
+    // admin и moderator видят все вопросы
+
+    const result = await questionsService.getPending({
+      page,
+      limit,
+      priority,
+      category,
+      sortBy,
+      sortOrder,
+    });
+
+    // Проверяем структуру ответа
+    const responseData = {
+      items: Array.isArray(result.data) ? result.data : result.questions || [],
+      pagination: result.pagination || {
+        page,
+        totalPages: Math.ceil((result.total || 0) / limit),
+        totalItems: result.total || 0,
+        hasNext: false,
+        hasPrev: false,
+      },
+    };
+
+    console.log(`✅ New questions loaded:`, {
+      userRole: user.role,
+      category: category || "all",
+      itemsCount: responseData.items?.length || 0,
+      pagination: responseData.pagination,
+    });
+
+    return {
+      success: true,
+      data: responseData,
+      error: null,
+    };
+  } catch (error) {
+    console.error("❌ Failed to load new questions:", error);
+    return {
+      success: false,
+      error: "Nepodarilo sa načítať nové otázky. Skúste to znovu.",
       data: null,
     };
   }

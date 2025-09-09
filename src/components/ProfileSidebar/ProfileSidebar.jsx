@@ -6,6 +6,8 @@ import "./ProfileSidebar.scss";
 import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import HelpIcon from "@mui/icons-material/Help";
+import PeopleIcon from "@mui/icons-material/People";
+import QuizIcon from "@mui/icons-material/Quiz";
 
 export default function ProfileSidebar({ user }) {
   const pathname = usePathname();
@@ -67,12 +69,12 @@ export default function ProfileSidebar({ user }) {
                 )}
                 {user.role === "admin" && (
                   <span className="profile-sidebar__badge profile-sidebar__badge--admin">
-                    ⚙️ Administrátor
+                    ⚙️ Admin
                   </span>
                 )}
                 {user.role === "moderator" && (
                   <span className="profile-sidebar__badge profile-sidebar__badge--moderator">
-                    🛡️ Moderátor
+                    🛡️ Moder
                   </span>
                 )}
                 {user.role === "user" && (
@@ -90,36 +92,38 @@ export default function ProfileSidebar({ user }) {
       <nav className="profile-sidebar__nav">
         {/* Разделитель */}
         <div className="profile-sidebar__nav-divider"></div>
-
-        {/* Дополнительные ссылки в зависимости от роли */}
-        {user.role === "expert" && (
+        {(user.role === "admin" || user.role === "moderator") && (
           <Link
-            href="/expert/dashboard"
-            className={`profile-sidebar__nav-link profile-sidebar__nav-link--special ${
-              isActiveLink("/expert/dashboard")
+            href="/profile/users"
+            className={`profile-sidebar__nav-link  ${
+              isActiveLink("/profile/users")
                 ? "profile-sidebar__nav-link--active"
                 : ""
             }`}
           >
-            <span className="profile-sidebar__nav-icon">📊</span>
-            <span className="profile-sidebar__nav-label">Expert Dashboard</span>
+            <span className="profile-sidebar__nav-icon">
+              <PeopleIcon />
+            </span>
+            <span className="profile-sidebar__nav-label">Používateľov</span>
           </Link>
         )}
-
-        {(user.role === "admin" || user.role === "moderator") && (
+        {(user.role === "admin" ||
+          user.role === "expert" ||
+          user.role === "lawyer") && (
           <Link
-            href="/admin"
-            className={`profile-sidebar__nav-link profile-sidebar__nav-link--special ${
-              isActiveLink("/admin") ? "profile-sidebar__nav-link--active" : ""
+            href="/profile/new-questions"
+            className={`profile-sidebar__nav-link  ${
+              isActiveLink("/profile/new-questions")
+                ? "profile-sidebar__nav-link--active"
+                : ""
             }`}
           >
-            <span className="profile-sidebar__nav-icon">🛡️</span>
-            <span className="profile-sidebar__nav-label">
-              {user.role === "admin" ? "Admin Panel" : "Moderation"}
+            <span className="profile-sidebar__nav-icon">
+              <QuizIcon />
             </span>
+            <span className="profile-sidebar__nav-label">Nové otázky</span>
           </Link>
         )}
-
         {/* Ссылка на мои вопросы */}
         <Link
           href="/profile/questions"
@@ -135,7 +139,6 @@ export default function ProfileSidebar({ user }) {
           <span className="profile-sidebar__nav-label">Moje otázky</span>
         </Link>
         <div className="profile-sidebar__nav-divider"></div>
-
         <Link
           href="/profile"
           className={`profile-sidebar__nav-link profile-sidebar__nav-link--dashboard ${
@@ -147,7 +150,6 @@ export default function ProfileSidebar({ user }) {
           </span>
           <span className="profile-sidebar__nav-label">Dashboard</span>
         </Link>
-
         <Link
           href="/profile/my-data"
           className={`profile-sidebar__nav-link profile-sidebar__nav-link--mydata ${

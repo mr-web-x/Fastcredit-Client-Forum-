@@ -1,0 +1,353 @@
+// Файл: src/features/ProfilePage/UsersPage/UsersPage.scss
+
+.users-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 80vh;
+
+  // === HEADER ===
+  &__header {
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid var(--card-border-light);
+  }
+
+  &__title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--black);
+    margin: 0;
+    margin-bottom: 12px;
+  }
+
+  &__title-icon {
+    font-size: 28px;
+  }
+
+  &__subtitle {
+    margin: 0;
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  // === CONTROLS ===
+  &__controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 32px;
+    border-radius: 16px;
+  }
+
+  // === FILTERS ===
+  &__filters {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  &__filters-selects {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+  }
+
+  &__filter-select {
+    appearance: none;
+    background: var(--white);
+    border: 2px solid var(--card-border);
+    border-radius: 12px;
+    padding: 10px 32px 10px 14px;
+    font-size: 14px;
+    color: var(--black);
+    cursor: pointer;
+    font-weight: 500;
+    min-width: 160px;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23049ca1' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 10px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    transition: all 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: var(--shadow-input-focus);
+    }
+
+    &:hover {
+      border-color: var(--accent-border-light);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  &__search-input {
+    background: var(--white);
+    border: 2px solid var(--card-border);
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-size: 14px;
+    color: var(--black);
+    min-width: 250px;
+    transition: all 0.2s ease;
+
+    &::placeholder {
+      color: var(--text-secondary);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: var(--shadow-input-focus);
+    }
+
+    &:hover {
+      border-color: var(--accent-border-light);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  // === ERROR MESSAGE ===
+  &__error {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    border-radius: 12px;
+    color: #dc2626;
+    font-weight: 500;
+    margin-bottom: 24px;
+  }
+
+  &__error-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  // === LOADING STATE ===
+  &__loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 40px;
+    color: var(--text-secondary);
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  &__loading-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--card-border-light);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  // === USERS LIST ===
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  // === EMPTY STATE ===
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 20px;
+    text-align: center;
+  }
+
+  &__empty-icon {
+    font-size: 48px;
+    opacity: 0.5;
+    margin-bottom: 16px;
+  }
+
+  &__empty-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--black);
+    margin: 0 0 8px 0;
+  }
+
+  &__empty-text {
+    font-size: 16px;
+    color: var(--text-secondary);
+    margin: 0;
+    max-width: 400px;
+  }
+
+  // === PAGINATION ===
+  &__pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 24px;
+    border-top: 1px solid var(--card-border-light);
+  }
+
+  &__pagination-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: var(--white);
+    border: 2px solid var(--card-border);
+    border-radius: 12px;
+    color: var(--black);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: var(--white);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  &__pagination-info {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  // === RESPONSIVE ===
+  @media (max-width: 1024px) {
+    &__controls {
+      // flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+    }
+
+    &__filters {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    &__filter-select,
+    &__search-input {
+      min-width: 200px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    &__header {
+      margin-bottom: 24px;
+    }
+
+    &__title {
+      font-size: 28px;
+    }
+
+    &__subtitle {
+      font-size: 15px;
+    }
+
+    &__controls {
+      padding: 0;
+      border-radius: 0;
+      border: none;
+      margin-bottom: 24px;
+      display: block;
+    }
+
+    &__filters {
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    &__filter-select,
+    &__search-input {
+      width: 100%;
+      min-width: unset;
+    }
+
+    &__pagination {
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    &__pagination-button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 480px) {
+    &__title {
+      font-size: 24px;
+    }
+
+    &__subtitle {
+      font-size: 14px;
+    }
+
+    &__stat {
+      min-width: 60px;
+    }
+
+    &__stat-value {
+      font-size: 20px;
+    }
+
+    &__empty-icon {
+      font-size: 40px;
+    }
+
+    &__empty-title {
+      font-size: 18px;
+    }
+
+    &__empty-text {
+      font-size: 15px;
+    }
+  }
+}
+
+// === REDUCED MOTION ===
+@media (prefers-reduced-motion: reduce) {
+  .users-page {
+    &__loading-spinner {
+      animation: none;
+    }
+
+    * {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+}

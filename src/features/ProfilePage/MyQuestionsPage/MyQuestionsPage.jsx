@@ -9,7 +9,8 @@ import {
   getUserQuestionsAction,
   deleteQuestionAction,
 } from "@/app/actions/questions";
-import MyQuestionCard from "./MyQuestionCard/MyQuestionCard";
+// import MyQuestionCard from "./MyQuestionCard/MyQuestionCard";
+import QuestionCard from "@/src/components/QuestionCard/QuestionCard";
 import { basePath } from "@/src/constants/config";
 import "./MyQuestionsPage.scss";
 
@@ -293,10 +294,11 @@ export default function MyQuestionsPage({
         {!isLoading && !error && questions.length > 0 && (
           <div className="my-questions-page__list">
             {questions.map((question) => (
-              <MyQuestionCard
+              <QuestionCard
                 key={question._id || question.id}
                 question={question}
                 user={user}
+                actionsType="owner"
                 onEdit={handleEdit}
                 onDelete={handleDelete}
                 onShare={handleShare}

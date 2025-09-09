@@ -7,7 +7,6 @@ import Link from "next/link";
 import { basePath } from "@/src/constants/config";
 import { Menu, MenuItem, IconButton } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ShareIcon from "@mui/icons-material/Share";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -22,7 +21,7 @@ import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
 import FlashOnIcon from "@mui/icons-material/FlashOn";
 import LowPriorityIcon from "@mui/icons-material/LowPriority";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
-import "./MyQuestionCard.scss";
+import "./QuestionCard.scss";
 
 export default function MyQuestionCard({
   question,
@@ -30,6 +29,7 @@ export default function MyQuestionCard({
   onEdit,
   onDelete,
   onShare,
+  actionsType = "viewer",
 }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
@@ -122,7 +122,7 @@ export default function MyQuestionCard({
 
   // Проверка прав на редактирование и удаление
   const canEdit = () => {
-    if (!user || !question) return false;
+    if (actionsType !== "owner" || !user || !question) return false;
     const createdAt = new Date(question.createdAt);
     const now = new Date();
     const hoursDiff = (now - createdAt) / (1000 * 60 * 60);
@@ -130,7 +130,7 @@ export default function MyQuestionCard({
   };
 
   const canDelete = () => {
-    if (!user || !question) return false;
+    if (actionsType !== "owner" || !user || !question) return false;
     const createdAt = new Date(question.createdAt);
     const now = new Date();
     const hoursDiff = (now - createdAt) / (1000 * 60 * 60);
@@ -187,15 +187,15 @@ export default function MyQuestionCard({
   const questionUrl = `/questions/${question.slug}`;
 
   return (
-    <div className="my-question-card">
-      <div className="my-question-card__content">
+    <div className="question-card">
+      <div className="question-card__content">
         {/* Header с статусом и меню */}
-        <div className="my-question-card__header">
-          <div className="my-question-card__badges">
+        <div className="question-card__header">
+          <div className="question-card__badges">
             <span
-              className={`my-question-card__status my-question-card__status--${statusInfo.type}`}
+              className={`question-card__status question-card__status--${statusInfo.type}`}
             >
-              <span className="my-question-card__status-icon">
+              <span className="question-card__status-icon">
                 {statusInfo.icon}
               </span>
               {statusInfo.text}
@@ -203,9 +203,9 @@ export default function MyQuestionCard({
 
             {priorityInfo && (
               <span
-                className={`my-question-card__priority my-question-card__priority--${priorityInfo.type}`}
+                className={`question-card__priority question-card__priority--${priorityInfo.type}`}
               >
-                <span className="my-question-card__priority-icon">
+                <span className="question-card__priority-icon">
                   {priorityInfo.icon}
                 </span>
                 {priorityInfo.text}
@@ -213,8 +213,8 @@ export default function MyQuestionCard({
             )}
 
             {question.category && (
-              <span className={`my-question-card__category`}>
-                <span className="my-question-card__category-icon">
+              <span className={`question-card__category`}>
+                <span className="question-card__category-icon">
                   <AssignmentIndIcon sx={{ fontSize: 14 }} />
                 </span>
                 {getCategoryName(question.category)}
@@ -223,11 +223,11 @@ export default function MyQuestionCard({
           </div>
 
           {/* Меню действий */}
-          <div className="my-question-card__menu">
+          <div className="question-card__menu">
             <IconButton
               onClick={handleMenuOpen}
               size="small"
-              className="my-question-card__menu-trigger"
+              className="question-card__menu-trigger"
               aria-label="Možnosti otázky"
             >
               <MoreVertIcon />
@@ -296,43 +296,43 @@ export default function MyQuestionCard({
         </div>
 
         {/* Заголовок вопроса */}
-        <Link href={questionUrl} className="my-question-card__title-link">
-          <h3 className="my-question-card__title">{question.title}</h3>
+        <Link href={questionUrl} className="question-card__title-link">
+          <h3 className="question-card__title">{question.title}</h3>
         </Link>
 
         {/* Превью контента */}
         {question.content && (
-          <p className="my-question-card__preview">
+          <p className="question-card__preview">
             {getPreviewText(question.content)}
           </p>
         )}
 
         {/* Footer с метаинформацией и статистикой */}
-        <div className="my-question-card__footer">
-          <div className="my-question-card__meta">
-            <span className="my-question-card__date">
+        <div className="question-card__footer">
+          <div className="question-card__meta">
+            <span className="question-card__date">
               {formatDate(question.createdAt)}
             </span>
           </div>
 
-          <div className="my-question-card__stats">
-            <div className="my-question-card__stat">
+          <div className="question-card__stats">
+            <div className="question-card__stat">
               <ThumbUpIcon sx={{ fontSize: 16, opacity: 0.7 }} />
-              <span className="my-question-card__stat-value">
+              <span className="question-card__stat-value">
                 {question.likes || 0}
               </span>
             </div>
 
-            <div className="my-question-card__stat">
+            <div className="question-card__stat">
               <ChatBubbleIcon sx={{ fontSize: 16, opacity: 0.7 }} />
-              <span className="my-question-card__stat-value">
+              <span className="question-card__stat-value">
                 {question.answersCount || 0}
               </span>
             </div>
 
-            <div className="my-question-card__stat">
+            <div className="question-card__stat">
               <VisibilityOutlinedIcon sx={{ fontSize: 16, opacity: 0.7 }} />
-              <span className="my-question-card__stat-value">
+              <span className="question-card__stat-value">
                 {question.views || 0}
               </span>
             </div>

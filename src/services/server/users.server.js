@@ -103,8 +103,8 @@ class UsersServiceServer {
     return this.client.get("/users/statistics");
   }
 
-  async changeUserRole(userId, newRole, reason) {
-    return this.client.put(`/users/${userId}/role`, { newRole, reason });
+  async changeUserRole(userId, role, reason) {
+    return this.client.put(`/users/${userId}/role`, { role, reason });
   }
 
   async banUser(userId, banData) {

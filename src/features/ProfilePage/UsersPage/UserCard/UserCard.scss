@@ -1,0 +1,388 @@
+// Файл: src/features/ProfilePage/UsersPage/UserCard/UserCard.scss
+
+.user-card {
+  background: var(--white);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    border-color: var(--accent-border);
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-1px);
+  }
+
+  // === GRID LAYOUT ===
+  &__content {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    gap: 24px;
+    align-items: center;
+    padding: 20px 24px;
+    position: relative;
+  }
+
+  // === ПЕРВАЯ КОЛОНКА: АВАТАР + ИМЯ + EMAIL ===
+  &__main {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 0;
+  }
+
+  &__avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--accentGradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 20px;
+    color: var(--white);
+    flex-shrink: 0;
+    border: 2px solid var(--white);
+    box-shadow: 0 2px 6px rgba(4, 156, 161, 0.2);
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--black);
+    margin: 0 0 4px 0;
+    line-height: 1.3;
+    word-wrap: break-word;
+  }
+
+  &__email {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 0;
+    word-wrap: break-word;
+    font-weight: 500;
+  }
+
+  // === ВТОРАЯ КОЛОНКА: МЕТА ИНФОРМАЦИЯ ===
+  &__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  &__registration,
+  &__last-login {
+    font-weight: 500;
+  }
+
+  // === ТРЕТЬЯ КОЛОНКА: СТАТУСЫ ===
+  &__status {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  &__role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid;
+    white-space: nowrap;
+
+    &--user {
+      background: #f3f4f6;
+      color: #6b7280;
+      border-color: #d1d5db;
+    }
+
+    &--expert {
+      background: #dbeafe;
+      color: #1d4ed8;
+      border-color: #93c5fd;
+    }
+
+    &--lawyer {
+      background: #f3e8ff;
+      color: #7c3aed;
+      border-color: #c4b5fd;
+    }
+
+    &--moderator {
+      background: #fef3c7;
+      color: #d97706;
+      border-color: #fcd34d;
+    }
+
+    &--admin {
+      background: #fee2e2;
+      color: #dc2626;
+      border-color: #fca5a5;
+    }
+  }
+
+  &__role-icon {
+    font-size: 12px !important;
+  }
+
+  &__status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+
+    &--active {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    &--inactive {
+      background: #f3f4f6;
+      color: #6b7280;
+    }
+
+    &--banned {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+  }
+
+  &__status-icon {
+    font-size: 10px !important;
+  }
+
+  // === ЧЕТВЕРТАЯ КОЛОНКА: ДЕЙСТВИЯ ===
+  &__actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  &__menu-button {
+    color: var(--text-secondary) !important;
+    border: 1px solid var(--card-border) !important;
+    background: var(--white) !important;
+    transition: all 0.2s ease !important;
+    width: 40px !important;
+    height: 40px !important;
+
+    &:hover {
+      color: var(--white) !important;
+      border-color: var(--accent) !important;
+      background: var(--accent) !important;
+    }
+  }
+
+  &__no-actions {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-style: italic;
+    padding: 4px 8px;
+    text-align: center;
+  }
+
+  // === MENU STYLES ===
+  &__menu {
+    .MuiPaper-root {
+      border-radius: 12px !important;
+      box-shadow: var(--shadow-dropdown) !important;
+      border: 1px solid var(--card-border) !important;
+      min-width: 200px;
+    }
+  }
+
+  &__menu-header {
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    color: var(--text-secondary) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    padding: 8px 16px 4px !important;
+    cursor: default !important;
+
+    &:hover {
+      background: transparent !important;
+    }
+  }
+
+  &__menu-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 10px 16px !important;
+    font-size: 13px !important;
+    color: var(--black) !important;
+    transition: all 0.2s ease !important;
+
+    &:hover {
+      background: var(--background) !important;
+      color: var(--accent) !important;
+    }
+
+    &--success {
+      color: #059669 !important;
+
+      &:hover {
+        background: #d1fae5 !important;
+        color: #065f46 !important;
+      }
+    }
+
+    &--danger {
+      color: #dc2626 !important;
+
+      &:hover {
+        background: #fee2e2 !important;
+        color: #b91c1c !important;
+      }
+    }
+  }
+
+  &__menu-icon {
+    font-size: 16px !important;
+    opacity: 0.8;
+  }
+
+  &__menu-divider {
+    height: 1px;
+    background: var(--card-border-light);
+    margin: 8px 0;
+  }
+
+  // === RESPONSIVE ===
+  @media (max-width: 1200px) {
+    &__content {
+      gap: 20px;
+      padding: 18px 20px;
+    }
+
+    &__meta {
+      font-size: 11px;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    &__content {
+      grid-template-columns: 1fr;
+      gap: 10px;
+      padding: 12x;
+    }
+
+    &__avatar {
+      width: 48px;
+      height: 48px;
+      font-size: 18px;
+    }
+
+    &__name {
+      font-size: 15px;
+    }
+
+    &__email {
+      font-size: 12px;
+    }
+
+    &__actions {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    // Прячем статусы на мобильных, оставляем только роль
+    &__status {
+      flex-direction: row;
+      gap: 6px;
+    }
+
+    &__avatar {
+      width: 44px;
+      height: 44px;
+      font-size: 16px;
+    }
+
+    &__name {
+      font-size: 14px;
+    }
+
+    &__email {
+      font-size: 11px;
+    }
+
+    &__role-badge {
+      font-size: 10px;
+      padding: 3px 8px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    &__content {
+      padding: 14px;
+      gap: 10px;
+    }
+
+    &__main {
+      gap: 12px;
+    }
+
+    &__avatar {
+      width: 40px;
+      height: 40px;
+      font-size: 15px;
+    }
+
+    &__name {
+      font-size: 13px;
+    }
+
+    &__email {
+      font-size: 11px;
+    }
+
+    &__role-badge {
+      font-size: 9px;
+      padding: 2px 6px;
+    }
+
+    &__menu-button {
+      width: 32px !important;
+      height: 32px !important;
+    }
+  }
+}
+
+// === REDUCED MOTION ===
+@media (prefers-reduced-motion: reduce) {
+  .user-card {
+    &,
+    * {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+}

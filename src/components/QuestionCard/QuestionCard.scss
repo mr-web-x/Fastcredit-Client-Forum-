@@ -4,7 +4,7 @@
 // MyQuestionCard Styles
 //////////////////////////////////////////////////
 
-.my-question-card {
+.question-card {
   background: var(--white);
   border: 1px solid var(--card-border);
   border-radius: 12px;
@@ -17,7 +17,7 @@
     box-shadow: var(--shadow-card-hover);
     transform: translateY(-2px);
 
-    .my-question-card__title {
+    .question-card__title {
       color: var(--accent);
     }
   }
@@ -440,10 +440,10 @@
 }
 
 // === HOVER EFFECTS ===
-.my-question-card {
+.question-card {
   &__title-link {
     &:hover {
-      .my-question-card__title {
+      .question-card__title {
         color: var(--accent);
       }
     }
@@ -451,7 +451,7 @@
 }
 
 // === FOCUS STATES ===
-.my-question-card {
+.question-card {
   &__title-link,
   &__menu-trigger,
   &__menu-item {
@@ -470,7 +470,7 @@
 
 // === ACCESSIBILITY ===
 @media (prefers-reduced-motion: reduce) {
-  .my-question-card {
+  .question-card {
     * {
       transition: none !important;
     }
@@ -483,7 +483,7 @@
 
 // === DARK MODE SUPPORT (if needed) ===
 @media (prefers-color-scheme: dark) {
-  .my-question-card {
+  .question-card {
     &__dropdown {
       &::before {
         background: var(--white);
