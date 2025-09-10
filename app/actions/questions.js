@@ -318,6 +318,253 @@ export async function deleteQuestionAction(questionId) {
 }
 
 /**
+ * Server Action для лайка/дизлайка вопроса
+ */
+export async function likeQuestionAction(questionId) {
+  try {
+    const currentUser = await getServerUser();
+    console.log("Action", questionId);
+    if (!currentUser) {
+      return {
+        success: false,
+        error: "Musíte sa prihlásiť pre hodnotenie otázky",
+        data: null,
+      };
+    }
+
+    if (!questionId) {
+      throw new Error("ID otázky je povinné");
+    }
+
+    console.log(`👍 Liking question:`, {
+      questionId,
+      userId: currentUser.id,
+    });
+
+    const backendUrl =
+      process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+    const { cookies } = await import("next/headers");
+    const cookieStore = await cookies();
+    const jwtCookie = cookieStore.get("fc_jwt");
+
+    if (!jwtCookie?.value) {
+      return {
+        success: false,
+        error: "No authentication token",
+        data: null,
+      };
+    }
+
+    const response = await fetch(`${backendUrl}/questions/${questionId}/like`, {
+      method: "POST",
+      headers: {
+        Cookie: `fc_jwt=${jwtCookie.value}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      console.error("❌ Failed to like question:", data.message);
+      return {
+        success: false,
+        error: data.message || "Nepodarilo sa označiť otázku",
+        data: null,
+      };
+    }
+
+    console.log(`✅ Question liked successfully:`, data.data);
+
+    // Revalidate страницы с этим вопросом
+    revalidatePath("/forum/questions/[slug]", "page");
+    revalidatePath("/forum/questions", "page");
+    revalidatePath("/forum", "page");
+
+    return {
+      success: true,
+      data: {
+        likes: data.data.likes,
+        isLiked: data.data.isLiked,
+      },
+      error: null,
+    };
+  } catch (error) {
+    console.error("❌ [likeQuestionAction] Error:", error);
+    return {
+      success: false,
+      error: "Chyba servera pri hodnotení otázky",
+      data: null,
+    };
+  }
+}
+
+/**
+ * Server Action для жалобы на вопрос
+ */
+export async function reportQuestionAction(questionId, reportData = {}) {
+  try {
+    const currentUser = await getServerUser();
+    if (!currentUser) {
+      return {
+        success: false,
+        error: "Musíte sa prihlásiť pre nahlásenie otázky",
+      };
+    }
+
+    if (!questionId) {
+      throw new Error("ID otázky je povinné");
+    }
+
+    // Валидация данных жалобы
+    const { reason = "inappropriate", description = "" } = reportData;
+
+    const validReasons = [
+      "spam",
+      "inappropriate",
+      "off-topic",
+      "duplicate",
+      "misleading",
+      "other",
+    ];
+
+    if (!validReasons.includes(reason)) {
+      return {
+        success: false,
+        error: "Neplatný dôvod nahlasovania",
+      };
+    }
+
+    console.log(`🚨 Reporting question:`, {
+      questionId,
+      userId: currentUser.id,
+      reason,
+    });
+
+    const backendUrl =
+      process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+    const { cookies } = await import("next/headers");
+    const cookieStore = await cookies();
+    const jwtCookie = cookieStore.get("fc_jwt");
+
+    if (!jwtCookie?.value) {
+      return {
+        success: false,
+        error: "No authentication token",
+      };
+    }
+
+    const response = await fetch(
+      `${backendUrl}/questions/${questionId}/report`,
+      {
+        method: "POST",
+        headers: {
+          Cookie: `fc_jwt=${jwtCookie.value}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          reason,
+          description: description.trim(),
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      // Специальная обработка для дублирующих жалоб
+      if (response.status === 409) {
+        return {
+          success: false,
+          error: "Už ste túto otázku nahlásili",
+        };
+      }
+
+      console.error("❌ Failed to report question:", data.message);
+      return {
+        success: false,
+        error: data.message || "Nepodarilo sa nahlásiť otázku",
+      };
+    }
+
+    console.log(`✅ Question reported successfully`);
+
+    // Не делаем revalidate для report - это не меняет публичную информацию
+
+    return {
+      success: true,
+      message: "Vaše nahlásenie bolo úspešne odoslané",
+      error: null,
+    };
+  } catch (error) {
+    console.error("❌ [reportQuestionAction] Error:", error);
+    return {
+      success: false,
+      error: "Chyba servera pri nahlasovaní otázky",
+    };
+  }
+}
+
+/**
+ * Server Action для получения статистики вопроса (для обновления после действий)
+ */
+export async function getQuestionStatsAction(questionId) {
+  try {
+    if (!questionId) {
+      throw new Error("ID otázky je povinné");
+    }
+
+    const backendUrl =
+      process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+
+    // Для статистики авторизация не обязательна
+    const { cookies } = await import("next/headers");
+    const cookieStore = await cookies();
+    const jwtCookie = cookieStore.get("fc_jwt");
+
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    if (jwtCookie?.value) {
+      headers.Cookie = `fc_jwt=${jwtCookie.value}`;
+    }
+
+    const response = await fetch(
+      `${backendUrl}/questions/${questionId}/stats`,
+      {
+        method: "GET",
+        headers,
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      console.error("❌ Failed to get question stats:", data.message);
+      return {
+        success: false,
+        error: data.message || "Nepodarilo sa načítať štatistiky otázky",
+        data: null,
+      };
+    }
+
+    return {
+      success: true,
+      data: data.data,
+      error: null,
+    };
+  } catch (error) {
+    console.error("❌ [getQuestionStatsAction] Error:", error);
+    return {
+      success: false,
+      error: "Chyba servera pri načítaní štatistík",
+      data: null,
+    };
+  }
+}
+
+/**
  * Server Action для получения вопросов пользователя
  */
 export async function getUserQuestionsAction(filters = {}) {

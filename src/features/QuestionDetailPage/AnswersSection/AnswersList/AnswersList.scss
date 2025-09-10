@@ -1,0 +1,453 @@
+// Файл: src/features/QuestionDetailPage/AnswersSection/AnswersList/AnswersList.scss
+
+.answers-list {
+  // ===============================================
+  // ПУСТОЕ СОСТОЯНИЕ
+  // ===============================================
+
+  &--empty {
+    // Стили для пустого списка
+  }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-secondary);
+
+    svg {
+      margin-bottom: 20px;
+      opacity: 0.5;
+      color: var(--text-secondary);
+    }
+
+    h4 {
+      margin: 0 0 12px 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--black);
+    }
+
+    p {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+  }
+
+  // ===============================================
+  // СЕКЦИЯ ЛУЧШЕГО ОТВЕТА
+  // ===============================================
+
+  &__best-section {
+    margin-bottom: 32px;
+  }
+
+  &__section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 193, 7, 0.1) 0%,
+      rgba(255, 152, 0, 0.1) 100%
+    );
+    border: 1px solid rgba(255, 193, 7, 0.2);
+    border-radius: 8px;
+    border-left: 4px solid #ffc107;
+  }
+
+  &__section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #f57c00;
+
+    svg {
+      color: #ffc107;
+      flex-shrink: 0;
+    }
+  }
+
+  &__section-badge {
+    font-size: 12px;
+    font-weight: 500;
+    color: #f57c00;
+    background: rgba(255, 193, 7, 0.1);
+    padding: 2px 8px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+  }
+
+  // ===============================================
+  // РАЗДЕЛИТЕЛЬ
+  // ===============================================
+
+  &__divider {
+    display: flex;
+    align-items: center;
+    margin: 24px 0;
+    text-align: center;
+
+    &::before,
+    &::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(
+        to right,
+        transparent,
+        var(--card-border-light) 30%,
+        var(--card-border-light) 70%,
+        transparent
+      );
+    }
+
+    &::before {
+      margin-right: 16px;
+    }
+
+    &::after {
+      margin-left: 16px;
+    }
+  }
+
+  &__divider-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: var(--white);
+    padding: 0 12px;
+    white-space: nowrap;
+  }
+
+  // ===============================================
+  // СЕКЦИЯ ОСТАЛЬНЫХ ОТВЕТОВ
+  // ===============================================
+
+  &__other-section {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  // ===============================================
+  // FOOTER СО СТАТИСТИКОЙ
+  // ===============================================
+
+  &__footer {
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid var(--card-border-light);
+  }
+
+  &__stats {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  &__stat-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 500;
+
+    svg {
+      opacity: 0.7;
+      flex-shrink: 0;
+
+      &:first-child {
+        color: var(--accent);
+      }
+    }
+  }
+
+  &__author-tip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: rgba(33, 150, 243, 0.1);
+    color: #1976d2;
+    border: 1px solid rgba(33, 150, 243, 0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+
+    svg {
+      flex-shrink: 0;
+      opacity: 0.8;
+    }
+  }
+
+  // ===============================================
+  // RESPONSIVE DESIGN
+  // ===============================================
+
+  // Планшеты
+  @media (max-width: 1024px) {
+    &__section-header {
+      padding: 10px 14px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    &__section-title {
+      font-size: 15px;
+    }
+
+    &__section-badge {
+      align-self: flex-end;
+    }
+
+    &__other-section {
+      gap: 20px;
+    }
+
+    &__stats {
+      gap: 16px;
+    }
+  }
+
+  // Мобильные устройства
+  @media (max-width: 768px) {
+    &__empty {
+      padding: 40px 16px;
+
+      svg {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 16px;
+      }
+
+      h4 {
+        font-size: 16px;
+        margin-bottom: 8px;
+      }
+
+      p {
+        font-size: 14px;
+      }
+    }
+
+    &__best-section {
+      margin-bottom: 24px;
+    }
+
+    &__section-header {
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
+
+    &__section-title {
+      font-size: 14px;
+
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+    }
+
+    &__section-badge {
+      font-size: 11px;
+      padding: 1px 6px;
+    }
+
+    &__divider {
+      margin: 20px 0;
+
+      &::before,
+      &::after {
+        margin: 0 12px;
+      }
+    }
+
+    &__divider-text {
+      font-size: 13px;
+      padding: 0 8px;
+    }
+
+    &__other-section {
+      gap: 16px;
+    }
+
+    &__footer {
+      margin-top: 24px;
+      padding-top: 16px;
+    }
+
+    &__stats {
+      gap: 12px;
+      font-size: 12px;
+      justify-content: space-between;
+    }
+
+    &__stat-item {
+      gap: 4px;
+
+      svg {
+        width: 14px;
+        height: 14px;
+      }
+    }
+
+    &__author-tip {
+      padding: 8px 12px;
+      font-size: 12px;
+      border-radius: 6px;
+
+      svg {
+        width: 14px;
+        height: 14px;
+      }
+    }
+  }
+
+  // Очень маленькие экраны
+  @media (max-width: 480px) {
+    &__section-header {
+      padding: 6px 10px;
+    }
+
+    &__section-title {
+      font-size: 13px;
+    }
+
+    &__section-badge {
+      font-size: 10px;
+    }
+
+    &__stats {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+    }
+
+    &__stat-item {
+      justify-content: center;
+      padding: 4px 0;
+    }
+
+    &__author-tip {
+      text-align: center;
+      flex-direction: column;
+      gap: 4px;
+    }
+  }
+}
+
+// ===============================================
+// АНИМАЦИИ
+// ===============================================
+
+.answers-list__best-section,
+.answers-list__other-section > * {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Задержка анимации для каждого ответа
+.answers-list__other-section > *:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.answers-list__other-section > *:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.answers-list__other-section > *:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.answers-list__other-section > *:nth-child(4) {
+  animation-delay: 0.4s;
+}
+.answers-list__other-section > *:nth-child(n + 5) {
+  animation-delay: 0.5s;
+}
+
+// ===============================================
+// СОСТОЯНИЯ ЗАГРУЗКИ
+// ===============================================
+
+.answers-list--loading {
+  .answers-list__empty {
+    svg {
+      animation: pulse 1.5s infinite;
+    }
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+// ===============================================
+// ВАРИАЦИИ КОМПОНЕНТА
+// ===============================================
+
+// Компактная версия
+.answers-list--compact {
+  .answers-list__section-header {
+    padding: 8px 12px;
+    margin-bottom: 12px;
+  }
+
+  .answers-list__section-title {
+    font-size: 14px;
+  }
+
+  .answers-list__divider {
+    margin: 16px 0;
+  }
+
+  .answers-list__other-section {
+    gap: 16px;
+  }
+
+  .answers-list__footer {
+    margin-top: 20px;
+    padding-top: 16px;
+  }
+
+  .answers-list__stats {
+    gap: 12px;
+    font-size: 12px;
+  }
+}
+
+// Версия без анимации
+.answers-list--no-animation {
+  * {
+    animation: none !important;
+  }
+}

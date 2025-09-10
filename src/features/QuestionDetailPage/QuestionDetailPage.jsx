@@ -2,104 +2,250 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { basePath } from "@/src/constants/config";
-import QuestionHeader from "./QuestionHeader/QuestionHeader";
+import { useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
+import {
+  useOptimisticUpdates,
+  useLike,
+} from "@/src/hooks/useOptimisticUpdates";
+import {
+  likeQuestionAction,
+  reportQuestionAction,
+} from "@/app/actions/questions";
+import {
+  createAnswerAction,
+  likeAnswerAction,
+  acceptAnswerAction,
+} from "@/app/actions/answers";
+import { createCommentAction, likeCommentAction } from "@/app/actions/comments";
+import AuthorInfo from "./AuthorInfo/AuthorInfo";
 import QuestionContent from "./QuestionContent/QuestionContent";
-import QuestionStats from "./QuestionStats/QuestionStats";
-import AnswersList from "./AnswersList/AnswersList";
-import AnswerForm from "./AnswerForm/AnswerForm";
-import CommentsSection from "./CommentsSection/CommentsSection";
-// import SimilarQuestions from "./SimilarQuestions/SimilarQuestions";
-import QuestionActions from "./QuestionActions/QuestionActions";
+import QuestionMeta from "./QuestionMeta/QuestionMeta";
+import AnswersSection from "./AnswersSection/AnswersSection";
 import "./QuestionDetailPage.scss";
 
 export default function QuestionDetailPage({
   question,
   answers = [],
   comments = [],
-  similarQuestions = [],
   user,
   permissions,
-  error,
+  hasExpertAnswers: initialHasExpertAnswers = false,
 }) {
-  const [optimisticAnswers, setOptimisticAnswers] = useState(answers);
-  const [optimisticComments, setOptimisticComments] = useState(comments);
-  const [isAnswerFormOpen, setIsAnswerFormOpen] = useState(false);
+  const router = useRouter();
 
-  // State для управления лайками и действиями
-  const [questionStats, setQuestionStats] = useState({
+  // Optimistic updates для всех данных
+  const [optimisticAnswers, answersActions] = useOptimisticUpdates(answers);
+  const [optimisticComments, commentsActions] = useOptimisticUpdates(comments);
+
+  // Используем useRef для сохранения начального состояния лайков
+  const initialLikeState = useRef({
     likes: question.likes || 0,
-    views: question.views || 0,
     isLiked: question.isLiked || false,
   });
 
-  // Обновляем состояние при изменении данных
-  useEffect(() => {
-    setOptimisticAnswers(answers);
-  }, [answers]);
+  // Лайки вопроса с оптимистичным обновлением
+  const questionLike = useLike(initialLikeState.current);
 
-  useEffect(() => {
-    setOptimisticComments(comments);
-  }, [comments]);
+  // Проверяем есть ли экспертные ответы (может измениться)
+  const hasExpertAnswers = optimisticAnswers.some(
+    (answer) =>
+      (answer.author?.role === "expert" || answer.author?.role === "admin") &&
+      answer.status === "approved"
+  );
 
-  // Обработчики для оптимистичных обновлений
-  const handleQuestionLike = async () => {
-    // Оптимистичное обновление UI
-    setQuestionStats((prev) => ({
-      ...prev,
-      likes: prev.isLiked ? prev.likes - 1 : prev.likes + 1,
-      isLiked: !prev.isLiked,
-    }));
+  // ===============================================
+  // ОБРАБОТЧИКИ ДЕЙСТВИЙ С ВОПРОСОМ
+  // ===============================================
 
+  // Обработчик лайка вопроса
+  const handleQuestionLike = useCallback(async () => {
+    if (!permissions.canLike) return;
     try {
-      // Здесь будет реальный API вызов
-      // await questionsService.likeQuestion(question._id);
+      await questionLike.toggleLike(() => likeQuestionAction(question._id));
     } catch (error) {
-      // Откат изменений при ошибке
-      setQuestionStats((prev) => ({
-        ...prev,
-        likes: prev.isLiked ? prev.likes + 1 : prev.likes - 1,
-        isLiked: !prev.isLiked,
-      }));
       console.error("Failed to like question:", error);
     }
-  };
+  }, [permissions.canLike, question._id, questionLike.toggleLike]);
 
-  const handleAnswerSubmit = async (answerData) => {
-    try {
-      // Оптимистичное добавление ответа
-      const optimisticAnswer = {
+  // Обработчик share
+  const handleShare = useCallback(async () => {
+    const url = `${window.location.origin}/questions/${question.slug}`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: question.title,
+          text: question.content?.substring(0, 160) || question.title,
+          url: url,
+        });
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          console.error("Error sharing:", error);
+        }
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(url);
+        console.log("Link copied to clipboard");
+      } catch (error) {
+        console.error("Failed to copy link:", error);
+      }
+    }
+  }, [question.slug, question.title, question.content]);
+
+  // Обработчик report
+  const handleReport = useCallback(
+    async (reportData) => {
+      if (!permissions.canReport) return;
+
+      try {
+        const result = await reportQuestionAction(question._id, reportData);
+
+        if (result.success) {
+          console.log("Question reported successfully");
+        } else {
+          throw new Error(result.error);
+        }
+      } catch (error) {
+        console.error("Failed to report question:", error);
+      }
+    },
+    [permissions.canReport, question._id]
+  );
+
+  // ===============================================
+  // ОБРАБОТЧИКИ ДЕЙСТВИЙ С ОТВЕТАМИ
+  // ===============================================
+
+  // Обработчик отправки ответа
+  const handleAnswerSubmit = useCallback(
+    async (answerData) => {
+      if (!permissions.canAnswer) return;
+
+      const tempAnswer = {
         _id: `temp-${Date.now()}`,
         content: answerData.content,
         author: user,
         createdAt: new Date().toISOString(),
         likes: 0,
         isLiked: false,
-        status: "pending",
         isBest: false,
+        status: "pending",
       };
 
-      setOptimisticAnswers((prev) => [...prev, optimisticAnswer]);
-      setIsAnswerFormOpen(false);
+      // Оптимистичное добавление
+      answersActions.add(tempAnswer);
 
-      // Здесь будет реальный API вызов
-      // const newAnswer = await answersService.createAnswer(question._id, answerData);
-      // Заменяем временный ответ на реальный
-    } catch (error) {
-      // Удаляем оптимистичный ответ при ошибке
-      setOptimisticAnswers((prev) =>
-        prev.filter((answer) => !answer._id.startsWith("temp-"))
+      try {
+        const result = await createAnswerAction(question._id, answerData);
+
+        if (result.success) {
+          answersActions.update(tempAnswer._id, result.data);
+        } else {
+          answersActions.remove(tempAnswer._id);
+          throw new Error(result.error);
+        }
+      } catch (error) {
+        answersActions.remove(tempAnswer._id);
+        console.error("Failed to submit answer:", error);
+        throw error;
+      }
+    },
+    [permissions.canAnswer, user, question._id, answersActions]
+  );
+
+  // Обработчик лайка ответа
+  const handleAnswerLike = useCallback(
+    async (answerId) => {
+      if (!permissions.canLike) return;
+
+      const answer = optimisticAnswers.find((a) => a._id === answerId);
+      if (!answer) return;
+
+      // Оптимистичное обновление
+      const newIsLiked = !answer.isLiked;
+      const newLikes = answer.likes + (newIsLiked ? 1 : -1);
+
+      answersActions.update(answerId, {
+        likes: newLikes,
+        isLiked: newIsLiked,
+      });
+
+      try {
+        const result = await likeAnswerAction(answerId);
+
+        if (result.success) {
+          answersActions.update(answerId, {
+            likes: result.data.likes,
+            isLiked: result.data.isLiked,
+          });
+        } else {
+          // Откат при ошибке
+          answersActions.update(answerId, {
+            likes: answer.likes,
+            isLiked: answer.isLiked,
+          });
+          throw new Error(result.error);
+        }
+      } catch (error) {
+        // Откат при ошибке
+        answersActions.update(answerId, {
+          likes: answer.likes,
+          isLiked: answer.isLiked,
+        });
+        console.error("Failed to like answer:", error);
+      }
+    },
+    [permissions.canLike, optimisticAnswers, answersActions]
+  );
+
+  // Обработчик принятия ответа
+  const handleAcceptAnswer = useCallback(
+    async (answerId) => {
+      if (!permissions.canAcceptAnswer) return;
+
+      // Оптимистичное обновление - делаем все ответы не лучшими, кроме выбранного
+      const previousAnswers = [...optimisticAnswers];
+      answersActions.updateMany((answers) =>
+        answers.map((answer) => ({
+          ...answer,
+          isBest: answer._id === answerId,
+        }))
       );
-      console.error("Failed to submit answer:", error);
-    }
-  };
 
-  const handleCommentSubmit = async (commentData) => {
-    try {
-      // Оптимистичное добавление комментария
-      const optimisticComment = {
+      try {
+        const result = await acceptAnswerAction(question._id, answerId);
+
+        if (!result.success) {
+          // Откат при ошибке
+          answersActions.updateMany(() => previousAnswers);
+          throw new Error(result.error);
+        }
+      } catch (error) {
+        // Откат при ошибке
+        answersActions.updateMany(() => previousAnswers);
+        console.error("Failed to accept answer:", error);
+      }
+    },
+    [
+      permissions.canAcceptAnswer,
+      question._id,
+      optimisticAnswers,
+      answersActions,
+    ]
+  );
+
+  // ===============================================
+  // ОБРАБОТЧИКИ ДЕЙСТВИЙ С КОММЕНТАРИЯМИ
+  // ===============================================
+
+  // Обработчик отправки комментария
+  const handleCommentSubmit = useCallback(
+    async (commentData) => {
+      if (!permissions.canComment) return;
+
+      const tempComment = {
         _id: `temp-${Date.now()}`,
         content: commentData.content,
         author: user,
@@ -109,272 +255,141 @@ export default function QuestionDetailPage({
         parentComment: commentData.parentComment || null,
       };
 
-      setOptimisticComments((prev) => [...prev, optimisticComment]);
+      // Оптимистичное добавление
+      commentsActions.add(tempComment);
 
-      // Здесь будет реальный API вызов
-      // const newComment = await commentsService.createComment(question._id, commentData);
-    } catch (error) {
-      // Удаляем оптимистичный комментарий при ошибке
-      setOptimisticComments((prev) =>
-        prev.filter((comment) => !comment._id.startsWith("temp-"))
-      );
-      console.error("Failed to submit comment:", error);
-    }
-  };
+      try {
+        const result = await createCommentAction(question._id, commentData);
 
-  const handleAcceptAnswer = async (answerId) => {
-    try {
+        if (result.success) {
+          commentsActions.update(tempComment._id, result.data);
+        } else {
+          commentsActions.remove(tempComment._id);
+          throw new Error(result.error);
+        }
+      } catch (error) {
+        commentsActions.remove(tempComment._id);
+        console.error("Failed to submit comment:", error);
+        throw error;
+      }
+    },
+    [permissions.canComment, user, question._id, commentsActions]
+  );
+
+  // Обработчик лайка комментария
+  const handleCommentLike = useCallback(
+    async (commentId) => {
+      if (!permissions.canLike) return;
+
+      const comment = optimisticComments.find((c) => c._id === commentId);
+      if (!comment) return;
+
       // Оптимистичное обновление
-      setOptimisticAnswers((prev) =>
-        prev.map((answer) => ({
-          ...answer,
-          isBest: answer._id === answerId,
-        }))
-      );
+      const newIsLiked = !comment.isLiked;
+      const newLikes = comment.likes + (newIsLiked ? 1 : -1);
 
-      // Здесь будет реальный API вызов
-      // await answersService.acceptAnswer(answerId);
-    } catch (error) {
-      // Откат изменений
-      setOptimisticAnswers(answers);
-      console.error("Failed to accept answer:", error);
-    }
-  };
+      commentsActions.update(commentId, {
+        likes: newLikes,
+        isLiked: newIsLiked,
+      });
 
-  // Показываем ошибку если есть
-  if (error) {
-    return (
-      <div className="question-detail-page">
-        <div className="container">
-          <div className="question-detail-page__error">
-            <div className="question-detail-page__error-icon">
-              <svg
-                width="48"
-                height="48"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
-              </svg>
-            </div>
-            <h2>Chyba pri načítaní otázky</h2>
-            <p>{error}</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="question-detail-page__error-retry"
-            >
-              Skúsiť znovu
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+      try {
+        const result = await likeCommentAction(commentId);
+
+        if (result.success) {
+          commentsActions.update(commentId, {
+            likes: result.data.likes,
+            isLiked: result.data.isLiked,
+          });
+        } else {
+          // Откат при ошибке
+          commentsActions.update(commentId, {
+            likes: comment.likes,
+            isLiked: comment.isLiked,
+          });
+          throw new Error(result.error);
+        }
+      } catch (error) {
+        // Откат при ошибке
+        commentsActions.update(commentId, {
+          likes: comment.likes,
+          isLiked: comment.isLiked,
+        });
+        console.error("Failed to like comment:", error);
+      }
+    },
+    [permissions.canLike, optimisticComments, commentsActions]
+  );
+
+  // ===============================================
+  // РЕНДЕР
+  // ===============================================
 
   return (
     <div className="question-detail-page">
-      <div className="container">
-        {/* Breadcrumbs */}
-        <nav
-          className="question-detail-page__breadcrumbs"
-          aria-label="Breadcrumb"
-        >
-          <Link href={`/`} className="question-detail-page__breadcrumb-link">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-            </svg>
-            Domov
-          </Link>
-          <span className="question-detail-page__breadcrumb-separator">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6l6 6-6 6z" />
-            </svg>
-          </span>
-          <Link
-            href={`/questions`}
-            className="question-detail-page__breadcrumb-link"
-          >
-            Otázky
-          </Link>
-          <span className="question-detail-page__breadcrumb-separator">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6l6 6-6 6z" />
-            </svg>
-          </span>
-          <span className="question-detail-page__breadcrumb-current">
-            {question.title?.length > 50
-              ? `${question.title.substring(0, 50)}...`
-              : question.title}
-          </span>
-        </nav>
+      {/* БЛОК 1: Вопрос + Ответы */}
+      <section className="question-block">
+        <div className="container">
+          <div className="question-block-box">
+            {/* Информация об авторе */}
+            <AuthorInfo
+              author={question.author}
+              createdAt={question.createdAt}
+            />
 
-        {/* Question Header */}
-        <QuestionHeader
-          question={question}
-          stats={questionStats}
-          user={user}
-          permissions={permissions}
-          onLike={handleQuestionLike}
-        />
-
-        {/* Main Content Layout */}
-        <div className="question-detail-page__content">
-          {/* Main Column */}
-          <main className="question-detail-page__main">
-            {/* Question Content */}
+            {/* Контент вопроса */}
             <QuestionContent
               question={question}
               user={user}
               permissions={permissions}
             />
 
-            {/* Question Actions (Mobile) */}
-            <div className="question-detail-page__actions-mobile">
-              <QuestionActions
-                question={question}
-                stats={questionStats}
-                user={user}
-                permissions={permissions}
-                onLike={handleQuestionLike}
-                isMobile={true}
-              />
-            </div>
-
-            {/* Answer Form (Experts Only) */}
-            {permissions.canAnswer && (
-              <section className="question-detail-page__answer-form">
-                <div className="question-detail-page__section-header">
-                  <h2 className="question-detail-page__section-title">
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                    >
-                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                    </svg>
-                    Vaša odpoveď
-                  </h2>
-                  {!isAnswerFormOpen && (
-                    <button
-                      onClick={() => setIsAnswerFormOpen(true)}
-                      className="question-detail-page__answer-toggle"
-                    >
-                      Odpovedať
-                    </button>
-                  )}
-                </div>
-
-                {isAnswerFormOpen && (
-                  <AnswerForm
-                    question={question}
-                    user={user}
-                    onSubmit={handleAnswerSubmit}
-                    onCancel={() => setIsAnswerFormOpen(false)}
-                  />
-                )}
-              </section>
-            )}
-
-            {/* Answers List */}
-            <section className="question-detail-page__answers">
-              <div className="question-detail-page__section-header">
-                <h2 className="question-detail-page__section-title">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
-                    <path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h11c.55 0 1-.45 1-1z" />
-                  </svg>
-                  Odpovede ({optimisticAnswers.length})
-                </h2>
-              </div>
-
-              <AnswersList
-                answers={optimisticAnswers}
-                question={question}
-                user={user}
-                permissions={permissions}
-                onAcceptAnswer={handleAcceptAnswer}
-              />
-            </section>
-
-            {/* Comments Section */}
-            <section className="question-detail-page__comments">
-              <CommentsSection
-                comments={optimisticComments}
-                question={question}
-                answers={optimisticAnswers}
-                user={user}
-                permissions={permissions}
-                onCommentSubmit={handleCommentSubmit}
-              />
-            </section>
-          </main>
-
-          {/* Sidebar */}
-          <aside className="question-detail-page__sidebar">
-            {/* Question Stats */}
-            <QuestionStats
+            {/* Метаданные: категория, приоритет, лайки, действия, дата */}
+            <QuestionMeta
               question={question}
-              stats={questionStats}
-              answers={optimisticAnswers}
+              stats={{
+                likes: questionLike.likes,
+                views: question.views || 0,
+                isLiked: questionLike.isLiked,
+              }}
               user={user}
+              permissions={permissions}
+              onLike={handleQuestionLike}
+              onShare={handleShare}
+              onReport={handleReport}
+              isLiking={questionLike.isLoading}
             />
 
-            {/* Question Actions (Desktop) */}
-            <div className="question-detail-page__actions-desktop">
-              <QuestionActions
-                question={question}
-                stats={questionStats}
-                user={user}
-                permissions={permissions}
-                onLike={handleQuestionLike}
-                isMobile={false}
-              />
-            </div>
+            {/* Divider */}
+            <div className="question-divider" />
 
-            {/* Similar Questions */}
-            {/* {similarQuestions.length > 0 && (
-              <SimilarQuestions
-                questions={similarQuestions}
-                currentQuestion={question}
-              />
-            )} */}
-
-            {/* Expert CTA (for non-experts) */}
-            {!permissions.canAnswer && user && (
-              <div className="question-detail-page__expert-cta">
-                <div className="question-detail-page__expert-cta-content">
-                  <div className="question-detail-page__expert-cta-icon">
-                    <svg
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                    >
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                    </svg>
-                  </div>
-                  <h3>Chcete sa stať expertom?</h3>
-                  <p>
-                    Pomáhajte ostatným a zdieľajte svoje znalosti v oblasti
-                    financií.
-                  </p>
-                  <Link
-                    href={`${basePath}/experts/apply`}
-                    className="question-detail-page__expert-apply"
-                  >
-                    Žiadosť o expertnú rolu
-                  </Link>
-                </div>
-              </div>
-            )}
-          </aside>
+            {/* Секция ответов */}
+            <AnswersSection
+              answers={optimisticAnswers}
+              question={question}
+              user={user}
+              permissions={permissions}
+              onAnswerSubmit={handleAnswerSubmit}
+              onAnswerLike={handleAnswerLike}
+              onAcceptAnswer={handleAcceptAnswer}
+            />
+          </div>
         </div>
-      </div>
+      </section>
+
+      {/* БЛОК 2: Комментарии (показывается только если есть экспертные ответы) */}
+      {hasExpertAnswers && (
+        <section className="comments-block">
+          {/* <CommentsSection
+            comments={optimisticComments}
+            question={question}
+            user={user}
+            permissions={permissions}
+            onCommentSubmit={handleCommentSubmit}
+            onCommentLike={handleCommentLike}
+          /> */}
+        </section>
+      )}
     </div>
   );
 }

@@ -1,0 +1,179 @@
+// Файл: src/features/QuestionDetailPage/AnswersSection/AnswerForm/AnswerForm.scss
+
+.answer-form {
+  background: var(--white);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 20px;
+
+  // ===============================================
+  // ЗАГОЛОВОК ФОРМЫ
+  // ===============================================
+
+  &__header {
+    margin-bottom: 16px;
+
+    h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--black);
+    }
+  }
+
+  // ===============================================
+  // КОНТЕЙНЕР ВВОДА
+  // ===============================================
+
+  &__input-container {
+    position: relative;
+    margin-bottom: 16px;
+  }
+
+  &__textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 12px;
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--black);
+    background: var(--white);
+    resize: vertical;
+    font-family: inherit;
+    transition: border-color 0.2s ease;
+
+    &::placeholder {
+      color: var(--text-secondary);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      background: var(--background);
+      cursor: not-allowed;
+    }
+
+    &--error {
+      border-color: #d32f2f;
+    }
+  }
+
+  &__character-count {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    background: var(--white);
+    padding: 2px 6px;
+    border-radius: 4px;
+
+    &--invalid {
+      color: #d32f2f;
+    }
+  }
+
+  &__character-help {
+    display: block;
+    font-size: 11px;
+    margin-top: 2px;
+    opacity: 0.8;
+  }
+
+  // ===============================================
+  // СООБЩЕНИЯ ОБ ОШИБКАХ
+  // ===============================================
+
+  &__error {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(244, 67, 54, 0.1);
+    color: #d32f2f;
+    border-radius: 6px;
+    font-size: 13px;
+    margin-bottom: 12px;
+
+    svg {
+      flex-shrink: 0;
+    }
+  }
+
+  // ===============================================
+  // FOOTER С ДЕЙСТВИЯМИ
+  // ===============================================
+
+  &__footer {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+  }
+
+  &__cancel-btn,
+  &__submit-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  &__cancel-btn {
+    background: var(--background);
+    color: var(--text-secondary);
+    border: 1px solid var(--card-border);
+
+    &:hover:not(:disabled) {
+      background: var(--card-border-light);
+    }
+  }
+
+  &__submit-btn {
+    background: var(--accent);
+    color: var(--white);
+
+    &:hover:not(:disabled) {
+      background: var(--accent-hover);
+    }
+  }
+
+  // ===============================================
+  // RESPONSIVE DESIGN
+  // ===============================================
+
+  @media (max-width: 768px) {
+    padding: 16px;
+
+    &__header h3 {
+      font-size: 16px;
+    }
+
+    &__textarea {
+      min-height: 100px;
+      font-size: 13px;
+    }
+
+    &__footer {
+      flex-direction: column;
+    }
+
+    &__cancel-btn,
+    &__submit-btn {
+      width: 100%;
+    }
+  }
+}

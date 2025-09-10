@@ -1,0 +1,317 @@
+// Файл: src/features/QuestionDetailPage/AuthorInfo/AuthorInfo.scss
+
+.author-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 20px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--card-border-light);
+  position: relative;
+
+  // ===============================================
+  // АВАТАР
+  // ===============================================
+
+  &__avatar {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 2px solid var(--card-border);
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: var(--accent);
+      transform: scale(1.05);
+    }
+  }
+
+  &__avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  &__avatar-initials {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent);
+    color: var(--white);
+    font-weight: 700;
+    font-size: 18px;
+  }
+
+  // ===============================================
+  // ДЕТАЛИ АВТОРА
+  // ===============================================
+
+  &__details {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__name-section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+  }
+
+  &__name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--black);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    line-height: 1.2;
+
+    &:hover {
+      color: var(--accent);
+    }
+  }
+
+  // ===============================================
+  // БЕЙДЖ РОЛИ
+  // ===============================================
+
+  &__role-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    &--expert {
+      background: rgba(255, 152, 0, 0.1);
+      color: #f57c00;
+      border: 1px solid rgba(255, 152, 0, 0.2);
+    }
+
+    &--lawyer {
+      background: rgba(63, 81, 181, 0.1);
+      color: #3f51b5;
+      border: 1px solid rgba(63, 81, 181, 0.2);
+    }
+
+    &--admin {
+      background: rgba(244, 67, 54, 0.1);
+      color: #d32f2f;
+      border: 1px solid rgba(244, 67, 54, 0.2);
+    }
+
+    &--moderator {
+      background: rgba(156, 39, 176, 0.1);
+      color: #9c27b0;
+      border: 1px solid rgba(156, 39, 176, 0.2);
+    }
+  }
+
+  // ===============================================
+  // МЕТАИНФОРМАЦИЯ
+  // ===============================================
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  &__date,
+  &__reputation,
+  &__stats {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.2s ease;
+
+    svg {
+      opacity: 0.7;
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      color: var(--accent);
+    }
+  }
+
+  &__date {
+    cursor: help;
+  }
+
+  &__reputation {
+    color: var(--accent);
+    font-weight: 500;
+
+    svg {
+      color: #ffc107;
+    }
+  }
+
+  // ===============================================
+  // СТАТУС ОНЛАЙН
+  // ===============================================
+
+  &__status {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 12px;
+    height: 12px;
+  }
+
+  &__status-indicator {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #4caf50;
+    border: 2px solid var(--white);
+    animation: pulse-online 2s infinite;
+  }
+
+  @keyframes pulse-online {
+    0% {
+      box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4);
+    }
+    70% {
+      box-shadow: 0 0 0 6px rgba(76, 175, 80, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+    }
+  }
+
+  // ===============================================
+  // RESPONSIVE DESIGN
+  // ===============================================
+
+  // Мобильные устройства
+  @media (max-width: 768px) {
+    gap: 10px;
+    padding-bottom: 16px;
+    margin-bottom: 20px;
+
+    &__avatar {
+      width: 40px;
+      height: 40px;
+    }
+
+    &__avatar-initials {
+      font-size: 16px;
+    }
+
+    &__name {
+      font-size: 15px;
+    }
+
+    &__role-badge {
+      font-size: 10px;
+      padding: 1px 5px;
+    }
+
+    &__meta {
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    &__status {
+      width: 10px;
+      height: 10px;
+    }
+  }
+
+  // Очень маленькие экраны
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+
+    &__avatar {
+      width: 36px;
+      height: 36px;
+      align-self: flex-start;
+    }
+
+    &__details {
+      width: 100%;
+    }
+
+    &__name-section {
+      gap: 6px;
+    }
+
+    &__meta {
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+  }
+}
+
+// ===============================================
+// ВАРИАЦИИ КОМПОНЕНТА
+// ===============================================
+
+// Компактная версия для списков
+.author-info--compact {
+  padding-bottom: 0;
+  margin-bottom: 0;
+  border-bottom: none;
+
+  .author-info__avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .author-info__avatar-initials {
+    font-size: 13px;
+  }
+
+  .author-info__name {
+    font-size: 14px;
+  }
+
+  .author-info__meta {
+    font-size: 12px;
+    gap: 8px;
+  }
+
+  .author-info__role-badge {
+    font-size: 10px;
+    padding: 1px 4px;
+  }
+}
+
+// Версия без границы снизу
+.author-info--no-border {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+// Центрированная версия
+.author-info--centered {
+  justify-content: center;
+  text-align: center;
+
+  .author-info__details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .author-info__name-section {
+    justify-content: center;
+  }
+}
