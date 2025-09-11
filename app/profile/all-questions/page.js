@@ -3,7 +3,7 @@
 import { requireAuth } from "@/src/lib/auth-server";
 import { redirect } from "next/navigation";
 import { getNewQuestionsAction } from "@/app/actions/questions";
-import NewQuestionsPage from "@/src/features/ProfilePage/NewQuestionsPage/NewQuestionsPage";
+import AllQuestionsPage from "@/src/features/ProfilePage/AllQuestionsPage/AllQuestionsPage";
 
 export const metadata = {
   title: "Nové otázky | FastCredit Forum",
@@ -72,7 +72,7 @@ export default async function ProfileNewQuestions({ searchParams }) {
 
   // Передаем все данные в клиентский компонент
   return (
-    <NewQuestionsPage
+    <AllQuestionsPage
       user={user}
       initialQuestions={questionsData.items}
       initialPagination={questionsData.pagination}

@@ -1,4 +1,4 @@
-// Файл: src/features/ProfilePage/NewQuestionsPage/NewQuestionsPage.jsx
+// Файл: src/features/ProfilePage/AllQuestionsPage/AllQuestionsPage.jsx
 
 "use client";
 
@@ -6,9 +6,9 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { getNewQuestionsAction } from "@/app/actions/questions";
 import QuestionCard from "@/src/components/QuestionCard/QuestionCard";
-import "./NewQuestionsPage.scss";
+import "./AllQuestionsPage.scss";
 
-export default function NewQuestionsPage({
+export default function AllQuestionsPage({
   user,
   initialQuestions = [],
   initialPagination = null,
