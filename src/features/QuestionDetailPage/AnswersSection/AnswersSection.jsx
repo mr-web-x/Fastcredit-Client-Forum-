@@ -15,7 +15,12 @@ export default function AnswersSection({
 }) {
   const [isAnswerFormOpen, setIsAnswerFormOpen] = useState(false);
   const hasAnswers = answers.length > 0;
-  const canAnswer = permissions.canAnswer;
+  const hasUserAnswer = answers.some(
+    (answer) => answer.expert?._id === user?.id
+  );
+  const canAnswer = permissions.canAnswer && !hasUserAnswer;
+  const isNotExpert = user && !permissions.canAnswer; // Пользователь есть, но не эксперт
+  const alreadyAnswered = user && permissions.canAnswer && hasUserAnswer; // Эксперт уже ответил
 
   return (
     <div className="answers-section">
@@ -63,11 +68,25 @@ export default function AnswersSection({
               <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
             </svg>
             <div>
-              <h4>Iba experti môžu odpovedať</h4>
-              <p>
-                Na otázky môžu odpovedať iba overení experti a právnici. Ak ste
-                expert v tejto oblasti, môžete sa prihlásiť ako poradca.
-              </p>
+              {hasUserAnswer ? (
+                // Эксперт уже ответил
+                <>
+                  <h4>Už ste odpovedali na túto otázku</h4>
+                  <p>
+                    Na jednu otázku môžete odpovedať iba raz. Svoju odpoveď
+                    môžete upraviť kliknutím na tlačidlo "Upraviť".
+                  </p>
+                </>
+              ) : (
+                // Не эксперт
+                <>
+                  <h4>Iba experti môžu odpovedať</h4>
+                  <p>
+                    Na otázky môžu odpovedať iba overení experti a právnici. Ak
+                    ste expert v tejto oblasti, môžete sa prihlásiť ako poradca.
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </div>

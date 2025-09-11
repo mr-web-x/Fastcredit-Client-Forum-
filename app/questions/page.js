@@ -24,7 +24,6 @@ export default async function QuestionsPage({ searchParams }) {
   const sortBy = params.sortBy || "createdAt";
   const sortOrder = params.sortOrder || "-1";
 
-
   // Исправляем маппинг статусов для backend
   let backendStatus = status;
 

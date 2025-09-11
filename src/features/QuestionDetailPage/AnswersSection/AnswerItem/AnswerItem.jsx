@@ -17,15 +17,20 @@ import {
   Delete as DeleteIcon,
   Edit as EditIcon,
   Error as ErrorIcon,
+  Save as SaveIcon,
+  Close as CloseIcon,
 } from "@mui/icons-material";
 import {
   updateApprovedAnswerAction,
   deleteAnswerAction,
+  updateAnswerAction,
 } from "@/app/actions/answers";
 
 export default function AnswerItem({ answer, user, permissions }) {
   const [isDeleteConfirm, setIsDeleteConfirm] = useState(false);
   const [isRejectConfirm, setIsRejectConfirm] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editContent, setEditContent] = useState(answer.content);
 
   const roleInfo = getRoleBadge(answer.expert?.role);
   const displayName = getDisplayName(answer.expert);
@@ -35,6 +40,7 @@ export default function AnswerItem({ answer, user, permissions }) {
   const isAdmin = permissions.canModerate;
   const isAnswerAuthor = user && user.id === answer.expert?._id;
   const isApproved = answer.isApproved;
+  const canEdit = isAdmin || isAnswerAuthor;
 
   // Action для модерации
   const [moderateState, moderateAction, isModeratePending] = useActionState(
@@ -61,6 +67,26 @@ export default function AnswerItem({ answer, user, permissions }) {
     { success: false, message: null, error: null }
   );
 
+  // Action для редактирования
+  const [editState, editAction, isEditPending] = useActionState(
+    async (prevState, formData) => {
+      const result = await updateAnswerAction(answer._id, {
+        content: formData.get("content"),
+      });
+      if (result.success) {
+        setIsEditing(false);
+        setEditContent(answer.content); // Обновляем локальный state
+      }
+      return result;
+    },
+    { success: false, message: null, error: null }
+  );
+
+  const handleEditCancel = () => {
+    setIsEditing(false);
+    setEditContent(answer.content); // Возвращаем оригинальный текст
+  };
+
   return (
     <div className={`answer-item ${!isApproved ? "answer-item--pending" : ""}`}>
       {/* Заголовок ответа */}
@@ -68,9 +94,9 @@ export default function AnswerItem({ answer, user, permissions }) {
         {/* Информация об авторе */}
         <div className="answer-item__author">
           <div className="answer-item__avatar">
-            {answer.author?.avatar ? (
+            {answer.expert?.avatar ? (
               <img
-                src={answer.author.avatar}
+                src={answer.expert.avatar}
                 alt={displayName}
                 className="answer-item__avatar-image"
               />
@@ -105,23 +131,47 @@ export default function AnswerItem({ answer, user, permissions }) {
 
       {/* Контент ответа */}
       <div className="answer-item__content">
-        <div className="answer-item__text">
-          {answer.content ? (
-            answer.content
-              .split("\n")
-              .map((paragraph, index) =>
-                paragraph.trim() ? (
-                  <p key={index}>{paragraph}</p>
-                ) : (
-                  <br key={index} />
+        {isEditing ? (
+          // Режим редактирования
+          <form action={editAction} className="answer-item__edit-form">
+            <textarea
+              name="content"
+              className="answer-item__edit-textarea"
+              value={editContent}
+              onChange={(e) => setEditContent(e.target.value)}
+              rows={6}
+              disabled={isEditPending}
+              placeholder="Upravte svoju odpoveď..."
+            />
+            <div className="answer-item__character-count">
+              {editContent.length}/5000
+              {editContent.length < 50 && (
+                <span className="answer-item__character-help">
+                  Potrebných ešte {50 - editContent.length} znakov
+                </span>
+              )}
+            </div>
+          </form>
+        ) : (
+          // Обычный режим
+          <div className="answer-item__text">
+            {answer.content ? (
+              answer.content
+                .split("\n")
+                .map((paragraph, index) =>
+                  paragraph.trim() ? (
+                    <p key={index}>{paragraph}</p>
+                  ) : (
+                    <br key={index} />
+                  )
                 )
-              )
-          ) : (
-            <p className="answer-item__text--empty">
-              Obsah odpovede nebol zadaný.
-            </p>
-          )}
-        </div>
+            ) : (
+              <p className="answer-item__text--empty">
+                Obsah odpovede nebol zadaný.
+              </p>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Футер с датой и действиями */}
@@ -137,64 +187,112 @@ export default function AnswerItem({ answer, user, permissions }) {
 
           {/* Правая часть - действия */}
           <div className="answer-item__actions">
-            {/* Действия АДМИНА */}
-            {isAdmin && (
-              <div className="answer-item__admin-actions">
-                {!isApproved ? (
-                  <form action={moderateAction}>
-                    <input type="hidden" name="isApproved" value="true" />
+            {isEditing ? (
+              // Кнопки редактирования
+              <div className="answer-item__edit-actions">
+                <button
+                  type="button"
+                  onClick={handleEditCancel}
+                  className="answer-item__btn answer-item__btn--secondary"
+                  disabled={isEditPending}
+                >
+                  <CloseIcon fontSize="small" />
+                  Zrušiť
+                </button>
+                <button
+                  type="submit"
+                  form="edit-form"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const formData = new FormData();
+                    formData.set("content", editContent);
+                    editAction(formData);
+                  }}
+                  className="answer-item__btn answer-item__btn--success"
+                  disabled={
+                    isEditPending ||
+                    editContent.length < 50 ||
+                    editContent.length > 5000
+                  }
+                >
+                  <SaveIcon fontSize="small" />
+                  {isEditPending ? "Ukladá sa..." : "Uložiť"}
+                </button>
+              </div>
+            ) : (
+              // Обычные действия
+              <>
+                {/* Действия АДМИНА */}
+                {isAdmin && (
+                  <div className="answer-item__admin-actions">
+                    {!isApproved ? (
+                      <form action={moderateAction}>
+                        <input type="hidden" name="isApproved" value="true" />
+                        <button
+                          type="submit"
+                          disabled={isModeratePending}
+                          className="answer-item__btn answer-item__btn--success"
+                          title="Schváliť odpoveď"
+                        >
+                          <CheckCircleIcon fontSize="small" />
+                          {isModeratePending ? "..." : "Schváliť"}
+                        </button>
+                      </form>
+                    ) : (
+                      <button
+                        onClick={() => setIsRejectConfirm(true)}
+                        className="answer-item__btn answer-item__btn--warning"
+                        title="Zamietnuť odpoveď"
+                      >
+                        <CancelIcon fontSize="small" />
+                        Zamietnuť
+                      </button>
+                    )}
+
+                    {canEdit && (
+                      <button
+                        onClick={() => setIsEditing(true)}
+                        className="answer-item__btn"
+                      >
+                        <EditIcon fontSize="small" />
+                        Upraviť
+                      </button>
+                    )}
+
                     <button
-                      type="submit"
-                      disabled={isModeratePending}
-                      className="answer-item__btn answer-item__btn--success"
-                      title="Schváliť odpoveď"
+                      onClick={() => setIsDeleteConfirm(true)}
+                      className="answer-item__btn answer-item__btn--danger"
+                      title="Zmazať odpoveď"
                     >
-                      <CheckCircleIcon fontSize="small" />
-                      {isModeratePending ? "..." : "Schváliť"}
+                      <DeleteIcon fontSize="small" />
+                      Zmazať
                     </button>
-                  </form>
-                ) : (
-                  <button
-                    onClick={() => setIsRejectConfirm(true)}
-                    className="answer-item__btn answer-item__btn--warning"
-                    title="Zamietnuť odpoveď"
-                  >
-                    <CancelIcon fontSize="small" />
-                    Zamietnuť
-                  </button>
+                  </div>
                 )}
 
-                <button className="answer-item__btn">
-                  <EditIcon fontSize="small" />
-                  Upraviť
-                </button>
+                {/* Действия АВТОРА ОТВЕТА (если не админ) */}
+                {!isAdmin && isAnswerAuthor && (
+                  <div className="answer-item__answer-author-actions">
+                    <button
+                      onClick={() => setIsEditing(true)}
+                      className="answer-item__btn"
+                    >
+                      <EditIcon fontSize="small" />
+                      Upraviť
+                    </button>
 
-                <button
-                  onClick={() => setIsDeleteConfirm(true)}
-                  className="answer-item__btn answer-item__btn--danger"
-                  title="Zmazať odpoveď"
-                >
-                  <DeleteIcon fontSize="small" />
-                  Zmazať
-                </button>
-              </div>
-            )}
-
-            {/* Действия АВТОРА ОТВЕТА */}
-            {!isAdmin && isAnswerAuthor && !isApproved && (
-              <div className="answer-item__answer-author-actions">
-                <button className="answer-item__btn">
-                  <EditIcon fontSize="small" />
-                  Upraviť
-                </button>
-                <button
-                  onClick={() => setIsDeleteConfirm(true)}
-                  className="answer-item__btn answer-item__btn--danger"
-                >
-                  <DeleteIcon fontSize="small" />
-                  Zmazať
-                </button>
-              </div>
+                    {!answer.wasApproved && (
+                      <button
+                        onClick={() => setIsDeleteConfirm(true)}
+                        className="answer-item__btn answer-item__btn--danger"
+                      >
+                        <DeleteIcon fontSize="small" />
+                        Zmazať
+                      </button>
+                    )}
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
@@ -254,6 +352,12 @@ export default function AnswerItem({ answer, user, permissions }) {
           <div className="answer-item__error">
             <ErrorIcon fontSize="small" />
             {deleteState.error}
+          </div>
+        )}
+        {editState.error && (
+          <div className="answer-item__error">
+            <ErrorIcon fontSize="small" />
+            {editState.error}
           </div>
         )}
       </footer>

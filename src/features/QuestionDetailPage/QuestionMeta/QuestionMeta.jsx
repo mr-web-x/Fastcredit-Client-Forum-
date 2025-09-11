@@ -4,6 +4,7 @@
 
 import "./QuestionMeta.scss";
 import { formatCreatedDate } from "@/src/utils/formatDate";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 export default function QuestionMeta({ question }) {
   // Получение цвета приоритета
@@ -45,6 +46,12 @@ export default function QuestionMeta({ question }) {
   return (
     <div className="question-meta">
       {/* Левая секция: категория и приоритет */}
+      {question.views && (
+        <span className={`question-meta__views`}>
+          <VisibilityIcon sx={{ fontSize: "16px" }} />
+          {question.views || 0}
+        </span>
+      )}
       <div className="question-meta__tags">
         {question.category && (
           <span

@@ -7,10 +7,6 @@
   // РЕЖИМ ПРОСМОТРА
   // ===============================================
 
-  &__display {
-    // Основной контейнер для просмотра
-  }
-
   &__header {
     display: flex;
     align-items: flex-start;
@@ -363,7 +359,7 @@
   // Очень маленькие экраны
   @media (max-width: 480px) {
     &__title {
-      font-size: 20px;
+      font-size: 18px;
     }
 
     &__editor {

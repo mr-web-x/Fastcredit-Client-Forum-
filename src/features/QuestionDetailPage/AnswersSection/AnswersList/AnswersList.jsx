@@ -54,7 +54,7 @@ export default function AnswersList({
             </span>
           </div>
 
-          {answers.filter((a) => a.author?.role === "expert").length > 0 && (
+          {answers.filter((a) => a.expert?.role === "expert").length > 0 && (
             <div className="answers-list__stat-item">
               <svg
                 width="16"
@@ -65,7 +65,7 @@ export default function AnswersList({
                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
               </svg>
               <span>
-                {answers.filter((a) => a.author?.role === "expert").length} od
+                {answers.filter((a) => a.expert?.role === "expert").length} od
                 expertov
               </span>
             </div>

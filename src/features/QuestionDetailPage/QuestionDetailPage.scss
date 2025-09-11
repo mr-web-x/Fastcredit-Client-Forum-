@@ -125,15 +125,12 @@
 
   // Очень маленькие экраны
   @media (max-width: 480px) {
-    padding: 12px 0 32px;
-
     .container {
       padding: 0 12px;
     }
 
     .question-block,
     .comments-block {
-      padding: 16px;
       border-radius: 8px;
     }
 

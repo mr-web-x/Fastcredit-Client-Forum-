@@ -110,10 +110,23 @@ export default async function QuestionPage({ params }) {
     const includeUnapproved = shouldIncludeUnapproved(user, question);
 
     // Теперь получаем ответы и комментарии по ID вопроса
-    const answers = await answersService.getAnswersForQuestion(
+    let answers = await answersService.getAnswersForQuestion(
       question._id,
       includeUnapproved
     );
+
+    // Фильтруем ТОЛЬКО для экспертов (не для админов и остальных)
+    if (
+      user &&
+      (user.role === "expert" || user.role === "lawyer") &&
+      includeUnapproved
+    ) {
+      answers = answers.filter(
+        (answer) =>
+          answer.expert?._id === user.id || // Все свои ответы (любой статус)
+          answer.isApproved === true // Чужие только одобренные
+      );
+    }
 
     // Вычисляем права доступа
     const permissions = calculatePermissions(user, question, answers);
@@ -181,14 +194,6 @@ function calculatePermissions(user, question, answers) {
     canReport: !!user,
     canAcceptAnswer: isAuthor,
     canModerate: user && user.role === "admin",
-    canComment:
-      user &&
-      (isExpert ||
-        isAuthor ||
-        answers.some(
-          (a) =>
-            (a.author?.role === "expert" || a.author?.role === "admin") &&
-            a.status === "approved"
-        )),
+    canComment: user && (isExpert || isAuthor || hasExpertAnswers),
   };
 }

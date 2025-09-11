@@ -2,26 +2,11 @@
 
 import Link from "next/link";
 import "./QuestionCard.scss";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import InsertCommentIcon from "@mui/icons-material/InsertComment";
+import { formatDate } from "@/src/utils/formatDate";
 
 export default function QuestionCard({ question, index = 0 }) {
-  // Функції для форматування даних
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffTime = Math.abs(now - date);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    if (diffDays === 1) return "Dnes";
-    if (diffDays === 2) return "Včera";
-    if (diffDays <= 7) return `Pred ${diffDays} dňami`;
-
-    return date.toLocaleDateString("sk-SK", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  };
-
   const getCategoryName = (slug) => {
     const categoryMap = {
       expert: "Expert",
@@ -145,13 +130,12 @@ export default function QuestionCard({ question, index = 0 }) {
               {/* Štatistiky */}
               <div className="question-card__stats">
                 <span className="question-card__stat">
-                  <span className="question-card__stat-icon">💬</span>
-                  {question.answersCount || 0}
+                  <VisibilityIcon sx={{ fontSize: "16px" }} />
+                  {question.views || 0}
                 </span>
-
                 <span className="question-card__stat">
-                  <span className="question-card__stat-icon">👍</span>
-                  {question.likesCount || 0}
+                  <InsertCommentIcon sx={{ fontSize: "16px" }} />
+                  {question.answersCount || 0}
                 </span>
               </div>
             </div>
