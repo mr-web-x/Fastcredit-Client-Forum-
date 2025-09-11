@@ -11,10 +11,7 @@ export default function MyDataPage({ user }) {
       {/* Заголовок с кнопкой управления */}
       <div className="my-data-page__header">
         <div className="my-data-page__title-section">
-          <h1 className="my-data-page__title">
-            <span className="my-data-page__title-icon">🏷️</span>
-            Moje osobné údaje
-          </h1>
+          <h1 className="my-data-page__title">Moje osobné údaje</h1>
           <p className="my-data-page__subtitle">
             Zobrazte a upravte svoje osobné informácie
           </p>

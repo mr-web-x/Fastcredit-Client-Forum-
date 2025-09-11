@@ -1,4 +1,4 @@
-// Файл: app/profile/questions/page.js
+// Файл: app/profile/my-questions/page.js
 
 import { requireAuth } from "@/src/lib/auth-server";
 import { questionsService } from "@/src/services/server";

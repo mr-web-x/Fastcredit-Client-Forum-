@@ -1,6 +1,6 @@
 // Файл: src/features/ProfilePage/NewQuestionsPage/NewQuestionsPage.scss
 
-.new-questions-page {
+.all-questions-page {
   max-width: 1200px;
   margin: 0 auto;
   min-height: 80vh;
@@ -368,7 +368,7 @@
 
 // === REDUCED MOTION ===
 @media (prefers-reduced-motion: reduce) {
-  .new-questions-page {
+  .all-questions-page {
     &__loading-spinner {
       animation: none;
     }

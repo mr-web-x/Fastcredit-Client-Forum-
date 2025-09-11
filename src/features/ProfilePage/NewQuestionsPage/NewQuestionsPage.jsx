@@ -39,7 +39,7 @@ export default function NewQuestionsPage({
     if (newFilters.limit !== 10)
       params.set("limit", newFilters.limit.toString());
 
-    const newURL = `/profile/new-questions${
+    const newURL = `/profile/all-questions${
       params.toString() ? `?${params.toString()}` : ""
     }`;
     router.replace(newURL, { scroll: false });
@@ -105,41 +105,41 @@ export default function NewQuestionsPage({
   };
 
   return (
-    <div className="new-questions-page">
+    <div className="all-questions-page">
       {/* Заголовок */}
-      <div className="new-questions-page__header">
-        <div className="new-questions-page__title-section">
-          <h1 className="new-questions-page__title">
-            <span className="new-questions-page__title-icon">🔔</span>
+      <div className="all-questions-page__header">
+        <div className="all-questions-page__title-section">
+          <h1 className="all-questions-page__title">
+            <span className="all-questions-page__title-icon">🔔</span>
             Nové otázky
           </h1>
-          <p className="new-questions-page__subtitle">
+          <p className="all-questions-page__subtitle">
             {getRoleText()} - Zobrazte a odpovedajte na nové otázky
           </p>
         </div>
       </div>
 
       {/* Фильтры и статистика */}
-      <div className="new-questions-page__controls">
+      <div className="all-questions-page__controls">
         {/* Статистика */}
-        <div className="new-questions-page__stats">
-          <div className="new-questions-page__stat">
-            <span className="new-questions-page__stat-value">
+        <div className="all-questions-page__stats">
+          <div className="all-questions-page__stat">
+            <span className="all-questions-page__stat-value">
               {pagination?.totalItems || 0}
             </span>
-            <span className="new-questions-page__stat-label">
+            <span className="all-questions-page__stat-label">
               Nových otázok
             </span>
           </div>
         </div>
 
         {/* Фильтры */}
-        <div className="new-questions-page__filters">
+        <div className="all-questions-page__filters">
           {/* Фильтр по приоритету */}
           <select
             value={filters.priority}
             onChange={(e) => handleFilterChange("priority", e.target.value)}
-            className="new-questions-page__filter-select"
+            className="all-questions-page__filter-select"
             disabled={isPending}
           >
             <option value="">Všetky priority</option>
@@ -151,22 +151,22 @@ export default function NewQuestionsPage({
 
       {/* Сообщение об ошибке */}
       {error && (
-        <div className="new-questions-page__error">
-          <span className="new-questions-page__error-icon">⚠️</span>
+        <div className="all-questions-page__error">
+          <span className="all-questions-page__error-icon">⚠️</span>
           {error}
         </div>
       )}
 
       {/* Loading состояние */}
       {isPending && (
-        <div className="new-questions-page__loading">
-          <span className="new-questions-page__loading-spinner"></span>
+        <div className="all-questions-page__loading">
+          <span className="all-questions-page__loading-spinner"></span>
           Načítava sa...
         </div>
       )}
 
       {/* Список вопросов */}
-      <div className="new-questions-page__questions">
+      <div className="all-questions-page__questions">
         {questions.length > 0
           ? questions.map((question) => (
               <QuestionCard
@@ -179,15 +179,15 @@ export default function NewQuestionsPage({
               />
             ))
           : !isPending && (
-              <div className="new-questions-page__empty">
-                <div className="new-questions-page__empty-icon">❓</div>
-                <h3 className="new-questions-page__empty-title">
+              <div className="all-questions-page__empty">
+                <div className="all-questions-page__empty-icon">❓</div>
+                <h3 className="all-questions-page__empty-title">
                   {user.role === "expert" && "Žiadne nové otázky pre expertov"}
                   {user.role === "lawyer" && "Žiadne nové otázky pre právnikov"}
                   {(user.role === "admin" || user.role === "moderator") &&
                     "Žiadne nové otázky"}
                 </h3>
-                <p className="new-questions-page__empty-text">
+                <p className="all-questions-page__empty-text">
                   Momentálne nie sú dostupné žiadne nové otázky. Skontrolujte
                   neskôr.
                 </p>
@@ -197,23 +197,23 @@ export default function NewQuestionsPage({
 
       {/* Пагинация */}
       {pagination && pagination.totalPages > 1 && (
-        <div className="new-questions-page__pagination">
+        <div className="all-questions-page__pagination">
           <button
             onClick={() => handlePageChange(pagination.page - 1)}
             disabled={!pagination.hasPrev || isPending}
-            className="new-questions-page__pagination-button"
+            className="all-questions-page__pagination-button"
           >
             ← Predchádzajúca
           </button>
 
-          <div className="new-questions-page__pagination-info">
+          <div className="all-questions-page__pagination-info">
             Strana {pagination.page} z {pagination.totalPages}
           </div>
 
           <button
             onClick={() => handlePageChange(pagination.page + 1)}
             disabled={!pagination.hasNext || isPending}
-            className="new-questions-page__pagination-button"
+            className="all-questions-page__pagination-button"
           >
             Nasledujúca →
           </button>

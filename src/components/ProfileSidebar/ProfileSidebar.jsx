@@ -111,9 +111,9 @@ export default function ProfileSidebar({ user }) {
           user.role === "expert" ||
           user.role === "lawyer") && (
           <Link
-            href="/profile/new-questions"
+            href="/profile/all-questions"
             className={`profile-sidebar__nav-link  ${
-              isActiveLink("/profile/new-questions")
+              isActiveLink("/profile/all-questions")
                 ? "profile-sidebar__nav-link--active"
                 : ""
             }`}
@@ -121,14 +121,14 @@ export default function ProfileSidebar({ user }) {
             <span className="profile-sidebar__nav-icon">
               <QuizIcon />
             </span>
-            <span className="profile-sidebar__nav-label">Nové otázky</span>
+            <span className="profile-sidebar__nav-label">Všetky otázky</span>
           </Link>
         )}
         {/* Ссылка на мои вопросы */}
         <Link
-          href="/profile/questions"
+          href="/profile/my-questions"
           className={`profile-sidebar__nav-link profile-sidebar__nav-link--myquestions ${
-            isActiveLink("/profile/questions")
+            isActiveLink("/profile/my-questions")
               ? "profile-sidebar__nav-link--active"
               : ""
           }`}

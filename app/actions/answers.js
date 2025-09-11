@@ -95,7 +95,7 @@ export async function createAnswerAction(questionId, answerData) {
     // Revalidate страницы
     revalidatePath("/questions/[slug]", "page");
     revalidatePath("/profile/answers", "page");
-    revalidatePath("/profile/new-questions", "page");
+    revalidatePath("/profile/all-questions", "page");
 
     return {
       success: true,

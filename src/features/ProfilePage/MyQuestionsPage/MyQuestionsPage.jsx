@@ -45,7 +45,7 @@ export default function MyQuestionsPage({
     if (newFilters.limit !== 10)
       params.set("limit", newFilters.limit.toString());
 
-    const newURL = `/profile/questions${
+    const newURL = `/profile/my-questions${
       params.toString() ? `?${params.toString()}` : ""
     }`;
     router.replace(newURL, { scroll: false });

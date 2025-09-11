@@ -1,4 +1,4 @@
-// Файл: app/profile/new-questions/page.js
+// Файл: app/profile/all-questions/page.js
 
 import { requireAuth } from "@/src/lib/auth-server";
 import { redirect } from "next/navigation";
