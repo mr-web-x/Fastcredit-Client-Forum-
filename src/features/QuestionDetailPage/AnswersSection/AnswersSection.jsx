@@ -12,65 +12,8 @@ export default function AnswersSection({
   question,
   user,
   permissions,
-  onAnswerSubmit,
-  onAnswerLike,
-  onAcceptAnswer,
 }) {
   const [isAnswerFormOpen, setIsAnswerFormOpen] = useState(false);
-  const [sortBy, setSortBy] = useState("best"); // best, newest, oldest, popular
-
-  // Сортировка ответов
-  const getSortedAnswers = () => {
-    const sortedAnswers = [...answers];
-
-    switch (sortBy) {
-      case "best":
-        return sortedAnswers.sort((a, b) => {
-          // Лучший ответ всегда первый
-          if (a.isBest && !b.isBest) return -1;
-          if (!a.isBest && b.isBest) return 1;
-          // Затем по дате (новые сверху)
-          return new Date(b.createdAt) - new Date(a.createdAt);
-        });
-
-      case "newest":
-        return sortedAnswers.sort((a, b) => {
-          if (a.isBest && !b.isBest) return -1;
-          if (!a.isBest && b.isBest) return 1;
-          return new Date(b.createdAt) - new Date(a.createdAt);
-        });
-
-      case "oldest":
-        return sortedAnswers.sort((a, b) => {
-          if (a.isBest && !b.isBest) return -1;
-          if (!a.isBest && b.isBest) return 1;
-          return new Date(a.createdAt) - new Date(b.createdAt);
-        });
-
-      case "popular":
-        return sortedAnswers.sort((a, b) => {
-          if (a.isBest && !b.isBest) return -1;
-          if (!a.isBest && b.isBest) return 1;
-          return (b.likes || 0) - (a.likes || 0);
-        });
-
-      default:
-        return sortedAnswers;
-    }
-  };
-
-  // Обработчик отправки ответа
-  const handleAnswerSubmit = async (answerData) => {
-    try {
-      await onAnswerSubmit(answerData);
-      setIsAnswerFormOpen(false);
-    } catch (error) {
-      console.error("Failed to submit answer:", error);
-      // Форма покажет свою ошибку
-    }
-  };
-
-  const sortedAnswers = getSortedAnswers();
   const hasAnswers = answers.length > 0;
   const canAnswer = permissions.canAnswer;
 
@@ -85,23 +28,6 @@ export default function AnswersSection({
             </svg>
             Odpovede {hasAnswers && `(${answers.length})`}
           </h2>
-
-          {hasAnswers > 1 && (
-            <div className="answers-section__sort">
-              <label htmlFor="answers-sort">Zoradiť podľa:</label>
-              <select
-                id="answers-sort"
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="answers-section__sort-select"
-              >
-                <option value="best">Najlepšie</option>
-                <option value="newest">Najnovšie</option>
-                <option value="oldest">Najstaršie</option>
-                <option value="popular">Najpopulárnejšie</option>
-              </select>
-            </div>
-          )}
         </div>
 
         {/* Кнопка добавления ответа */}
@@ -124,8 +50,6 @@ export default function AnswersSection({
         <div className="answers-section__form">
           <AnswerForm
             question={question}
-            user={user}
-            onSubmit={handleAnswerSubmit}
             onCancel={() => setIsAnswerFormOpen(false)}
           />
         </div>
@@ -153,12 +77,10 @@ export default function AnswersSection({
       {hasAnswers ? (
         <div className="answers-section__list">
           <AnswersList
-            answers={sortedAnswers}
+            answers={answers}
             question={question}
             user={user}
             permissions={permissions}
-            onAnswerLike={onAnswerLike}
-            onAcceptAnswer={onAcceptAnswer}
           />
         </div>
       ) : (
@@ -191,53 +113,6 @@ export default function AnswersSection({
               </button>
             )}
           </div>
-        </div>
-      )}
-
-      {/* Статистика ответов */}
-      {hasAnswers && (
-        <div className="answers-section__stats">
-          <div className="answers-section__stats-item">
-            <span className="answers-section__stats-value">
-              {answers.length}
-            </span>
-            <span className="answers-section__stats-label">
-              {answers.length === 1 ? "odpoveď" : "odpovedí"}
-            </span>
-          </div>
-
-          {answers.some((a) => a.isBest) && (
-            <div className="answers-section__stats-item">
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-              </svg>
-              <span className="answers-section__stats-label">
-                Má najlepšiu odpoveď
-              </span>
-            </div>
-          )}
-
-          {answers.filter((a) => a.author?.role === "expert").length > 0 && (
-            <div className="answers-section__stats-item">
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-              </svg>
-              <span className="answers-section__stats-label">
-                {answers.filter((a) => a.author?.role === "expert").length} od
-                expertov
-              </span>
-            </div>
-          )}
         </div>
       )}
     </div>

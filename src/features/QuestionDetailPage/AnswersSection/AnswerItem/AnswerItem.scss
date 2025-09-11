@@ -10,15 +10,14 @@
 
   &:hover {
     box-shadow: var(--shadow-card-hover);
-    transform: translateY(-1px);
   }
 
-  &:not(&--last) {
+  &:not(:last-child) {
     margin-bottom: 16px;
   }
 
   // ===============================================
-  // ЛУЧШИЙ ОТВЕТ
+  // СТАТУСЫ ОТВЕТА
   // ===============================================
 
   &--best {
@@ -28,11 +27,15 @@
       rgba(255, 193, 7, 0.02) 0%,
       rgba(255, 152, 0, 0.02) 100%
     );
-    box-shadow: 0 2px 8px rgba(255, 193, 7, 0.1);
+  }
 
-    &:hover {
-      box-shadow: 0 4px 16px rgba(255, 193, 7, 0.15);
-    }
+  &--pending {
+    border-left: 4px solid #ff9800;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 152, 0, 0.02) 0%,
+      rgba(255, 193, 7, 0.02) 100%
+    );
   }
 
   // ===============================================
@@ -62,31 +65,24 @@
     overflow: hidden;
     flex-shrink: 0;
     border: 2px solid var(--card-border);
-    transition: all 0.2s ease;
 
-    &:hover {
-      border-color: var(--accent);
-      transform: scale(1.05);
+    &-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
-  }
 
-  &__avatar-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  &__avatar-initials {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--accent);
-    color: var(--white);
-    font-weight: 700;
-    font-size: 16px;
+    &-initials {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent);
+      color: var(--white);
+      font-weight: 700;
+      font-size: 16px;
+    }
   }
 
   &__author-info {
@@ -107,8 +103,6 @@
     font-weight: 600;
     color: var(--black);
     text-decoration: none;
-    transition: color 0.2s ease;
-    line-height: 1.2;
 
     &:hover {
       color: var(--accent);
@@ -123,122 +117,51 @@
     font-size: 10px;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
 
     &--expert {
       background: rgba(255, 152, 0, 0.1);
       color: #f57c00;
-      border: 1px solid rgba(255, 152, 0, 0.2);
     }
 
     &--lawyer {
       background: rgba(63, 81, 181, 0.1);
       color: #3f51b5;
-      border: 1px solid rgba(63, 81, 181, 0.2);
     }
 
     &--admin {
       background: rgba(244, 67, 54, 0.1);
       color: #d32f2f;
-      border: 1px solid rgba(244, 67, 54, 0.2);
     }
 
     &--moderator {
       background: rgba(156, 39, 176, 0.1);
       color: #9c27b0;
-      border: 1px solid rgba(156, 39, 176, 0.2);
     }
   }
 
-  &__meta {
+  &__header-actions {
     display: flex;
     align-items: center;
-    gap: 12px;
-    font-size: 12px;
-    color: var(--text-secondary);
+    gap: 8px;
   }
 
-  &__date,
-  &__reputation {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    transition: color 0.2s ease;
-
-    svg {
-      opacity: 0.7;
-      flex-shrink: 0;
-    }
-
-    &:hover {
-      color: var(--accent);
-    }
-  }
-
-  &__date {
-    cursor: help;
-  }
-
-  &__reputation {
-    color: var(--accent);
-    font-weight: 500;
-
-    svg {
-      color: #ffc107;
-    }
-  }
-
-  // ===============================================
-  // БЕЙДЖИ И КНОПКИ В ЗАГОЛОВКЕ
-  // ===============================================
-
-  &__best-badge {
-    display: flex;
+  &__status {
+    display: inline-flex;
     align-items: center;
     gap: 4px;
     padding: 4px 8px;
-    background: #ffc107;
-    color: #fff;
     border-radius: 12px;
     font-size: 11px;
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    box-shadow: 0 2px 4px rgba(255, 193, 7, 0.3);
 
-    svg {
-      opacity: 0.9;
-    }
-  }
-
-  &__accept-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border: 2px solid var(--accent-border-light);
-    background: var(--white);
-    color: var(--accent);
-    border-radius: 50%;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    flex-shrink: 0;
-
-    &:hover:not(:disabled) {
-      background: var(--accent);
-      color: var(--white);
-      border-color: var(--accent);
-      transform: scale(1.1);
+    &--pending {
+      background: rgba(255, 152, 0, 0.1);
+      color: #f57c00;
     }
 
-    &:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    svg {
-      opacity: 0.8;
+    &--best {
+      background: rgba(255, 193, 7, 0.1);
+      color: #ff9800;
     }
   }
 
@@ -254,7 +177,6 @@
     font-size: 15px;
     line-height: 1.6;
     color: var(--black);
-    word-break: break-word;
 
     p {
       margin: 0 0 12px 0;
@@ -268,93 +190,55 @@
       color: var(--text-secondary);
       font-style: italic;
     }
-
-    // Стили для форматированного текста
-    strong {
-      font-weight: 700;
-      color: var(--black);
-    }
-
-    em {
-      font-style: italic;
-    }
-
-    code {
-      background: var(--background);
-      padding: 2px 4px;
-      border-radius: 4px;
-      font-family: "Courier New", monospace;
-      font-size: 13px;
-      color: var(--accent);
-    }
-  }
-
-  &__expand-btn {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    margin-top: 12px;
-    padding: 6px 10px;
-    background: var(--background);
-    color: var(--accent);
-    border: 1px solid var(--accent-border-light);
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-
-    &:hover {
-      background: var(--accent-bg-light);
-      border-color: var(--accent);
-    }
-
-    svg {
-      opacity: 0.8;
-    }
   }
 
   // ===============================================
-  // FOOTER С ДЕЙСТВИЯМИ
+  // FOOTER С ДАТОЙ И ДЕЙСТВИЯМИ
   // ===============================================
 
   &__footer {
+    &-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-top: 12px;
+      border-top: 1px solid var(--card-border-light);
+    }
+  }
+
+  &__date {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding-top: 12px;
-    border-top: 1px solid var(--card-border-light);
+    gap: 4px;
+    font-size: 12px;
+    color: var(--text-secondary);
   }
 
   &__actions {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
   }
 
-  &__like {
+  // ===============================================
+  // КНОПКИ ДЕЙСТВИЙ
+  // ===============================================
+
+  &__btn {
     display: flex;
     align-items: center;
     gap: 4px;
     padding: 6px 10px;
     border: 1px solid var(--card-border);
-    border-radius: 8px;
     background: var(--white);
-    color: var(--text-secondary);
-    font-size: 13px;
+    border-radius: 6px;
+    font-size: 12px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
 
-    svg {
-      opacity: 0.7;
-      flex-shrink: 0;
-    }
-
     &:hover:not(:disabled) {
-      border-color: var(--accent);
-      color: var(--accent);
       transform: translateY(-1px);
     }
 
@@ -363,85 +247,173 @@
       cursor: not-allowed;
     }
 
-    &--active {
-      background: rgba(244, 67, 54, 0.1);
-      color: #d32f2f;
-      border-color: rgba(244, 67, 54, 0.2);
+    &--success {
+      background: rgba(76, 175, 80, 0.1);
+      border-color: rgba(76, 175, 80, 0.2);
+      color: #2e7d32;
 
-      svg {
-        opacity: 1;
+      &:hover:not(:disabled) {
+        background: rgba(76, 175, 80, 0.15);
       }
+    }
+
+    &--warning {
+      background: rgba(255, 152, 0, 0.1);
+      border-color: rgba(255, 152, 0, 0.2);
+      color: #f57c00;
+
+      &:hover:not(:disabled) {
+        background: rgba(255, 152, 0, 0.15);
+      }
+    }
+
+    &--danger {
+      background: rgba(244, 67, 54, 0.1);
+      border-color: rgba(244, 67, 54, 0.2);
+      color: #d32f2f;
 
       &:hover:not(:disabled) {
         background: rgba(244, 67, 54, 0.15);
-        border-color: rgba(244, 67, 54, 0.3);
       }
     }
 
-    &--loading {
-      svg {
-        animation: pulse 1s infinite;
+    &--secondary {
+      background: var(--background);
+      color: var(--text-secondary);
+
+      &:hover:not(:disabled) {
+        background: var(--card-border-light);
       }
     }
   }
 
-  &__status {
+  // Группы кнопок по типам действий
+  &__admin-actions,
+  &__question-author-actions,
+  &__answer-author-actions,
+  &__general-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  // ===============================================
+  // ДИАЛОГИ ПОДТВЕРЖДЕНИЯ
+  // ===============================================
+
+  &__confirm-dialog {
     display: flex;
     align-items: center;
     gap: 8px;
+    margin-top: 12px;
+    padding: 10px;
+    background: var(--background);
+    border-radius: 8px;
+    font-size: 13px;
+
+    span {
+      color: var(--text-secondary);
+      margin-right: auto;
+    }
+  }
+
+  &__confirm-btn {
+    padding: 4px 8px;
+    border: 1px solid var(--card-border);
+    background: var(--white);
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: var(--card-border-light);
+    }
+
+    &--danger {
+      background: rgba(244, 67, 54, 0.1);
+      border-color: rgba(244, 67, 54, 0.2);
+      color: #d32f2f;
+
+      &:hover {
+        background: rgba(244, 67, 54, 0.15);
+      }
+    }
+  }
+
+  // ===============================================
+  // СООБЩЕНИЯ ОБ ОШИБКАХ
+  // ===============================================
+
+  &__error {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    padding: 8px;
+    background: rgba(244, 67, 54, 0.1);
+    border: 1px solid rgba(244, 67, 54, 0.2);
+    border-radius: 6px;
+    color: #d32f2f;
     font-size: 12px;
   }
 
-  &__status-badge {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 2px 6px;
-    border-radius: 10px;
-    font-weight: 500;
-
-    &--pending {
-      background: rgba(255, 152, 0, 0.1);
-      color: #f57c00;
-      border: 1px solid rgba(255, 152, 0, 0.2);
-    }
-
-    svg {
-      opacity: 0.8;
-    }
-  }
-
-  &__edited {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    color: var(--text-secondary);
-    cursor: help;
-
-    svg {
-      opacity: 0.7;
-    }
-
-    &:hover {
-      color: var(--accent);
-    }
-  }
-
   // ===============================================
-  // RESPONSIVE DESIGN
+  // АДАПТИВНАЯ ВЕРСТКА
   // ===============================================
 
-  // Планшеты
-  @media (max-width: 1024px) {
+  @media (max-width: 768px) {
     padding: 16px;
 
-    &__avatar {
-      width: 36px;
-      height: 36px;
+    &__header {
+      flex-direction: column;
+      gap: 12px;
     }
 
-    &__avatar-initials {
-      font-size: 14px;
+    &__header-actions {
+      align-self: flex-start;
+    }
+
+    &__footer-content {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+    }
+
+    &__date {
+      justify-content: center;
+    }
+
+    &__actions {
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    &__admin-actions,
+    &__question-author-actions,
+    &__answer-author-actions,
+    &__general-actions {
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    &__confirm-dialog {
+      flex-direction: column;
+      text-align: center;
+
+      span {
+        margin-right: 0;
+        margin-bottom: 8px;
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px;
+
+    &__avatar {
+      width: 32px;
+      height: 32px;
     }
 
     &__author-name {
@@ -451,105 +423,10 @@
     &__text {
       font-size: 14px;
     }
-  }
 
-  // Мобильные устройства
-  @media (max-width: 768px) {
-    padding: 14px;
-    border-radius: 8px;
-
-    &:hover {
-      transform: none;
-    }
-
-    &__header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 12px;
-    }
-
-    &__author {
-      width: 100%;
-    }
-
-    &__best-badge,
-    &__accept-btn {
-      align-self: flex-end;
-    }
-
-    &__accept-btn {
-      width: 28px;
-      height: 28px;
-    }
-
-    &__meta {
-      gap: 8px;
-      font-size: 11px;
-    }
-
-    &__text {
-      font-size: 14px;
-    }
-
-    &__footer {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 8px;
-    }
-
-    &__actions {
-      justify-content: space-around;
-    }
-
-    &__like {
-      flex: 1;
-      justify-content: center;
-      padding: 8px 12px;
-    }
-
-    &__status {
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-  }
-
-  // Очень маленькие экраны
-  @media (max-width: 480px) {
-    padding: 12px;
-
-    &__avatar {
-      width: 32px;
-      height: 32px;
-    }
-
-    &__avatar-initials {
-      font-size: 12px;
-    }
-
-    &__author-name-section {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 4px;
-    }
-
-    &__role {
-      font-size: 9px;
-      padding: 1px 4px;
-    }
-
-    &__best-badge {
-      font-size: 10px;
-      padding: 3px 6px;
-    }
-
-    &__text {
-      font-size: 13px;
-    }
-
-    &__expand-btn {
-      font-size: 12px;
+    &__btn {
       padding: 4px 8px;
+      font-size: 11px;
     }
   }
 }
@@ -557,21 +434,6 @@
 // ===============================================
 // АНИМАЦИИ
 // ===============================================
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 0.7;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-// Анимация появления
-.answer-item {
-  animation: fadeInUp 0.4s ease-out;
-}
 
 @keyframes fadeInUp {
   from {
@@ -584,69 +446,6 @@
   }
 }
 
-// ===============================================
-// СОСТОЯНИЯ ЗАГРУЗКИ
-// ===============================================
-
-.answer-item__accept-btn[disabled] svg {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-// ===============================================
-// ВАРИАЦИИ КОМПОНЕНТА
-// ===============================================
-
-// Компактная версия
-.answer-item--compact {
-  padding: 12px;
-
-  .answer-item__header {
-    margin-bottom: 12px;
-  }
-
-  .answer-item__avatar {
-    width: 32px;
-    height: 32px;
-  }
-
-  .answer-item__avatar-initials {
-    font-size: 13px;
-  }
-
-  .answer-item__author-name {
-    font-size: 13px;
-  }
-
-  .answer-item__text {
-    font-size: 13px;
-  }
-
-  .answer-item__footer {
-    padding-top: 10px;
-  }
-}
-
-// Версия без тени
-.answer-item--flat {
-  box-shadow: none;
-
-  &:hover {
-    box-shadow: none;
-    transform: none;
-  }
-}
-
-// Версия с выделением
-.answer-item--highlighted {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(4, 156, 161, 0.1);
+.answer-item {
+  animation: fadeInUp 0.3s ease-out;
 }

@@ -106,35 +106,29 @@ export default async function QuestionPage({ params }) {
       notFound();
     }
 
+    // Определяем нужно ли включать неподтвержденные ответы
+    const includeUnapproved = shouldIncludeUnapproved(user, question);
+
     // Теперь получаем ответы и комментарии по ID вопроса
-    const [answers, comments] = await Promise.allSettled([
-      answersService.getAnswersForQuestion(question._id), // ← ПЕРЕДАЕМ ID, НЕ SLUG
-      commentsService.getCommentsForQuestion(question._id), // ← ПЕРЕДАЕМ ID, НЕ SLUG
-    ]);
-
-    console.log("[REQ]", answers, comments);
-
-    const answersData = answers.status === "fulfilled" ? answers.value : [];
-    const commentsData = comments.status === "fulfilled" ? comments.value : [];
-
-    // Проверяем есть ли экспертные ответы
-    const hasExpertAnswers = answersData.some(
-      (answer) =>
-        (answer.author?.role === "expert" || answer.author?.role === "admin") &&
-        answer.status === "approved"
+    const answers = await answersService.getAnswersForQuestion(
+      question._id,
+      includeUnapproved
     );
 
     // Вычисляем права доступа
-    const permissions = calculatePermissions(user, question, answersData);
+    const permissions = calculatePermissions(user, question, answers);
+
+    if (!permissions.canView) {
+      console.error("Dont have permission");
+      notFound();
+    }
 
     return (
       <QuestionDetailPage
         question={question}
-        answers={answersData}
-        comments={commentsData}
+        answers={answers}
         user={user}
         permissions={permissions}
-        hasExpertAnswers={hasExpertAnswers}
       />
     );
   } catch (error) {
@@ -143,13 +137,42 @@ export default async function QuestionPage({ params }) {
   }
 }
 
+/**
+ * Определяет должен ли пользователь видеть неподтвержденные ответы
+ */
+function shouldIncludeUnapproved(user, question) {
+  if (!user) {
+    // Гость - только подтвержденные
+    return false;
+  }
+
+  // Админ всегда видит ВСЕ ответы
+  if (user.role === "admin") {
+    return true;
+  }
+
+  // Эксперт видит все подтвержденные + свои неподтвержденные
+  if (user.role === "expert" || user.role === "lawyer") {
+    return true; // Backend фильтрует: approved + own pending
+  }
+
+  // Обычный пользователь видит только подтвержденные
+  return false;
+}
+
 // Функция вычисления прав доступа
 function calculatePermissions(user, question, answers) {
-  const isAuthor = user && user._id === question.author?._id;
-  const isExpert = user && ["expert", "admin", "moderator"].includes(user.role);
-  const isAdmin = user && ["admin", "moderator"].includes(user.role);
+  const isAuthor = user && user.id === question.author?._id;
+  const isExpert = user && ["expert", "admin"].includes(user.role);
+  const isAdmin = user && ["admin"].includes(user.role);
+  const hasExpertAnswers = answers.some(
+    (answer) =>
+      (answer.expert?.role === "expert" || answer.expert?.role === "admin") &&
+      answer.isApproved
+  );
 
   return {
+    canView: isAdmin || isExpert || isAuthor || hasExpertAnswers,
     canAnswer: isExpert,
     canEdit: isAuthor || isAdmin,
     canDelete: isAuthor || isAdmin,
@@ -157,6 +180,7 @@ function calculatePermissions(user, question, answers) {
     canShare: true,
     canReport: !!user,
     canAcceptAnswer: isAuthor,
+    canModerate: user && user.role === "admin",
     canComment:
       user &&
       (isExpert ||

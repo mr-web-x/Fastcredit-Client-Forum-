@@ -112,157 +112,6 @@ export async function createAnswerAction(questionId, answerData) {
 }
 
 /**
- * Server Action для лайка ответа
- */
-export async function likeAnswerAction(answerId) {
-  try {
-    const currentUser = await getServerUser();
-    if (!currentUser) {
-      return {
-        success: false,
-        error: "Musíte sa prihlásiť pre hodnotenie odpovede",
-      };
-    }
-
-    if (!answerId) {
-      throw new Error("ID odpovede je povinné");
-    }
-
-    console.log(`👍 Liking answer:`, {
-      answerId,
-      userId: currentUser.id,
-    });
-
-    const backendUrl =
-      process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
-    const { cookies } = await import("next/headers");
-    const cookieStore = await cookies();
-    const jwtCookie = cookieStore.get("fc_jwt");
-
-    if (!jwtCookie?.value) {
-      return {
-        success: false,
-        error: "No authentication token",
-      };
-    }
-
-    const response = await fetch(`${backendUrl}/answers/${answerId}/like`, {
-      method: "POST",
-      headers: {
-        Cookie: `fc_jwt=${jwtCookie.value}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    const data = await response.json();
-
-    if (!response.ok || !data.success) {
-      console.error("❌ Failed to like answer:", data.message);
-      return {
-        success: false,
-        error: data.message || "Nepodarilo sa označiť odpoveď",
-      };
-    }
-
-    console.log(`✅ Answer liked successfully:`, data.data);
-
-    // Revalidate только страницу с вопросом
-    revalidatePath("/questions/[slug]", "page");
-
-    return {
-      success: true,
-      data: {
-        likes: data.data.likes,
-        isLiked: data.data.isLiked,
-      },
-    };
-  } catch (error) {
-    console.error("❌ [likeAnswerAction] Error:", error);
-    return {
-      success: false,
-      error: "Chyba servera pri hodnotení odpovede",
-    };
-  }
-}
-
-/**
- * Server Action для принятия ответа как лучшего
- */
-export async function acceptAnswerAction(questionId, answerId) {
-  try {
-    const currentUser = await getServerUser();
-    if (!currentUser) {
-      return {
-        success: false,
-        error: "Musíte sa prihlásiť pre označenie najlepšej odpovede",
-      };
-    }
-
-    if (!questionId || !answerId) {
-      throw new Error("ID otázky a odpovede sú povinné");
-    }
-
-    console.log(`⭐ Accepting answer as best:`, {
-      questionId,
-      answerId,
-      userId: currentUser.id,
-    });
-
-    const backendUrl =
-      process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
-    const { cookies } = await import("next/headers");
-    const cookieStore = await cookies();
-    const jwtCookie = cookieStore.get("fc_jwt");
-
-    if (!jwtCookie?.value) {
-      return {
-        success: false,
-        error: "No authentication token",
-      };
-    }
-
-    const response = await fetch(
-      `${backendUrl}/questions/${questionId}/answers/${answerId}/accept`,
-      {
-        method: "POST",
-        headers: {
-          Cookie: `fc_jwt=${jwtCookie.value}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok || !data.success) {
-      console.error("❌ Failed to accept answer:", data.message);
-      return {
-        success: false,
-        error: data.message || "Nepodarilo sa označiť odpoveď ako najlepšiu",
-      };
-    }
-
-    console.log(`✅ Answer accepted as best successfully`);
-
-    // Revalidate страницы
-    revalidatePath("/questions/[slug]", "page");
-    revalidatePath("/profile/questions", "page");
-
-    return {
-      success: true,
-      data: data.data,
-      message: "Odpoveď bola označená ako najlepšia",
-    };
-  } catch (error) {
-    console.error("❌ [acceptAnswerAction] Error:", error);
-    return {
-      success: false,
-      error: "Chyba servera pri označovaní najlepšej odpovede",
-    };
-  }
-}
-
-/**
  * Server Action для редактирования ответа
  */
 export async function updateAnswerAction(answerId, updateData) {
@@ -351,6 +200,99 @@ export async function updateAnswerAction(answerId, updateData) {
     return {
       success: false,
       error: "Chyba servera pri aktualizácii odpovede",
+    };
+  }
+}
+
+/**
+ * Server Action для модерации ответа админом
+ */
+export async function updateApprovedAnswerAction(
+  answerId,
+  isApproved,
+  comment = ""
+) {
+  try {
+    const currentUser = await getServerUser();
+
+    if (!currentUser) {
+      return {
+        success: false,
+        error: "Musíte sa prihlásiť pre moderovanie odpovede",
+      };
+    }
+
+    // Только админы могут модерировать
+    if (currentUser.role !== "admin") {
+      return {
+        success: false,
+        error: "Nemáte oprávnenie pre moderovanie odpovede",
+      };
+    }
+
+    if (!answerId) {
+      throw new Error("ID odpovede je povinné");
+    }
+
+    if (typeof isApproved !== "boolean") {
+      return {
+        success: false,
+        error: "Neplatná akcia moderovania",
+      };
+    }
+
+    const backendUrl =
+      process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+    const { cookies } = await import("next/headers");
+    const cookieStore = await cookies();
+    const jwtCookie = cookieStore.get("fc_jwt");
+
+    if (!jwtCookie?.value) {
+      return {
+        success: false,
+        error: "No authentication token",
+      };
+    }
+
+    const response = await fetch(`${backendUrl}/answers/${answerId}/moderate`, {
+      method: "POST",
+      headers: {
+        Cookie: `fc_jwt=${jwtCookie.value}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        isApproved,
+        comment: comment.trim() || "No comment",
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      console.error("❌ Failed to moderate answer:", data.message);
+      return {
+        success: false,
+        error: data.message || "Nepodarilo sa moderovať odpoveď",
+      };
+    }
+
+    // Revalidate всех нужных страниц
+    revalidatePath("/questions/[slug]", "page");
+    revalidatePath("/profile/new-answers", "page");
+    revalidatePath("/profile/answers", "page");
+
+    return {
+      success: true,
+      data: data.data,
+      message: isApproved
+        ? "Odpoveď bola úspešne schválená"
+        : "Odpoveď bola zamietnutá",
+    };
+  } catch (error) {
+    console.error("❌ [moderateAnswerAction] Error:", error);
+    return {
+      success: false,
+      error: "Chyba servera pri moderovaní odpovede",
     };
   }
 }

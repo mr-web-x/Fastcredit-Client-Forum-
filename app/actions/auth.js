@@ -5,11 +5,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { basePath } from "@/src/constants/config";
-import {
-  setAuthCookie,
-  clearAuthCookie,
-  getServerUser,
-} from "@/src/lib/auth-server";
+import { setAuthCookie, clearAuthCookie } from "@/src/lib/auth-server";
 
 /**
  * Server Action для локального входа
@@ -622,70 +618,6 @@ export async function resetPasswordAction(prevState, formData) {
       message: null,
       fieldErrors: null,
     };
-  }
-}
-/**
- * Server Action для обновления профиля
- */
-export async function updateProfileAction(prevState, formData) {
-  try {
-    // Проверяем авторизацию
-    const currentUser = await getServerUser();
-    if (!currentUser) {
-      redirect(`${basePath}/login`);
-    }
-
-    const firstName = formData.get("firstName")?.toString().trim();
-    const lastName = formData.get("lastName")?.toString().trim();
-    const username = formData.get("username")?.toString().trim();
-    const bio = formData.get("bio")?.toString().trim();
-
-    // Валидация
-    if (!firstName) {
-      return { error: "Meno je povinné" };
-    }
-    if (!lastName) {
-      return { error: "Priezvisko je povinné" };
-    }
-    if (!username) {
-      return { error: "Používateľské meno je povinné" };
-    }
-    if (username.length < 3) {
-      return { error: "Používateľské meno musí mať aspoň 3 znaky" };
-    }
-
-    const backendUrl =
-      process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
-    const response = await fetch(`${backendUrl}/auth/profile`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${await getServerUser().token}`, // Need to get token
-      },
-      body: JSON.stringify({
-        firstName,
-        lastName,
-        username,
-        bio,
-      }),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok || !data.success) {
-      return { error: data.message || "Nepodarilo sa aktualizovať profil" };
-    }
-
-    // Revalidate paths
-    revalidatePath("/forum/profile");
-
-    return {
-      success: true,
-      message: "Profil bol úspešne aktualizovaný",
-    };
-  } catch (error) {
-    console.error("[updateProfileAction] Error:", error);
-    return { error: "Chyba servera. Skúste to znovu." };
   }
 }
 
