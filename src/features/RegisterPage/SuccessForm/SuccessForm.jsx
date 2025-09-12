@@ -3,23 +3,25 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import "./SuccessForm.scss";
 
-export default function SuccessForm({ email, onBackToVerification }) {
+export default function SuccessForm({
+  email,
+  onBackToVerification,
+  redirectTo,
+}) {
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   // Auto redirect после 5 секунд
   useEffect(() => {
     const redirectTimer = setTimeout(() => {
-      const redirectTo = searchParams.get("next") || "/";
       router.replace(redirectTo);
     }, 5000);
 
     return () => clearTimeout(redirectTimer);
-  }, [router, searchParams]);
+  }, [router, redirectTo]);
 
   return (
     <div className="success-form">
@@ -54,7 +56,14 @@ export default function SuccessForm({ email, onBackToVerification }) {
         </div>
 
         <div className="success-form__actions">
-          <Link href="/login" className="success-form__login-btn">
+          <Link
+            href={
+              redirectTo === "/"
+                ? "/login"
+                : `/login?next=${encodeURIComponent(redirectTo)}`
+            }
+            className="success-form__login-btn"
+          >
             Prihlásiť sa teraz
           </Link>
 

@@ -31,9 +31,14 @@ export const metadata = {
   },
 };
 
-export default async function Register() {
+// ✅ ИСПРАВЛЕНИЕ: Добавляем { searchParams } и передаем redirectTo как prop
+export default async function Register({ searchParams }) {
   // Server-side guard - перенаправляем авторизованных пользователей
   await requireGuest("/");
 
-  return <RegisterPage />;
+  // ✅ Читаем searchParams на сервере (Server Component)
+  const redirectTo = searchParams?.next || "/";
+
+  // ✅ Передаем redirectTo в Client Component как prop
+  return <RegisterPage redirectTo={redirectTo} />;
 }

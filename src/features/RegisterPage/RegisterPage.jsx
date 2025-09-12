@@ -3,7 +3,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import GoogleAuthButton from "@/src/components/GoogleAuthButton/GoogleAuthButton";
 import RegistrationForm from "./RegistrationForm/RegistrationForm";
@@ -11,9 +11,8 @@ import VerificationForm from "./VerificationForm/VerificationForm";
 import SuccessForm from "./SuccessForm/SuccessForm";
 import "./RegisterPage.scss";
 
-export default function RegisterPage() {
+export default function RegisterPage({ redirectTo = "/" }) {
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   // Локальный state для управления шагами
   const [step, setStep] = useState("form"); // form, verification, success
@@ -21,7 +20,6 @@ export default function RegisterPage() {
 
   // Handle Google OAuth success
   const handleGoogleSuccess = ({ user }) => {
-    const redirectTo = searchParams.get("next") || "/";
     router.replace(redirectTo);
   };
 
@@ -101,6 +99,7 @@ export default function RegisterPage() {
             {step === "success" && (
               <SuccessForm
                 email={email}
+                redirectTo={redirectTo}
                 onBackToVerification={handleBackToVerification}
               />
             )}

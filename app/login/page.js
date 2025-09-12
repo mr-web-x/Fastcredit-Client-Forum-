@@ -23,9 +23,11 @@ export const metadata = {
   },
 };
 
-export default async function Login() {
+export default async function Login({ searchParams }) {
   // Server-side guard - перенаправляем авторизованных пользователей
   await requireGuest("/");
 
-  return <LoginPage />;
+  const redirectTo = searchParams?.next || "/";
+
+  return <LoginPage redirectTo={redirectTo}/>;
 }

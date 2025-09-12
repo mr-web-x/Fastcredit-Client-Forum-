@@ -1,15 +1,15 @@
+// Файл: src/features/LoginPage/LoginPage.jsx
 "use client";
 
 import { useState, useEffect, useActionState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation"; // ✅ Оставляем только useRouter
 import Link from "next/link";
 import { loginAction } from "@/app/actions/auth";
 import GoogleAuthButton from "@/src/components/GoogleAuthButton/GoogleAuthButton";
 import "./LoginPage.scss";
 
-export default function LoginPage() {
+export default function LoginPage({ redirectTo = "/" }) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
 
   // Правильное использование useActionState с isPending
@@ -23,7 +23,6 @@ export default function LoginPage() {
   // Обработка успешного входа и редиректа
   useEffect(() => {
     if (formState?.success) {
-      const redirectTo = searchParams.get("next") || "/";
       const timerId = setTimeout(() => {
         router.replace(redirectTo);
       }, 1000);
@@ -31,10 +30,9 @@ export default function LoginPage() {
       // Очистка таймера при размонтировании компонента
       return () => clearTimeout(timerId);
     }
-  }, [formState?.success, router, searchParams]);
+  }, [formState?.success, router, redirectTo]);
 
   const handleGoogleSuccess = ({ user }) => {
-    const redirectTo = searchParams.get("next") || "/";
     router.replace(redirectTo);
   };
 
@@ -84,119 +82,131 @@ export default function LoginPage() {
               </p>
             </div>
 
-            {/* Google OAuth Button */}
-            <div className="login-page__google-container">
+            {/* Content */}
+            <div className="login-page__content">
+              {/* Google OAuth */}
               <GoogleAuthButton
                 onSuccess={handleGoogleSuccess}
                 onError={handleGoogleError}
               />
-            </div>
 
-            <div className="login-page__divider">
-              <span>alebo</span>
-            </div>
-
-            {/* Server Action Form */}
-            <form action={formAction} className="login-page__form">
-              {/* Общая ошибка от Server Action */}
-              {formState?.error && (
-                <div className="login-page__error login-page__error--general">
-                  {formState.error}
-                </div>
-              )}
-
-              {/* Success сообщение (если нужно показать без редиректа) */}
-              {formState?.message && !formState?.error && (
-                <div className="login-page__success">{formState.message}</div>
-              )}
-
-              <div className="login-page__field">
-                <label htmlFor="login" className="login-page__label">
-                  Email alebo používateľské meno *
-                </label>
-                <input
-                  id="login"
-                  type="text"
-                  name="login"
-                  placeholder="napr. jan@example.com"
-                  className="login-page__input"
-                  disabled={isPending}
-                  autoComplete="username"
-                  required
-                  aria-describedby={
-                    formState?.fieldErrors?.login ? "login-error" : undefined
-                  }
-                />
-                {/* Ошибка для конкретного поля */}
-                {formState?.fieldErrors?.login && (
-                  <div id="login-error" className="login-page__field-error">
-                    {formState.fieldErrors.login}
-                  </div>
-                )}
+              <div className="login-page__divider">
+                <span>alebo</span>
               </div>
 
-              <div className="login-page__field">
-                <label htmlFor="password" className="login-page__label">
-                  Heslo *
-                </label>
-                <div className="login-page__password-field">
+              {/* Login Form */}
+              <form action={formAction} className="login-page__form">
+                {/* General error */}
+                {formState?.error && (
+                  <div className="login-page__error">{formState.error}</div>
+                )}
+
+                {/* Success message */}
+                {formState?.message && !formState?.error && (
+                  <div className="login-page__success">{formState.message}</div>
+                )}
+
+                {/* Email/Username field */}
+                <div className="login-page__field">
+                  <label htmlFor="login" className="login-page__label">
+                    Email alebo používateľské meno *
+                  </label>
                   <input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    placeholder="Vaše heslo"
-                    className="login-page__input"
+                    id="login"
+                    type="text"
+                    name="login"
+                    placeholder="Zadajte email alebo používateľské meno"
+                    className={`login-page__input ${
+                      formState?.fieldErrors?.login
+                        ? "login-page__input--error"
+                        : ""
+                    }`}
                     disabled={isPending}
-                    autoComplete="current-password"
+                    autoComplete="username"
                     required
-                    minLength={6}
-                    aria-describedby={
-                      formState?.fieldErrors?.password
-                        ? "password-error"
-                        : undefined
-                    }
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="login-page__password-toggle"
-                    disabled={isPending}
-                    aria-label={showPassword ? "Skryť heslo" : "Zobraziť heslo"}
-                  >
-                    {showPassword ? "🙈" : "👁️"}
-                  </button>
+                  {formState?.fieldErrors?.login && (
+                    <div className="login-page__field-error">
+                      {formState.fieldErrors.login}
+                    </div>
+                  )}
                 </div>
-                {/* Ошибка для конкретного поля */}
-                {formState?.fieldErrors?.password && (
-                  <div id="password-error" className="login-page__field-error">
-                    {formState.fieldErrors.password}
+
+                {/* Password field */}
+                <div className="login-page__field">
+                  <label htmlFor="password" className="login-page__label">
+                    Heslo *
+                  </label>
+                  <div className="login-page__password-field">
+                    <input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      placeholder="Zadajte heslo"
+                      className={`login-page__input ${
+                        formState?.fieldErrors?.password
+                          ? "login-page__input--error"
+                          : ""
+                      }`}
+                      disabled={isPending}
+                      autoComplete="current-password"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="login-page__password-toggle"
+                      disabled={isPending}
+                    >
+                      {showPassword ? "🙈" : "👁️"}
+                    </button>
                   </div>
-                )}
-              </div>
+                  {formState?.fieldErrors?.password && (
+                    <div className="login-page__field-error">
+                      {formState.fieldErrors.password}
+                    </div>
+                  )}
+                </div>
 
-              <button
-                type="submit"
-                disabled={isPending}
-                className="login-page__submit"
-                aria-busy={isPending}
-              >
-                {isPending ? "Prihlasovanie..." : "Prihlásiť sa"}
-              </button>
-            </form>
-
-            <div className="login-page__footer">
-              <Link href="/forgot-password" className="login-page__link">
-                Zabudli ste heslo?
-              </Link>
-              <div className="login-page__register">
-                <span>Nemáte účet? </span>
-                <Link
-                  href="/register"
-                  className="login-page__link login-page__link--primary"
+                {/* Submit button */}
+                <button
+                  type="submit"
+                  className="login-page__submit"
+                  disabled={isPending}
                 >
-                  Zaregistrujte sa
+                  {isPending ? "Prihlasovanie..." : "Prihlásiť sa"}
+                </button>
+
+                {/* Forgot password link */}
+                <div className="login-page__forgot">
+                  <Link
+                    href={`/forgot-password${
+                      redirectTo !== "/"
+                        ? `?next=${encodeURIComponent(redirectTo)}`
+                        : ""
+                    }`}
+                    className="login-page__forgot-link"
+                  >
+                    Zabudli ste heslo?
+                  </Link>
+                </div>
+              </form>
+            </div>
+
+            {/* Footer */}
+            <div className="login-page__footer">
+              <p className="login-page__register-link">
+                Nemáte účet?{" "}
+                <Link
+                  href={`/register${
+                    redirectTo !== "/"
+                      ? `?next=${encodeURIComponent(redirectTo)}`
+                      : ""
+                  }`}
+                >
+                  Registrovať sa
                 </Link>
-              </div>
+              </p>
             </div>
           </div>
         </div>
