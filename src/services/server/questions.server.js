@@ -19,6 +19,9 @@ class QuestionsServiceServer {
       category = "",
       status = "",
       priority = "",
+      hasApprovedAnswers = null,
+      hasPendingAnswers = null,
+      includeAnswersCounters = false, // Добавили новый параметр
     } = params;
 
     const qp = new URLSearchParams({
@@ -27,9 +30,23 @@ class QuestionsServiceServer {
       sortBy,
       sortOrder,
     });
+
     if (category) qp.set("category", category);
     if (status) qp.set("status", status);
     if (priority) qp.set("priority", priority);
+
+    // Добавляем новые параметры фильтрации по ответам
+    if (hasApprovedAnswers !== null) {
+      qp.set("hasApprovedAnswers", String(hasApprovedAnswers));
+    }
+    if (hasPendingAnswers !== null) {
+      qp.set("hasPendingAnswers", String(hasPendingAnswers));
+    }
+
+    // Добавляем параметр для получения счетчиков ответов
+    if (includeAnswersCounters) {
+      qp.set("includeAnswersCounters", "true");
+    }
 
     try {
       const result = await this.client.get(`/questions?${qp.toString()}`);
@@ -44,7 +61,6 @@ class QuestionsServiceServer {
       return { items: [], pagination: null };
     }
   }
-
   /** Топ вопросов (сервер) */
   async getTop(params = {}) {
     const { limit = 5, period = 30, sortBy = "likes" } = params;

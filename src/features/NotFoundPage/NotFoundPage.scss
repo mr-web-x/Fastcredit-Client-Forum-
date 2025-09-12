@@ -1,0 +1,241 @@
+// Файл: src/components/NotFound/NotFound.scss
+
+.not-found {
+  min-height: 90vh;
+  background: var(--background);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  margin: 0;
+
+  .container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  &__content {
+    text-align: center;
+    background: var(--white);
+    border-radius: 24px;
+    padding: 60px 40px;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--card-border);
+  }
+
+  &__icon {
+    margin-bottom: 32px;
+    color: var(--accent);
+    opacity: 0.8;
+    animation: float 3s ease-in-out infinite;
+
+    .MuiSvgIcon-root {
+      font-size: 120px;
+      display: block;
+      margin: 0 auto;
+    }
+  }
+
+  &__text {
+    margin-bottom: 40px;
+  }
+
+  &__title {
+    font-size: 72px;
+    font-weight: 800;
+    color: var(--accent);
+    margin: 0 0 16px 0;
+    line-height: 1;
+    text-shadow: 0 2px 4px rgba(4, 156, 161, 0.1);
+  }
+
+  &__subtitle {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--black);
+    margin: 0 0 16px 0;
+    line-height: 1.2;
+  }
+
+  &__description {
+    font-size: 16px;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.6;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+
+  &__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 160px;
+    justify-content: center;
+
+    .MuiSvgIcon-root {
+      font-size: 18px;
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    &--primary {
+      background: var(--accentGradient);
+      color: var(--white);
+      box-shadow: 0 4px 12px rgba(4, 156, 161, 0.2);
+
+      &:hover {
+        box-shadow: 0 8px 20px rgba(4, 156, 161, 0.3);
+      }
+    }
+
+    &--secondary {
+      background: var(--background);
+      color: var(--accent);
+      border: 2px solid var(--accent-border-light);
+
+      &:hover {
+        background: var(--accent-bg-light);
+        border-color: var(--accent);
+      }
+    }
+  }
+
+  &__help {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  &__link {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: var(--black);
+      text-decoration: underline;
+    }
+  }
+}
+
+// Анимация плавания иконки
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+// Адаптивность
+@media (max-width: 768px) {
+  .not-found {
+    padding: 20px 16px;
+
+    &__content {
+      padding: 40px 24px;
+      border-radius: 20px;
+    }
+
+    &__icon {
+      margin-bottom: 24px;
+
+      .MuiSvgIcon-root {
+        font-size: 80px;
+      }
+    }
+
+    &__title {
+      font-size: 56px;
+    }
+
+    &__subtitle {
+      font-size: 24px;
+    }
+
+    &__description {
+      font-size: 15px;
+    }
+
+    &__actions {
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    &__btn {
+      width: 100%;
+      max-width: 280px;
+      padding: 14px 24px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .not-found {
+    &__content {
+      padding: 32px 20px;
+      border-radius: 16px;
+    }
+
+    &__icon {
+      margin-bottom: 20px;
+
+      .MuiSvgIcon-root {
+        font-size: 64px;
+      }
+    }
+
+    &__title {
+      font-size: 48px;
+    }
+
+    &__subtitle {
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+
+    &__description {
+      font-size: 14px;
+    }
+
+    &__text {
+      margin-bottom: 32px;
+    }
+
+    &__btn {
+      padding: 12px 20px;
+      font-size: 15px;
+    }
+  }
+}

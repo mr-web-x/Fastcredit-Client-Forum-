@@ -1,35 +1,23 @@
-// Файл: src/features/ProfilePage/MyQuestionsPage/MyQuestionCard/MyQuestionCard.jsx
+// Файл: src/components/QuestionCard/QuestionCard.jsx
 
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { basePath } from "@/src/constants/config";
 import { Menu, MenuItem, IconButton } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ShareIcon from "@mui/icons-material/Share";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
-import LockIcon from "@mui/icons-material/Lock";
-import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
-import FlashOnIcon from "@mui/icons-material/FlashOn";
-import LowPriorityIcon from "@mui/icons-material/LowPriority";
-import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import "./QuestionCard.scss";
 
-export default function MyQuestionCard({
+export default function QuestionCard({
   question,
-  user,
-  onEdit,
-  onDelete,
-  onShare,
-  actionsType = "viewer",
+  user = null,
+  onClick,
+  onDelete = null,
+  showAdminMetrics = false,
 }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
@@ -55,13 +43,8 @@ export default function MyQuestionCard({
   const getCategoryName = (slug) => {
     const categoryMap = {
       expert: "Expert",
-      pravnik: "Právnik",
       lawyer: "Právnik",
-      loans: "Pôžičky",
-      banking: "Bankovníctvo",
-      insurance: "Poistenie",
-      investment: "Investície",
-      credit: "Úvery",
+      pravnik: "Právnik",
     };
     return categoryMap[slug] || slug;
   };
@@ -69,135 +52,151 @@ export default function MyQuestionCard({
   const getStatusInfo = (status) => {
     switch (status) {
       case "answered":
-        return {
-          text: "Zodpovedané",
-          type: "success",
-          icon: <CheckCircleIcon sx={{ fontSize: 14 }} />,
-        };
+        return { text: "Zodpovedané", type: "success" };
       case "closed":
-        return {
-          text: "Uzavreté",
-          type: "secondary",
-          icon: <LockIcon sx={{ fontSize: 14 }} />,
-        };
+        return { text: "Uzavreté", type: "secondary" };
       case "pending":
-        return {
-          text: "Nezodpovedané",
-          type: "primary",
-          icon: <HourglassEmptyIcon sx={{ fontSize: 14 }} />,
-        };
+        return { text: "Nezodpovedané", type: "primary" };
       default:
-        return {
-          text: "Aktívne",
-          type: "primary",
-          icon: <FiberManualRecordIcon sx={{ fontSize: 14 }} />,
-        };
+        return { text: "Aktívne", type: "primary" };
     }
   };
 
   const getPriorityInfo = (priority) => {
     switch (priority) {
       case "high":
-        return {
-          text: "Vysoká",
-          type: "high",
-          icon: <PriorityHighIcon sx={{ fontSize: 14 }} />,
-        };
+        return { text: "Vysoká", type: "high" };
       case "urgent":
-        return {
-          text: "Urgentná",
-          type: "urgent",
-          icon: <FlashOnIcon sx={{ fontSize: 14 }} />,
-        };
+        return { text: "Urgentná", type: "urgent" };
       case "low":
-        return {
-          text: "Nízka",
-          type: "low",
-          icon: <LowPriorityIcon sx={{ fontSize: 14 }} />,
-        };
+        return { text: "Nízka", type: "low" };
       default:
         return null;
     }
   };
 
-  // Проверка прав на редактирование и удаление
-  const canEdit = () => {
-    if (actionsType !== "owner" || !user || !question) return false;
-    const createdAt = new Date(question.createdAt);
-    const now = new Date();
-    const hoursDiff = (now - createdAt) / (1000 * 60 * 60);
-    return hoursDiff <= 24;
-  };
-
-  const canDelete = () => {
-    if (actionsType !== "owner" || !user || !question) return false;
-    const createdAt = new Date(question.createdAt);
-    const now = new Date();
-    const hoursDiff = (now - createdAt) / (1000 * 60 * 60);
-    return hoursDiff <= 1 && !question.hasAnswers;
-  };
-
-  // Обработчики меню
-  const handleMenuOpen = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleMenuAction = (action) => {
-    handleMenuClose();
-
-    switch (action) {
-      case "view":
-        window.open(`${basePath}/questions/${question.slug}`, "_blank");
-        break;
-      case "edit":
-        if (canEdit() && onEdit) {
-          onEdit(question);
-        }
-        break;
-      case "delete":
-        if (canDelete() && onDelete) {
-          onDelete(question);
-        }
-        break;
-      case "share":
-        if (onShare) {
-          onShare(question);
-        }
-        break;
-    }
-  };
-
-  // Превью контента (более короткое для компактности)
+  // Скрытие контента для превью
   const getPreviewText = (content) => {
     if (!content) return "";
-    const plainText = content.replace(/<[^>]*>/g, ""); // Удаление HTML тегов
+    const plainText = content.replace(/<[^>]*>/g, "");
     return plainText.length > 100
       ? plainText.substring(0, 100) + "..."
       : plainText;
   };
 
+  // Обработчики для меню
+  const handleMenuOpen = (event) => {
+    event.stopPropagation();
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = (event) => {
+    if (event) event.stopPropagation();
+    setAnchorEl(null);
+  };
+
+  const handleView = (event) => {
+    event.stopPropagation();
+    handleMenuClose();
+    if (onClick) onClick(question);
+  };
+
+  const handleShare = (event) => {
+    event.stopPropagation();
+    handleMenuClose();
+    const url = `${window.location.origin}/questions/${
+      question.slug || question._id
+    }`;
+
+    if (navigator.share) {
+      navigator.share({
+        title: question.title,
+        url: url,
+      });
+    } else {
+      navigator.clipboard.writeText(url).then(() => {
+        alert("Odkaz bol skopírovaný do schránky!");
+      });
+    }
+  };
+
+  const handleDelete = (event) => {
+    event.stopPropagation();
+    handleMenuClose();
+    if (onDelete) {
+      onDelete(question._id);
+    }
+  };
+
+  // Рендер админских метрик (правая часть)
+  const renderAdminMetrics = () => {
+    if (!showAdminMetrics || !user) return null;
+
+    if (user.role === "admin") {
+      // Для админов показываем счетчики
+      const approvedCount = question.approvedAnswersCount || 0;
+      const pendingCount = question.pendingAnswersCount || 0;
+
+      return (
+        <div className="question-card__admin-metrics">
+          {pendingCount > 0 && (
+            <div className="question-card__admin-metric question-card__admin-metric--pending">
+              <span className="question-card__admin-dot">🟡</span>
+              <span className="question-card__admin-count">{pendingCount}</span>
+            </div>
+          )}
+          {approvedCount > 0 && (
+            <div className="question-card__admin-metric question-card__admin-metric--approved">
+              <span className="question-card__admin-dot">🟢</span>
+              <span className="question-card__admin-count">
+                {approvedCount}
+              </span>
+            </div>
+          )}
+        </div>
+      );
+    } else if (user.role === "expert" || user.role === "lawyer") {
+      // Для экспертов показываем их статус ответа (пока заглушка)
+      console.log(question);
+      //Schválená odpoveď
+      //Na moderácii
+
+      const expertAnswer = question.userAnswers.find(
+        (el) => el.expert === user.id
+      );
+
+      if (!expertAnswer) return null;
+
+      return (
+        <div
+          className={`question-card__admin-metrics {expertAnswer.isApproved ? "question-card__admin-metric--approved" : "question-card__admin-metric--pending"}`}
+        >
+          <span className="question-card__admin-dot">
+            {expertAnswer.isApproved ? "🟢" : "🟡"}
+          </span>
+          <span className="question-card__admin-count">
+            {expertAnswer.isApproved ? "Schválená odpoveď" : "Na moderácii"}
+          </span>
+        </div>
+      );
+    }
+
+    return null;
+  };
+
   const statusInfo = getStatusInfo(question.status);
   const priorityInfo = getPriorityInfo(question.priority);
-  const questionUrl = `/questions/${question.slug}`;
+  const questionUrl = `/questions/${question.slug || question._id}`;
 
   return (
-    <div className="question-card">
+    <div className="question-card" onClick={() => onClick && onClick(question)}>
       <div className="question-card__content">
-        {/* Header с статусом и меню */}
+        {/* Header с badges и меню */}
         <div className="question-card__header">
           <div className="question-card__badges">
             <span
               className={`question-card__status question-card__status--${statusInfo.type}`}
             >
-              <span className="question-card__status-icon">
-                {statusInfo.icon}
-              </span>
               {statusInfo.text}
             </span>
 
@@ -205,18 +204,12 @@ export default function MyQuestionCard({
               <span
                 className={`question-card__priority question-card__priority--${priorityInfo.type}`}
               >
-                <span className="question-card__priority-icon">
-                  {priorityInfo.icon}
-                </span>
                 {priorityInfo.text}
               </span>
             )}
 
             {question.category && (
-              <span className={`question-card__category`}>
-                <span className="question-card__category-icon">
-                  <AssignmentIndIcon sx={{ fontSize: 14 }} />
-                </span>
+              <span className="question-card__category">
                 {getCategoryName(question.category)}
               </span>
             )}
@@ -237,57 +230,21 @@ export default function MyQuestionCard({
               anchorEl={anchorEl}
               open={isMenuOpen}
               onClose={handleMenuClose}
-              onClick={handleMenuClose}
-              PaperProps={{
-                elevation: 3,
-                sx: {
-                  borderRadius: 2,
-                  minWidth: 160,
-                  mt: 1,
-                  "& .MuiMenuItem-root": {
-                    px: 2,
-                    py: 1.5,
-                    fontSize: 14,
-                    fontWeight: 500,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1.5,
-                  },
-                },
-              }}
-              transformOrigin={{ horizontal: "right", vertical: "top" }}
-              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+              onClick={(e) => e.stopPropagation()}
             >
-              <MenuItem onClick={() => handleMenuAction("view")}>
-                <VisibilityIcon sx={{ fontSize: 18 }} />
+              <MenuItem onClick={handleView}>
+                <VisibilityIcon sx={{ fontSize: 18, marginRight: 1 }} />
                 Zobraziť
               </MenuItem>
 
-              {/* Доделать в проде */}
-              {/* {canEdit() && (
-                <MenuItem onClick={() => handleMenuAction("edit")}>
-                  <EditIcon sx={{ fontSize: 18 }} />
-                  Upraviť
-                </MenuItem>
-              )} */}
-
-              <MenuItem onClick={() => handleMenuAction("share")}>
-                <ShareIcon sx={{ fontSize: 18 }} />
+              <MenuItem onClick={handleShare}>
+                <ShareIcon sx={{ fontSize: 18, marginRight: 1 }} />
                 Zdieľať
               </MenuItem>
 
-              {canDelete() && (
-                <MenuItem
-                  onClick={() => handleMenuAction("delete")}
-                  sx={{
-                    color: "error.main",
-                    "&:hover": {
-                      backgroundColor: "error.light",
-                      color: "error.dark",
-                    },
-                  }}
-                >
-                  <DeleteIcon sx={{ fontSize: 18 }} />
+              {onDelete && user.role === "admin" && (
+                <MenuItem onClick={handleDelete} sx={{ color: "#d32f2f" }}>
+                  <DeleteIcon sx={{ fontSize: 18, marginRight: 1 }} />
                   Vymazať
                 </MenuItem>
               )}
@@ -296,9 +253,7 @@ export default function MyQuestionCard({
         </div>
 
         {/* Заголовок вопроса */}
-        <Link href={questionUrl} className="question-card__title-link">
-          <h3 className="question-card__title">{question.title}</h3>
-        </Link>
+        <h3 className="question-card__title">{question.title}</h3>
 
         {/* Превью контента */}
         {question.content && (
@@ -307,36 +262,33 @@ export default function MyQuestionCard({
           </p>
         )}
 
-        {/* Footer с метаинформацией и статистикой */}
+        {/* Footer с метаинформацией */}
         <div className="question-card__footer">
+          {/* Левая часть: дата, просмотры, публичные ответы */}
           <div className="question-card__meta">
             <span className="question-card__date">
               {formatDate(question.createdAt)}
             </span>
-          </div>
 
-          <div className="question-card__stats">
-            <div className="question-card__stat">
-              <ThumbUpIcon sx={{ fontSize: 16, opacity: 0.7 }} />
-              <span className="question-card__stat-value">
-                {question.likes || 0}
-              </span>
-            </div>
+            <div className="question-card__stats">
+              <div className="question-card__stat">
+                <VisibilityOutlinedIcon sx={{ fontSize: 14 }} />
+                <span className="question-card__stat-value">
+                  {question.views || 0}
+                </span>
+              </div>
 
-            <div className="question-card__stat">
-              <ChatBubbleIcon sx={{ fontSize: 16, opacity: 0.7 }} />
-              <span className="question-card__stat-value">
-                {question.answersCount || 0}
-              </span>
-            </div>
-
-            <div className="question-card__stat">
-              <VisibilityOutlinedIcon sx={{ fontSize: 16, opacity: 0.7 }} />
-              <span className="question-card__stat-value">
-                {question.views || 0}
-              </span>
+              <div className="question-card__stat">
+                <ChatBubbleIcon sx={{ fontSize: 14 }} />
+                <span className="question-card__stat-value">
+                  {question.answersCount || 0}
+                </span>
+              </div>
             </div>
           </div>
+
+          {/* Правая часть: админские метрики */}
+          {renderAdminMetrics()}
         </div>
       </div>
     </div>

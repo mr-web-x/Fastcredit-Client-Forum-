@@ -181,11 +181,17 @@ export async function deleteQuestionAction(questionId) {
   try {
     const currentUser = await getServerUser();
     if (!currentUser) {
-      redirect(`${basePath}/login`);
+      return {
+        success: false,
+        error: "Neprihlásený používateľ",
+      };
     }
 
     if (!questionId) {
-      throw new Error("ID otázky je povinné");
+      return {
+        success: false,
+        error: "ID otázky je povinné",
+      };
     }
 
     const backendUrl =
@@ -193,6 +199,13 @@ export async function deleteQuestionAction(questionId) {
     const { cookies } = await import("next/headers");
     const cookieStore = await cookies();
     const jwtCookie = cookieStore.get("fc_jwt");
+
+    if (!jwtCookie?.value) {
+      return {
+        success: false,
+        error: "Chýba autentifikačný token",
+      };
+    }
 
     const response = await fetch(`${backendUrl}/questions/${questionId}`, {
       method: "DELETE",
@@ -203,18 +216,28 @@ export async function deleteQuestionAction(questionId) {
 
     if (!response.ok) {
       const data = await response.json();
-      throw new Error(data.message || "Nepodarilo sa zmazať otázku");
+      return {
+        success: false,
+        error: data.message || "Nepodarilo sa zmazať otázku",
+      };
     }
 
     // Revalidate paths
     revalidatePath("/forum");
     revalidatePath("/forum/questions");
     revalidatePath("/forum/profile");
+    revalidatePath("/profile/all-questions");
 
-    return { success: true };
+    return {
+      success: true,
+      message: "Otázka bola úspešne zmazaná",
+    };
   } catch (error) {
     console.error("[deleteQuestionAction] Error:", error);
-    throw error;
+    return {
+      success: false,
+      error: "Chyba servera. Skúste to znovu.",
+    };
   }
 }
 
@@ -313,6 +336,109 @@ export async function getUserQuestionsAction(filters = {}) {
   }
 }
 
+/**
+ * Server Action для получения всех вопросов для админов и экспертов
+ */
+export async function getAllQuestionsAction(params = {}) {
+  try {
+    const user = await getServerUser();
+    if (!user) {
+      return {
+        success: false,
+        error: "Neprihlásený používateľ",
+        data: null,
+      };
+    }
+
+    // Проверка прав доступа
+    if (!["expert", "lawyer", "admin", "moderator"].includes(user.role)) {
+      return {
+        success: false,
+        error: "Nemáte oprávnenie na zobrazenie otázok",
+        data: null,
+      };
+    }
+
+    const {
+      page = 1,
+      limit = 10,
+      hasApprovedAnswers = null, // true/false/null
+      hasPendingAnswers = null, // true/false/null
+      sortBy = "createdAt",
+      sortOrder = "desc", // 'asc' | 'desc'
+    } = params;
+
+    console.log(`🔍 Loading all questions for ${user.role} ${user.id}:`, {
+      page,
+      limit,
+      hasApprovedAnswers,
+      hasPendingAnswers,
+      sortBy,
+      sortOrder,
+    });
+
+    // Конвертируем sortOrder в backend формат
+    const backendSortOrder = sortOrder === "desc" ? "-1" : "1";
+
+    // Убираем фильтрацию по роли - админы и модераторы видят ВСЕ вопросы
+    let category = "";
+    if (user.role === "expert") {
+      category = "expert"; // Эксперты видят только вопросы своей категории
+    } else if (user.role === "lawyer") {
+      category = "lawyer"; // Правники видят только вопросы своей категории
+    }
+    // admin и moderator видят все категории (category = "")
+
+    // Вызываем questionsService.getLatest с новыми параметрами
+    const result = await questionsService.getLatest({
+      page,
+      limit,
+      category,
+      hasApprovedAnswers,
+      hasPendingAnswers,
+      includeAnswersCounters: true, // Добавляем для получения счетчиков ответов
+      sortBy,
+      sortOrder: backendSortOrder,
+    });
+
+    // Проверяем структуру ответа
+    const responseData = {
+      items: Array.isArray(result.items) ? result.items : [],
+      pagination: result.pagination || {
+        page: parseInt(page),
+        totalPages: 0,
+        totalItems: 0,
+        hasNext: false,
+        hasPrev: false,
+      },
+    };
+
+    console.log(`✅ Questions loaded:`, {
+      userRole: user.role,
+      itemsCount: responseData.items.length,
+      pagination: responseData.pagination,
+      appliedFilters: {
+        hasApprovedAnswers,
+        hasPendingAnswers,
+        sortBy,
+        sortOrder,
+      },
+    });
+
+    return {
+      success: true,
+      error: null,
+      data: responseData,
+    };
+  } catch (error) {
+    console.error("[getAllQuestionsAction] Error:", error);
+    return {
+      success: false,
+      error: "Chyba servera. Skúste to znovu.",
+      data: null,
+    };
+  }
+}
 /**
  * Получение новых вопросов для экспертов/правников/админов
  */

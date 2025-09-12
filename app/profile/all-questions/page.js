@@ -2,15 +2,15 @@
 
 import { requireAuth } from "@/src/lib/auth-server";
 import { redirect } from "next/navigation";
-import { getNewQuestionsAction } from "@/app/actions/questions";
+import { getAllQuestionsAction } from "@/app/actions/questions";
 import AllQuestionsPage from "@/src/features/ProfilePage/AllQuestionsPage/AllQuestionsPage";
 
 export const metadata = {
-  title: "Nové otázky | FastCredit Forum",
-  description: "Zobrazte nové otázky na FastCredit Forum",
+  title: "Všetky otázky | FastCredit Forum",
+  description: "Zobrazte a spravujte všetky otázky na FastCredit Forum",
 };
 
-export default async function ProfileNewQuestions({ searchParams }) {
+export default async function ProfileAllQuestions({ searchParams }) {
   // Получаем авторизованного пользователя (redirect если нет авторизации)
   const user = await requireAuth();
 
@@ -22,40 +22,61 @@ export default async function ProfileNewQuestions({ searchParams }) {
   // Параметры фильтрации и пагинации из URL
   const page = Number(searchParams?.page) || 1;
   const limit = Number(searchParams?.limit) || 10;
-  const priority = searchParams?.priority || "";
+  const sortBy = searchParams?.sortBy || "createdAt";
+  const sortOrder = searchParams?.sortOrder || "desc";
 
-  // Загружаем новые вопросы с сервера через Server Action
+  // Парсим новые фильтры из URL
+  const hasApprovedAnswers =
+    searchParams?.hasApprovedAnswers === "true"
+      ? true
+      : searchParams?.hasApprovedAnswers === "false"
+      ? false
+      : null;
+  const hasPendingAnswers =
+    searchParams?.hasPendingAnswers === "true"
+      ? true
+      : searchParams?.hasPendingAnswers === "false"
+      ? false
+      : null;
+
+  // Загружаем все вопросы с сервера через Server Action
   let questionsData = { items: [], pagination: null };
   let error = null;
 
   try {
-    console.log(`🔍 Loading new questions for ${user.role} ${user.id}:`, {
+    console.log(`🔍 Loading all questions for ${user.role} ${user.id}:`, {
       page,
       limit,
-      priority,
+      hasApprovedAnswers,
+      hasPendingAnswers,
+      sortBy,
+      sortOrder,
     });
 
-    const result = await getNewQuestionsAction({
+    const result = await getAllQuestionsAction({
       page,
       limit,
-      priority,
+      hasApprovedAnswers,
+      hasPendingAnswers,
+      sortBy,
+      sortOrder,
     });
 
     if (result.success) {
       questionsData = result.data;
     } else {
       error = result.error;
-      console.error("❌ Failed to load new questions:", result.error);
+      console.error("❌ Failed to load all questions:", result.error);
     }
 
-    console.log(`✅ New questions loaded:`, {
+    console.log(`✅ All questions loaded:`, {
       userRole: user.role,
       itemsCount: questionsData.items?.length || 0,
       pagination: questionsData.pagination,
     });
   } catch (loadError) {
-    console.error("❌ Server error loading new questions:", loadError);
-    error = "Nepodarilo sa načítať nové otázky. Skúste to znovu.";
+    console.error("❌ Server error loading all questions:", loadError);
+    error = "Nepodarilo sa načítať otázky. Skúste to znovu.";
 
     // Fallback структура при ошибке
     questionsData = {
@@ -79,7 +100,10 @@ export default async function ProfileNewQuestions({ searchParams }) {
       initialFilters={{
         page,
         limit,
-        priority,
+        hasApprovedAnswers,
+        hasPendingAnswers,
+        sortBy,
+        sortOrder,
       }}
       error={error}
     />
