@@ -1,7 +1,7 @@
 import "./Hero.scss";
 
 export default function Hero() {
-  const base = process.env.NEXT_PUBLIC_BASE_PATH || "/forum";
+  const base = process.env.NEXT_PUBLIC_BASE_PATH || "/";
   return (
     <section className="hero">
       <div className="container hero__container">

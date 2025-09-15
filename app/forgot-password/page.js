@@ -13,11 +13,11 @@ export const metadata = {
   openGraph: {
     title: "Zabudnuté heslo — FastCredit Fórum",
     description: "Obnovte si prístup k svojmu účtu na FastCredit fóre",
-    url: "https://fastcredit.sk/forum/forgot-password",
+    url: "https://fastcredit.sk//forgot-password",
     type: "website",
   },
   alternates: {
-    canonical: "https://fastcredit.sk/forum/forgot-password",
+    canonical: "https://fastcredit.sk//forgot-password",
   },
 };
 

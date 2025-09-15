@@ -3,7 +3,7 @@ const nextConfig = {
   // Форум живёт под /forum
   // basePath: "/forum",
   // // Если статика будет кешироваться/отдаваться через основной сайт:
-  // assetPrefix: "/forum",
+  assetPrefix: "/forum",
   // trailingSlash: true,
   // Для Server Actions (если будешь их использовать)
   experimental: { serverActions: { bodySizeLimit: "2mb" } },

@@ -124,7 +124,7 @@ export default function MyQuestionsPage({
   };
 
   const handleShare = (question) => {
-    const url = `${window.location.origin}${basePath}/questions/${question.slug}`;
+    const url = `${window.location.origin}${basePath}questions/${question.slug}`;
 
     if (navigator.share) {
       navigator.share({

@@ -67,17 +67,17 @@ export default function Header({ user = null }) {
       console.error("[Header] Logout error:", error);
       // В случае ошибки пытаемся сделать fallback через Route Handler
       try {
-        const response = await fetch(`${basePath}/api/auth/logout`, {
+        const response = await fetch(`${basePath}api/auth/logout`, {
           method: "POST",
           credentials: "include",
         });
         if (response.ok) {
-          window.location.href = `${basePath}/`;
+          window.location.href = `${basePath}`;
         }
       } catch (fallbackError) {
         console.error("[Header] Fallback logout failed:", fallbackError);
         // Последний fallback - просто редирект
-        window.location.href = `${basePath}/login`;
+        window.location.href = `${basePath}login`;
       }
     }
   };
@@ -125,7 +125,7 @@ export default function Header({ user = null }) {
         <div className="header__wrapper">
           {/* Лого */}
           <a className="logo" href="/" onClick={closeMenu}>
-            <img alt="FastCredit Forum logo" src={`${basePath}/logo.svg`} />
+            <img alt="FastCredit Forum logo" src={`${basePath}logo.svg`} />
           </a>
 
           {/* Навигация */}
@@ -152,14 +152,14 @@ export default function Header({ user = null }) {
               </li>
               {/* Форумные ссылки */}
               <li>
-                <a itemProp="url" href={`${basePath}/`} onClick={closeMenu}>
+                <a itemProp="url" href={`${basePath}`} onClick={closeMenu}>
                   Fórum
                 </a>
               </li>
               <li>
                 <a
                   itemProp="url"
-                  href={`${basePath}/experts`}
+                  href={`${basePath}experts`}
                   onClick={closeMenu}
                 >
                   Experti
@@ -232,7 +232,7 @@ export default function Header({ user = null }) {
                     {/* Ссылка на профиль */}
                     <MenuItem
                       onClick={() =>
-                        (window.location.href = `${basePath}/profile`)
+                        (window.location.href = `${basePath}profile`)
                       }
                       sx={{ py: 1.5 }}
                     >
@@ -244,7 +244,7 @@ export default function Header({ user = null }) {
                     {user.role === "expert" && (
                       <MenuItem
                         onClick={() =>
-                          (window.location.href = `${basePath}/expert/dashboard`)
+                          (window.location.href = `${basePath}expert/dashboard`)
                         }
                         sx={{ py: 1.5 }}
                       >
@@ -257,7 +257,7 @@ export default function Header({ user = null }) {
                     {user.role === "admin" && (
                       <MenuItem
                         onClick={() =>
-                          (window.location.href = `${basePath}/admin`)
+                          (window.location.href = `${basePath}admin`)
                         }
                         sx={{ py: 1.5 }}
                       >
@@ -304,7 +304,7 @@ export default function Header({ user = null }) {
                       backgroundColor: "rgba(4, 156, 161, 0.04)",
                     },
                   }}
-                  href={`${basePath}/login`}
+                  href={`${basePath}login`}
                 >
                   Prihlásiť sa
                 </Button>
@@ -326,7 +326,7 @@ export default function Header({ user = null }) {
                         backgroundColor: "#037d81",
                       },
                     }}
-                    href={`${basePath}/register`}
+                    href={`${basePath}register`}
                   >
                     Registrovať sa
                   </Button>

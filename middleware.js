@@ -7,27 +7,23 @@ export function middleware(request) {
   const token = request.cookies.get("fc_jwt")?.value;
 
   // Проверяем, что мы находимся в forum части сайта
-  if (!pathname.startsWith("/forum")) {
+  if (!pathname.startsWith("/")) {
     return NextResponse.next();
   }
 
   // === ЗАЩИЩЕННЫЕ МАРШРУТЫ ===
   const protectedRoutes = [
-    "/forum/profile", // Личный кабинет
-    "/forum/ask", // Создание вопроса
-    "/forum/admin", // Админ панель
-    "/forum/expert", // Панель эксперта
+    "//profile", // Личный кабинет
+    "//ask", // Создание вопроса
+    "//admin", // Админ панель
+    "//expert", // Панель эксперта
   ];
 
   // === ГОСТЕВЫЕ МАРШРУТЫ (только для неавторизованных) ===
-  const guestRoutes = [
-    "/forum/login",
-    "/forum/register",
-    "/forum/forgot-password",
-  ];
+  const guestRoutes = ["//login", "//register", "//forgot-password"];
 
   // === API ROUTES PROTECTION ===
-  if (pathname.startsWith("/forum/api/auth/")) {
+  if (pathname.startsWith("//api/auth/")) {
     if (process.env.NODE_ENV === "development") {
       console.log(`[Middleware] Auth API access: ${pathname}`);
     }
@@ -41,7 +37,7 @@ export function middleware(request) {
 
   if (isProtectedRoute && !token) {
     // Сохраняем текущий URL для редиректа после входа
-    const loginUrl = new URL(`${basePath}/login`, request.url);
+    const loginUrl = new URL(`${basePath}login`, request.url);
     loginUrl.searchParams.set(
       "next",
       pathname + (searchParams.toString() ? `?${searchParams.toString()}` : "")
@@ -79,11 +75,11 @@ export function middleware(request) {
   }
 
   // === РОЛЬ-СПЕЦИФИЧНЫЕ МАРШРУТЫ ===
-  if (pathname.startsWith("/forum/admin") && token) {
+  if (pathname.startsWith("//admin") && token) {
     console.log(`[Middleware] Admin route access attempt: ${pathname}`);
   }
 
-  if (pathname.startsWith("/forum/expert") && token) {
+  if (pathname.startsWith("//expert") && token) {
     console.log(`[Middleware] Expert route access attempt: ${pathname}`);
   }
 
@@ -135,7 +131,7 @@ export function middleware(request) {
 
 export const config = {
   matcher: [
-    "/forum/:path*",
+    "//:path*",
     "/api/auth/:path*",
     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],

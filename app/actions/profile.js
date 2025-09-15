@@ -16,7 +16,7 @@ export async function updateMyDataAction(prevState, formData) {
     // Проверяем авторизацию
     const currentUser = await getServerUser();
     if (!currentUser) {
-      redirect(`${basePath}/login`);
+      redirect(`${basePath}login`);
     }
 
     // Получаем данные из формы
@@ -81,7 +81,7 @@ export async function updateMyDataAction(prevState, formData) {
     const jwtCookie = cookieStore.get("fc_jwt");
 
     if (!jwtCookie?.value) {
-      redirect(`${basePath}/login`);
+      redirect(`${basePath}login`);
     }
 
     const response = await fetch(`${backendUrl}/auth/profile`, {
@@ -125,7 +125,7 @@ export async function updateMyDataAction(prevState, formData) {
       }
 
       if (response.status === 401) {
-        redirect(`${basePath}/login`);
+        redirect(`${basePath}login`);
       }
 
       if (response.status === 403) {
@@ -161,8 +161,8 @@ export async function updateMyDataAction(prevState, formData) {
 
     // Успех! Обновляем кеш
     try {
-      revalidatePath("/forum/profile");
-      revalidatePath("/forum/profile/my-data");
+      revalidatePath("//profile");
+      revalidatePath("//profile/my-data");
       revalidatePath("/", "layout");
     } catch (revalidateError) {
       console.warn("[updateMyDataAction] Revalidate error:", revalidateError);

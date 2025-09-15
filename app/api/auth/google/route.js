@@ -56,7 +56,7 @@ export async function POST(request) {
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60, // 7 дней
-      path: "/forum", // Ограничиваем cookie только для forum части
+      path: "/", // Ограничиваем cookie только для forum части
     });
 
     // Возвращаем успешный ответ с данными пользователя (без токена)

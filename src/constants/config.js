@@ -1,1 +1,1 @@
-export const basePath = "/forum";
+export const basePath = "/";

@@ -65,7 +65,7 @@ export async function setAuthCookie(token) {
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
     maxAge: 7 * 24 * 60 * 60, // 7 дней
-    path: "/forum",
+    path: "/",
   });
 
   cookieStore.set("fc_jwt_client", token, {
@@ -90,7 +90,7 @@ export async function clearAuthCookie() {
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
     maxAge: 0, // Удаляем немедленно
-    path: "/forum",
+    path: "/",
   });
 }
 
@@ -113,7 +113,7 @@ export async function requireAuth(redirectTo = "/login") {
   if (!user) {
     const loginUrl = redirectTo.startsWith("/")
       ? `${basePath}${redirectTo}`
-      : `${basePath}/${redirectTo}`;
+      : `${basePath}${redirectTo}`;
     redirect(loginUrl);
   }
 
@@ -166,7 +166,7 @@ export async function requireRole(requiredRole, redirectTo = "/") {
   if (!hasPermission(user, requiredRole)) {
     const accessDeniedUrl = redirectTo.startsWith("/")
       ? `${basePath}${redirectTo}`
-      : `${basePath}/${redirectTo}`;
+      : `${basePath}${redirectTo}`;
     redirect(accessDeniedUrl);
   }
 

@@ -104,14 +104,14 @@ class CategoriesServiceServer {
     if (!c) {
       return [
         { name: "FastCredit", href: "/" },
-        { name: "Fórum", href: "/forum" },
-        { name: "Neznáma kategória", href: `/forum/categories/${slug}` },
+        { name: "Fórum", href: "/" },
+        { name: "Neznáma kategória", href: `//categories/${slug}` },
       ];
     }
     return [
       { name: "FastCredit", href: "/" },
-      { name: "Fórum", href: "/forum" },
-      { name: c.name, href: `/forum/categories/${slug}` },
+      { name: "Fórum", href: "/" },
+      { name: c.name, href: `//categories/${slug}` },
     ];
   }
 

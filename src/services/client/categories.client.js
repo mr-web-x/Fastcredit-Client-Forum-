@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import apiClient from '../base/ApiClient';
+import apiClient from "../base/ApiClient";
 
 class CategoriesServiceClient {
   constructor() {
@@ -9,19 +9,19 @@ class CategoriesServiceClient {
     // статичный fallback
     this.staticCategories = [
       {
-        id: 'expert',
-        name: 'Otázka expertovi',
-        slug: 'expert',
-        description: 'Finančné otázky pre odborníkov a expertov',
-        icon: '👨‍💼',
+        id: "expert",
+        name: "Otázka expertovi",
+        slug: "expert",
+        description: "Finančné otázky pre odborníkov a expertov",
+        icon: "👨‍💼",
         questionsCount: 0,
       },
       {
-        id: 'lawyer',
-        name: 'Otázka právnikovi',
-        slug: 'lawyer',
-        description: 'Právne otázky a právne poradenstvo',
-        icon: '⚖️',
+        id: "lawyer",
+        name: "Otázka právnikovi",
+        slug: "lawyer",
+        description: "Právne otázky a právne poradenstvo",
+        icon: "⚖️",
         questionsCount: 0,
       },
     ];
@@ -35,8 +35,11 @@ class CategoriesServiceClient {
       // return this.client.get(`/categories${withStats ? '?stats=true' : ''}`);
       return this.staticCategories;
     } catch (e) {
-      if (process.env.NODE_ENV === 'development') {
-        console.warn('[CategoriesServiceClient.getAll] fallback to static:', e.message);
+      if (process.env.NODE_ENV === "development") {
+        console.warn(
+          "[CategoriesServiceClient.getAll] fallback to static:",
+          e.message
+        );
       }
       return this.staticCategories;
     }
@@ -45,9 +48,9 @@ class CategoriesServiceClient {
   async getBySlug(slug) {
     // при появлении API:
     // return this.client.get(`/categories/${slug}`);
-    const category = this.staticCategories.find(c => c.slug === slug);
+    const category = this.staticCategories.find((c) => c.slug === slug);
     if (!category) {
-      const err = new Error('Категория не найдена');
+      const err = new Error("Категория не найдена");
       err.status = 404;
       throw err;
     }
@@ -56,56 +59,58 @@ class CategoriesServiceClient {
 
   async getPopular(limit = 2) {
     const all = await this.getAll(true);
-    return all.sort((a, b) => (b.questionsCount || 0) - (a.questionsCount || 0)).slice(0, limit);
+    return all
+      .sort((a, b) => (b.questionsCount || 0) - (a.questionsCount || 0))
+      .slice(0, limit);
   }
 
   // === ADMIN (если подключишь реальный API) ===
   async updateCategoryStats(slug, questionsCount) {
     // при реальном API:
     // await this.client.put(`/categories/${slug}/stats`, { questionsCount });
-    const i = this.staticCategories.findIndex(c => c.slug === slug);
+    const i = this.staticCategories.findIndex((c) => c.slug === slug);
     if (i !== -1) this.staticCategories[i].questionsCount = questionsCount;
     return { success: true };
   }
 
   // === УТИЛИТЫ (чистые функции) ===
   getCategoryName(slug) {
-    const c = this.staticCategories.find(cat => cat.slug === slug);
+    const c = this.staticCategories.find((cat) => cat.slug === slug);
     return c ? c.name : slug;
   }
 
   getCategoryIcon(slug) {
-    const c = this.staticCategories.find(cat => cat.slug === slug);
-    return c ? c.icon : '❓';
+    const c = this.staticCategories.find((cat) => cat.slug === slug);
+    return c ? c.icon : "❓";
   }
 
   categoryExists(slug) {
-    return this.staticCategories.some(cat => cat.slug === slug);
+    return this.staticCategories.some((cat) => cat.slug === slug);
   }
 
   getCategoryBreadcrumbs(slug) {
-    const c = this.staticCategories.find(cat => cat.slug === slug);
+    const c = this.staticCategories.find((cat) => cat.slug === slug);
     if (!c) {
       return [
-        { name: 'FastCredit', href: '/' },
-        { name: 'Fórum', href: '/forum' },
-        { name: 'Neznáma kategória', href: `/forum/categories/${slug}` },
+        { name: "FastCredit", href: "/" },
+        { name: "Fórum", href: "/" },
+        { name: "Neznáma kategória", href: `//categories/${slug}` },
       ];
     }
     return [
-      { name: 'FastCredit', href: '/' },
-      { name: 'Fórum', href: '/forum' },
-      { name: c.name, href: `/forum/categories/${slug}` },
+      { name: "FastCredit", href: "/" },
+      { name: "Fórum", href: "/" },
+      { name: c.name, href: `//categories/${slug}` },
     ];
   }
 
   getCategoryMetadata(slug) {
-    const c = this.staticCategories.find(cat => cat.slug === slug);
+    const c = this.staticCategories.find((cat) => cat.slug === slug);
     if (!c) {
       return {
-        title: 'Neznáma kategória - FastCredit Fórum',
-        description: 'Kategória nebola nájdená',
-        keywords: 'fastcredit, forum',
+        title: "Neznáma kategória - FastCredit Fórum",
+        description: "Kategória nebola nájdená",
+        keywords: "fastcredit, forum",
       };
     }
     return {

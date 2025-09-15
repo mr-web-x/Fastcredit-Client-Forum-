@@ -17,7 +17,7 @@ export const metadata = {
     title: "Registrácia — FastCredit Fórum",
     description:
       "Vytvorte si účet na FastCredit fóre a získajte prístup k expertným finančným poradám",
-    url: "https://fastcredit.sk/forum/register",
+    url: "https://fastcredit.sk//register",
     type: "website",
   },
   twitter: {
@@ -27,7 +27,7 @@ export const metadata = {
       "Vytvorte si účet na FastCredit fóre a získajte prístup k expertným finančným poradám",
   },
   alternates: {
-    canonical: "https://fastcredit.sk/forum/register",
+    canonical: "https://fastcredit.sk//register",
   },
 };
 

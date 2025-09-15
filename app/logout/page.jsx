@@ -8,11 +8,11 @@ export default function LogoutPage() {
   useEffect(() => {
     (async () => {
       try {
-        await authService.logout(); // внутри он редиректит на /forum/login
+        await authService.logout(); // внутри он редиректит на //login
       } catch {
         // на всякий — запасной редирект
         if (typeof window !== "undefined") {
-          window.location.replace(`${basePath}/login`);
+          window.location.replace(`${basePath}login`);
         }
       }
     })();

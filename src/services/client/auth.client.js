@@ -20,7 +20,7 @@ class AuthServiceClient {
     try {
       await this.client.post("/auth/logout");
     } finally {
-      if (typeof window !== "undefined") window.location.href = "/forum/login";
+      if (typeof window !== "undefined") window.location.href = "//login";
     }
   }
 

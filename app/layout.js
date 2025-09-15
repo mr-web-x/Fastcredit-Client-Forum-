@@ -27,7 +27,7 @@ export const metadata = {
   openGraph: {
     type: "website",
     locale: "sk_SK",
-    url: "https://fastcredit.sk/forum",
+    url: "https://fastcredit.sk/",
     siteName: "FastCredit Forum",
     title: "FastCredit Forum - Finančné poradenstvo",
     description: "Profesionálne finančné poradenstvo a odpovede od expertov",
@@ -38,7 +38,7 @@ export const metadata = {
     creator: "@fastcredit",
   },
   alternates: {
-    canonical: "https://fastcredit.sk/forum",
+    canonical: "https://fastcredit.sk/",
   },
 };
 
@@ -57,7 +57,7 @@ export default async function RootLayout({ children }) {
               "@context": "https://schema.org",
               "@type": "WebSite",
               name: "FastCredit Forum",
-              url: "https://fastcredit.sk/forum",
+              url: "https://fastcredit.sk/",
               description: "Finančné poradenstvo a odpovede od expertov",
               publisher: {
                 "@type": "Organization",
@@ -66,8 +66,7 @@ export default async function RootLayout({ children }) {
               },
               potentialAction: {
                 "@type": "SearchAction",
-                target:
-                  "https://fastcredit.sk/forum/search?q={search_term_string}",
+                target: "https://fastcredit.sk//search?q={search_term_string}",
                 "query-input": "required name=search_term_string",
               },
             }),
@@ -99,21 +98,21 @@ export default async function RootLayout({ children }) {
         <link
           rel="apple-touch-icon"
           sizes="180x180"
-          href="/forum/apple-touch-icon.png"
+          href="//apple-touch-icon.png"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="32x32"
-          href="/forum/favicon-32x32.png"
+          href="//favicon-32x32.png"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="16x16"
-          href="/forum/favicon-16x16.png"
+          href="//favicon-16x16.png"
         />
-        <link rel="manifest" href="/forum/site.webmanifest" />
+        <link rel="manifest" href="//site.webmanifest" />
 
         {/* Preconnect для улучшения производительности */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -124,12 +123,7 @@ export default async function RootLayout({ children }) {
         />
 
         {/* Preload критических ресурсов */}
-        <link
-          rel="preload"
-          href="/forum/logo.svg"
-          as="image"
-          type="image/svg+xml"
-        />
+        <link rel="preload" href="//logo.svg" as="image" type="image/svg+xml" />
 
         {/* DNS prefetch для API */}
         <link

@@ -15,11 +15,11 @@ export const metadata = {
   openGraph: {
     title: "Prihlásenie — FastCredit Fórum",
     description: "Prihláste sa do svojho účtu na FastCredit fóre",
-    url: "https://fastcredit.sk/forum/login",
+    url: "https://fastcredit.sk//login",
     type: "website",
   },
   alternates: {
-    canonical: "https://fastcredit.sk/forum/login",
+    canonical: "https://fastcredit.sk//login",
   },
 };
 
@@ -29,5 +29,5 @@ export default async function Login({ searchParams }) {
 
   const redirectTo = searchParams?.next || "/";
 
-  return <LoginPage redirectTo={redirectTo}/>;
+  return <LoginPage redirectTo={redirectTo} />;
 }

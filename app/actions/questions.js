@@ -16,7 +16,7 @@ export async function createQuestionAction(prevState, formData) {
     // Проверяем авторизацию
     const currentUser = await getServerUser();
     if (!currentUser) {
-      redirect(`${basePath}/login`);
+      redirect(`${basePath}login`);
     }
 
     // Получаем данные из FormData
@@ -75,7 +75,7 @@ export async function createQuestionAction(prevState, formData) {
     const jwtCookie = cookieStore.get("fc_jwt");
 
     if (!jwtCookie?.value) {
-      redirect(`${basePath}/login`);
+      redirect(`${basePath}login`);
     }
 
     const response = await fetch(`${backendUrl}/questions`, {
@@ -110,7 +110,7 @@ export async function createQuestionAction(prevState, formData) {
       const errorMessage = data.message || "Nepodarilo sa vytvoriť otázku";
 
       if (response.status === 401) {
-        redirect(`${basePath}/login`);
+        redirect(`${basePath}login`);
       }
 
       if (response.status === 429) {
@@ -139,14 +139,14 @@ export async function createQuestionAction(prevState, formData) {
 
     // Revalidate relevantné paths
     try {
-      revalidatePath("/forum");
-      revalidatePath("/forum/questions");
-      revalidatePath("/forum/profile");
-      revalidatePath(`/forum/questions/${questionSlug}`);
+      revalidatePath("/");
+      revalidatePath("//questions");
+      revalidatePath("//profile");
+      revalidatePath(`//questions/${questionSlug}`);
 
       // Revalidate kategóriu ak je známa
       if (category) {
-        revalidatePath(`/forum/categories/${category}`);
+        revalidatePath(`//categories/${category}`);
       }
     } catch (revalidateError) {
       console.warn("[createQuestionAction] Revalidate error:", revalidateError);
@@ -223,9 +223,9 @@ export async function deleteQuestionAction(questionId) {
     }
 
     // Revalidate paths
-    revalidatePath("/forum");
-    revalidatePath("/forum/questions");
-    revalidatePath("/forum/profile");
+    revalidatePath("/");
+    revalidatePath("//questions");
+    revalidatePath("//profile");
     revalidatePath("/profile/all-questions");
 
     return {

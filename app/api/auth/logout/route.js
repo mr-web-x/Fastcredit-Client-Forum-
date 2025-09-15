@@ -43,7 +43,7 @@ export async function POST(request) {
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 0, // Удаляем cookie немедленно
-      path: "/forum",
+      path: "/",
     });
 
     // Возвращаем успешный ответ
@@ -66,7 +66,7 @@ export async function POST(request) {
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
         maxAge: 0,
-        path: "/forum",
+        path: "/",
       });
     } catch (cookieError) {
       console.error("[Logout Route] Failed to clear cookie:", cookieError);
