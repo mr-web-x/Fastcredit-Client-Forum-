@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import "./SuccessForm.scss";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 export default function SuccessForm({
   email,
@@ -26,7 +27,9 @@ export default function SuccessForm({
   return (
     <div className="success-form">
       <div className="success-form__content">
-        <div className="success-form__icon">✅</div>
+        <div className="success-form__icon">
+          <CheckCircleIcon />
+        </div>
 
         <div className="success-form__message">
           <h2 className="success-form__congratulations">Blahoželáme!</h2>

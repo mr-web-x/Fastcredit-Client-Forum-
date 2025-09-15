@@ -45,6 +45,7 @@
     text-align: left;
     position: relative;
     overflow: hidden;
+    color: var(--accent);
 
     &:hover {
       border-color: var(--accent);

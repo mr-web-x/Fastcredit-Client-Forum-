@@ -63,9 +63,6 @@ export default function QuestionsEmpty() {
   return (
     <div className="questions-empty">
       <div className="questions-empty__content">
-        {/* Ikona */}
-        <div className="questions-empty__icon">{hasFilters ? "🔍" : "❓"}</div>
-
         {/* Hlavný text */}
         <h3 className="questions-empty__title">
           {hasFilters
@@ -92,7 +89,7 @@ export default function QuestionsEmpty() {
         {/* Akcie */}
         <div className="questions-empty__actions">
           <Link href={`/forum/ask`} className="btn questions-empty__ask-btn">
-            ➕ Položiť otázku
+            Položiť otázku
           </Link>
 
           {hasFilters && (
@@ -113,30 +110,11 @@ export default function QuestionsEmpty() {
               <li>
                 <Link href={`/forum/questions`}>Prehliadnuť všetky otázky</Link>
               </li>
-              <li>
-                <Link href={`/forum/experts`}>Pozrieť si našich expertov</Link>
-              </li>
+
               <li>
                 <Link href={`/forum`}>Návrat na hlavnú stránku fóra</Link>
               </li>
             </ul>
-          </div>
-        )}
-
-        {/* Pre úplne prázdne fórum - motivačné odkazy */}
-        {!hasFilters && (
-          <div className="questions-empty__motivation">
-            <h4 className="questions-empty__motivation-title">
-              O čom môžete sa opýtať:
-            </h4>
-            <div className="questions-empty__topics">
-              <span className="questions-empty__topic">💳 Kreditné karty</span>
-              <span className="questions-empty__topic">🏠 Hypotéky</span>
-              <span className="questions-empty__topic">💰 Pôžičky</span>
-              <span className="questions-empty__topic">📈 Investície</span>
-              <span className="questions-empty__topic">🛡️ Poistenie</span>
-              <span className="questions-empty__topic">⚖️ Právne otázky</span>
-            </div>
           </div>
         )}
       </div>

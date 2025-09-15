@@ -7,6 +7,8 @@ import Link from "next/link";
 import { loginAction } from "@/app/actions/auth";
 import GoogleAuthButton from "@/src/components/GoogleAuthButton/GoogleAuthButton";
 import "./LoginPage.scss";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 export default function LoginPage({ redirectTo = "/forum" }) {
   const router = useRouter();
@@ -158,7 +160,11 @@ export default function LoginPage({ redirectTo = "/forum" }) {
                       className="login-page__password-toggle"
                       disabled={isPending}
                     >
-                      {showPassword ? "🙈" : "👁️"}
+                      {showPassword ? (
+                        <VisibilityOffIcon sx={{ fontSize: "14px" }} />
+                      ) : (
+                        <VisibilityIcon sx={{ fontSize: "14px" }} />
+                      )}
                     </button>
                   </div>
                   {formState?.fieldErrors?.password && (

@@ -285,7 +285,6 @@ export default function UsersPage({
             ))
           : !isPending && (
               <div className="users-page__empty">
-                <div className="users-page__empty-icon">👤</div>
                 <h3 className="users-page__empty-title">
                   Žiadni používatelia neboli nájdení
                 </h3>

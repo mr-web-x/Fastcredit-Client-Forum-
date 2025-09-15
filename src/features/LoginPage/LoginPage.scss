@@ -169,6 +169,7 @@
     padding: 4px;
     border-radius: 6px;
     transition: background-color 0.2s ease;
+    color: var(--accent);
 
     &:hover:not(:disabled) {
       background: var(--button-hover-light);

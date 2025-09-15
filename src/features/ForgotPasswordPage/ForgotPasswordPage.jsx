@@ -8,6 +8,7 @@ import EmailStep from "./EmailStep/EmailStep";
 import CodeStep from "./CodeStep/CodeStep";
 import PasswordStep from "./PasswordStep/PasswordStep";
 import SuccessStep from "./SuccessStep/SuccessStep";
+import LockIcon from "@mui/icons-material/Lock";
 import "./ForgotPasswordPage.scss";
 
 export default function ForgotPasswordPage() {
@@ -159,7 +160,9 @@ export default function ForgotPasswordPage() {
             {/* Security note - show on all steps except success */}
             {step !== "success" && (
               <div className="forgot-password-page__security-note">
-                <div className="forgot-password-page__security-icon">🔒</div>
+                <div className="forgot-password-page__security-icon">
+                  <LockIcon />
+                </div>
                 <p>
                   Kód na obnovenie hesla je platný len 15 minút z bezpečnostných
                   dôvodov. Po zmene hesla budú všetky vaše aktívne relácie

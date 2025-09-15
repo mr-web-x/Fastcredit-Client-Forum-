@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { questionsService } from "@/src/services/server";
 import "./LatestQuestions.scss";
+import { formatDate } from "@/src/utils/formatDate";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import InsertCommentIcon from "@mui/icons-material/InsertComment";
+import { getUserInitials } from "@/src/utils/user";
 
 export default async function LatestQuestions() {
   // Получаем последние вопросы с сервера
@@ -14,15 +18,6 @@ export default async function LatestQuestions() {
   } catch (error) {
     console.error("Failed to load latest questions:", error);
   }
-
-  // Функции для форматирования
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("sk-SK", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  };
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -122,36 +117,6 @@ export default async function LatestQuestions() {
                     </div>
                   </div>
 
-                  {/* Второй ряд: Мета-информация */}
-                  <div className="latest-questions__row latest-questions__row--meta">
-                    <span className="latest-questions__meta-item">
-                      👤{" "}
-                      {question.author?.firstName ||
-                        question.author?.username ||
-                        "Anonymný"}
-                    </span>
-
-                    <span className="latest-questions__meta-item">
-                      📅 {formatDate(question.createdAt)}
-                    </span>
-
-                    <span className="latest-questions__meta-item">
-                      💬 {question.answersCount || 0}
-                    </span>
-
-                    <span className="latest-questions__meta-item">
-                      👍 {question.likesCount || 0}
-                    </span>
-
-                    <span
-                      className={`latest-questions__status latest-questions__status--${getStatusColor(
-                        question.status
-                      )}`}
-                    >
-                      {getStatusText(question.status)}
-                    </span>
-                  </div>
-
                   {/* Третий ряд: Все бейджи + статус (только на мобильных) */}
                   <div className="latest-questions__row latest-questions__row--badges">
                     <div className="latest-questions__badges latest-questions__badges--mobile">
@@ -177,6 +142,42 @@ export default async function LatestQuestions() {
                         {getStatusText(question.status)}
                       </span>
                     </div>
+                  </div>
+
+                  {/* Второй ряд: Мета-информация */}
+                  <div className="latest-questions__row latest-questions__row--meta">
+                    <div className="latest-questions__author">
+                      <div className="latest-questions__avatar">
+                        {getUserInitials(question.author)}
+                      </div>
+                      <span className="latest-questions__author-name">
+                        {question.author?.firstName ||
+                          question.author?.username ||
+                          "Anonym"}
+                      </span>
+                    </div>
+
+                    <span className="latest-questions__meta-item">
+                      {formatDate(question.createdAt)}
+                    </span>
+
+                    <span className="latest-questions__meta-item">
+                      <VisibilityIcon sx={{ fontSize: "16px" }} />
+                      {question.views || 0}
+                    </span>
+
+                    <span className="latest-questions__meta-item">
+                      <InsertCommentIcon sx={{ fontSize: "16px" }} />
+                      {question.answersCount || 0}
+                    </span>
+
+                    <span
+                      className={`latest-questions__status latest-questions__status--${getStatusColor(
+                        question.status
+                      )}`}
+                    >
+                      {getStatusText(question.status)}
+                    </span>
                   </div>
                 </Link>
               ))}

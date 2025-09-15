@@ -12,80 +12,26 @@ export const metadata = {
 };
 
 export default async function QuestionsPage({ searchParams }) {
-  // Čítame search parametre pre filtrovanie a pagináciu
+  // Читаем search параметры для фильтрации и пагинации
   const params = await searchParams;
 
-  const page = parseInt(params.page) || 1;
-  const limit = 20; // Podľa ТЗ - 20 otázok na stránku
-  const category = params.category || "";
-  const status = params.status || "";
-  const period = params.period || "";
-  const priority = params.priority || "";
-  const sortBy = params.sortBy || "createdAt";
-  const sortOrder = params.sortOrder || "-1";
-
-  // Исправляем маппинг статусов для backend
-  let backendStatus = status;
-
-  if (status === "unanswered") {
-    // Backend может ожидать другое значение
-    backendStatus = "pending"; // или "open", или просто "unanswered"
-  } else if (status === "answered") {
-    backendStatus = "answered";
-  } else if (status === "closed") {
-    backendStatus = "closed";
-  }
-
-  // Улучшаем маппинг sortBy для backend
-  let backendSortBy = sortBy;
-  let backendSortOrder = sortOrder;
-
-  switch (sortBy) {
-    case "popular":
-      backendSortBy = "likes";
-      backendSortOrder = "-1"; // По убыванию лайков
-      break;
-    case "answers":
-      backendSortBy = "answersCount";
-      backendSortOrder = "-1"; // По убыванию количества ответов
-      break;
-    case "createdAt":
-    default:
-      backendSortBy = "createdAt";
-      backendSortOrder = "-1"; // Новые сверху
-      break;
-  }
-
-  // Pripravíme parametre pre API
   const apiParams = {
-    page,
-    limit,
-    sortBy: backendSortBy,
-    sortOrder: backendSortOrder,
+    page: parseInt(params.page) || 1,
+    limit: 20,
+    category: params.category || null,
+    priority: params.priority || null,
+    sortBy: params.sortBy || "createdAt",
+    sortOrder: parseInt(params.sortOrder) || -1,
+    search: params.search || null,
+    status: "answered", // Всегда только вопросы с ответами
   };
 
-  // Pridáme filtere len ak sú nastavené
-  if (category) {
-    apiParams.category = category;
-    console.log("📂 Category filter:", category);
-  }
-
-  if (backendStatus) {
-    apiParams.status = backendStatus;
-    console.log("📊 Status filter:", backendStatus, "(original:", status, ")");
-  }
-
-  if (priority) {
-    apiParams.priority = priority;
-    console.log("⚡ Priority filter:", priority);
-  }
-
-  // Pre period filter - prepočítame na dátumy
-  if (period) {
+  // Обработка period - конвертируем в fromDate
+  if (params.period) {
     const now = new Date();
     let fromDate;
 
-    switch (period) {
+    switch (params.period) {
       case "day":
         fromDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
         break;
@@ -95,25 +41,29 @@ export default async function QuestionsPage({ searchParams }) {
       case "month":
         fromDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
         break;
-      default:
-        fromDate = null;
     }
 
     if (fromDate) {
       apiParams.fromDate = fromDate.toISOString();
-      console.log("📅 Period filter:", period, "->", fromDate.toISOString());
     }
   }
 
+  // Убираем null значения
+  Object.keys(apiParams).forEach((key) => {
+    if (apiParams[key] === null) {
+      delete apiParams[key];
+    }
+  });
+
   console.log("🚀 Final API params:", apiParams);
 
-  // Načítame dáta zo servera
+  // Загружаем данные с сервера
   let questionsData = { items: [], pagination: null };
   let categories = [];
   let error = null;
 
   try {
-    // Paralelne načítame otázky a kategórie s timeout
+    // Параллельно загружаем вопросы и категории с timeout
     const TIMEOUT = 10000; // 10 секунд
 
     const questionsPromise = Promise.race([
@@ -124,7 +74,7 @@ export default async function QuestionsPage({ searchParams }) {
     ]);
 
     const categoriesPromise = Promise.race([
-      categoriesService.getAll(true), // s štatistikami
+      categoriesService.getAll(true), // с статистикой
       new Promise((_, reject) =>
         setTimeout(() => reject(new Error("API timeout - categories")), TIMEOUT)
       ),
@@ -185,19 +135,13 @@ export default async function QuestionsPage({ searchParams }) {
     error = "Neočakávaná chyba pri načítaní dát. Obnovte stránku.";
   }
 
-  // Pripravíme filter options pre frontend
+  // Подготавливаем filter options для frontend (без статусов)
   const filterOptions = {
     categories: categories.map((cat) => ({
       value: cat.slug,
       label: cat.name,
       count: cat.questionsCount || 0,
     })),
-    statuses: [
-      { value: "", label: "Všetky", count: null },
-      { value: "unanswered", label: "Bez odpovedí", count: null },
-      { value: "answered", label: "Zodpovedané", count: null },
-      { value: "closed", label: "Uzavreté", count: null },
-    ],
     periods: [
       { value: "", label: "Všetky" },
       { value: "day", label: "Za deň" },
@@ -206,18 +150,17 @@ export default async function QuestionsPage({ searchParams }) {
     ],
     sortOptions: [
       { value: "createdAt", label: "Najnovšie" },
-      { value: "popular", label: "Najpopulárnejšie" },
-      { value: "answers", label: "Najviac odpovedí" },
+      { value: "views", label: "Najviac zobrazení" },
+      { value: "answersCount", label: "Najviac odpovedí" },
     ],
   };
 
-  // Aktuálne filtre pre frontend (используем оригинальные значения)
+  // Текущие фильтры для frontend (без статуса)
   const currentFilters = {
-    category,
-    status, // Оригинальное значение, не backend
-    period,
-    sortBy,
-    sortOrder,
+    category: params.category || "",
+    period: params.period || "",
+    sortBy: params.sortBy || "createdAt",
+    sortOrder: params.sortOrder || "-1",
   };
 
   // Отладочная информация перед рендером

@@ -2,6 +2,7 @@
 "use client";
 
 import Link from "next/link";
+import LightbulbIcon from "@mui/icons-material/Lightbulb";
 import "./ProfilePage.scss";
 
 export default function ProfilePage({ user, latestQuestion }) {
@@ -10,10 +11,7 @@ export default function ProfilePage({ user, latestQuestion }) {
       {/* Секция с последним вопросом */}
       <div className="profile-page__section">
         <div className="profile-page__last-question__top">
-          <h2 className="profile-page__section-title">
-            <span className="profile-page__section-icon">❓</span>
-            Posledná otázka
-          </h2>
+          <h2 className="profile-page__section-title">Posledná otázka</h2>
 
           <div className="profile-page__questions-actions">
             <Link
@@ -61,7 +59,6 @@ export default function ProfilePage({ user, latestQuestion }) {
           </div>
         ) : (
           <div className="profile-page__no-questions">
-            <div className="profile-page__no-questions-icon">❓</div>
             <h3 className="profile-page__no-questions-title">
               Zatiaľ ste nezadali žiadne otázky
             </h3>
@@ -80,10 +77,7 @@ export default function ProfilePage({ user, latestQuestion }) {
         {/* Левая колонка - Информация о роли */}
         <div className="profile-page__column">
           <div className="profile-page__info-card">
-            <h3 className="profile-page__info-title">
-              <span className="profile-page__info-icon">👤</span>
-              Informácie o role
-            </h3>
+            <h3 className="profile-page__info-title">Informácie o role</h3>
             <div className="profile-page__role-info">
               <div className="profile-page__current-role">
                 <span className="profile-page__role-label">Aktuálna rola:</span>
@@ -117,7 +111,9 @@ export default function ProfilePage({ user, latestQuestion }) {
 
               {user.role === "user" && (
                 <div className="profile-page__role-tip">
-                  <span className="profile-page__tip-icon">💡</span>
+                  <span className="profile-page__tip-icon">
+                    <LightbulbIcon sx={{ fontSize: "16px" }} />
+                  </span>
                   <p>
                     Chcete sa stať expertom? Aktívne odpovedajte na otázky a
                     pomáhajte komunite.
@@ -131,10 +127,7 @@ export default function ProfilePage({ user, latestQuestion }) {
         {/* Правая колонка - Статистика */}
         <div className="profile-page__column">
           <div className="profile-page__info-card profile-page__info-card--statistic">
-            <h3 className="profile-page__info-title">
-              <span className="profile-page__info-icon">📊</span>
-              Štatistiky účtu
-            </h3>
+            <h3 className="profile-page__info-title">Štatistiky účtu</h3>
             <div className="profile-page__stats-grid">
               <div className="profile-page__stat">
                 <span className="profile-page__stat-value">
@@ -167,7 +160,7 @@ export default function ProfilePage({ user, latestQuestion }) {
                 href="/forum/profile/stats"
                 className="profile-page__stats-link"
               >
-                📈 Detailné štatistiky →
+                Detailné štatistiky →
               </Link>
             </div>
           </div>

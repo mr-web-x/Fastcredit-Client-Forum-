@@ -5,6 +5,7 @@ import "./QuestionCard.scss";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import InsertCommentIcon from "@mui/icons-material/InsertComment";
 import { formatDate } from "@/src/utils/formatDate";
+import { getUserInitials } from "@/src/utils/user";
 
 export default function QuestionCard({ question, index = 0 }) {
   const getCategoryName = (slug) => {
@@ -49,14 +50,6 @@ export default function QuestionCard({ question, index = 0 }) {
     return plainText.length > 150
       ? plainText.substring(0, 150) + "..."
       : plainText;
-  };
-
-  // Získanie autorových iniciálov
-  const getUserInitials = (user) => {
-    if (!user) return "?";
-    if (user.firstName) return user.firstName[0].toUpperCase();
-    if (user.username) return user.username[0].toUpperCase();
-    return "U";
   };
 
   // URL pre otázku

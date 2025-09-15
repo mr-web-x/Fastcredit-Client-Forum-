@@ -29,25 +29,11 @@ export async function updateMyDataAction(prevState, formData) {
       };
     }
 
-    const firstName = formData.get("firstName")?.toString().trim();
-    const lastName = formData.get("lastName")?.toString().trim();
     const username = formData.get("username")?.toString().trim();
     const bio = formData.get("bio")?.toString().trim();
 
     // Серверная валидация
     const fieldErrors = {};
-
-    if (!firstName || firstName.length === 0) {
-      fieldErrors.firstName = "Meno je povinné";
-    } else if (firstName.length > 50) {
-      fieldErrors.firstName = "Meno môže mať maximálne 50 znakov";
-    }
-
-    if (!lastName || lastName.length === 0) {
-      fieldErrors.lastName = "Priezvisko je povinné";
-    } else if (lastName.length > 50) {
-      fieldErrors.lastName = "Priezvisko môže mať maximálne 50 znakov";
-    }
 
     if (!username || username.length === 0) {
       fieldErrors.username = "Používateľské meno je povinné";
@@ -91,8 +77,6 @@ export async function updateMyDataAction(prevState, formData) {
       },
       cache: "no-store",
       body: JSON.stringify({
-        firstName,
-        lastName,
         username,
         bio: bio || "",
       }),

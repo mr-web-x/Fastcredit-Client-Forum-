@@ -4,6 +4,8 @@
 
 import { useState, useEffect, useActionState } from "react";
 import { resetPasswordAction } from "@/app/actions/auth";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import "./PasswordStep.scss";
 
 export default function PasswordStep({ email, code, onSuccess, onBack }) {
@@ -99,7 +101,11 @@ export default function PasswordStep({ email, code, onSuccess, onBack }) {
               disabled={isPending}
               aria-label={showPassword ? "Skryť heslo" : "Zobraziť heslo"}
             >
-              {showPassword ? "🙈" : "👁️"}
+              {showPassword ? (
+                <VisibilityOffIcon sx={{ fontSize: "14px" }} />
+              ) : (
+                <VisibilityIcon sx={{ fontSize: "14px" }} />
+              )}
             </button>
           </div>
           {formState?.fieldErrors?.newPassword && (
@@ -146,7 +152,11 @@ export default function PasswordStep({ email, code, onSuccess, onBack }) {
                 showConfirmPassword ? "Skryť heslo" : "Zobraziť heslo"
               }
             >
-              {showConfirmPassword ? "🙈" : "👁️"}
+              {showConfirmPassword ? (
+                <VisibilityOffIcon sx={{ fontSize: "14px" }} />
+              ) : (
+                <VisibilityIcon sx={{ fontSize: "14px" }} />
+              )}
             </button>
           </div>
           {formState?.fieldErrors?.confirmPassword && (

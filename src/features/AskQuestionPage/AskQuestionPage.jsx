@@ -5,6 +5,9 @@
 import { useActionState } from "react";
 import { createQuestionAction } from "@/app/actions/questions";
 import "./AskQuestionPage.scss";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import ReportIcon from "@mui/icons-material/Report";
+import SendIcon from "@mui/icons-material/Send";
 
 export default function AskQuestionPage({ user }) {
   const [state, formAction, isPending] = useActionState(createQuestionAction, {
@@ -46,7 +49,9 @@ export default function AskQuestionPage({ user }) {
         {state?.success && (
           <div className="ask-question-page__success-banner">
             <div className="ask-question-page__success-content">
-              <span className="ask-question-page__success-icon">✅</span>
+              <span className="ask-question-page__success-icon">
+                <CheckCircleIcon />
+              </span>
               <div>
                 <strong>Otázka bola úspešne vytvorená!</strong>
                 <p>{state.message}</p>
@@ -68,7 +73,9 @@ export default function AskQuestionPage({ user }) {
           {/* Общая ошибка */}
           {state?.error && (
             <div className="ask-question-page__error-banner">
-              <span className="ask-question-page__error-icon">⚠️</span>
+              <span className="ask-question-page__error-icon">
+                <ReportIcon />
+              </span>
               <div>
                 <strong>Chyba pri vytváraní otázky</strong>
                 <p>{state.error}</p>
@@ -215,7 +222,9 @@ export default function AskQuestionPage({ user }) {
                 </>
               ) : (
                 <>
-                  <span>📤</span>
+                  <span>
+                    <SendIcon />
+                  </span>
                   Publikovať otázku
                 </>
               )}

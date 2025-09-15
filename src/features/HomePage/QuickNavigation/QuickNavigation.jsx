@@ -1,12 +1,13 @@
 import Link from "next/link";
-import { categoriesService } from "@/src/services/server";
 import "./QuickNavigation.scss";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import StarIcon from "@mui/icons-material/Star";
+import GavelIcon from "@mui/icons-material/Gavel";
+import SchoolIcon from "@mui/icons-material/School";
 
 export default async function QuickNavigation() {
   // Статические фильтры (всегда показываем)
-  const staticFilters = [
+  const navigationItems = [
     {
       title: "Nové otázky",
       description: "Najnovšie otázky od používateľov",
@@ -17,31 +18,25 @@ export default async function QuickNavigation() {
     {
       title: "Populárne otázky",
       description: "Najviac hodnotené otázky",
-      href: `/forum/questions?sortBy=likes&sortOrder=-1`,
+      href: `/forum/questions?sortBy=views&sortOrder=-1`,
       icon: <StarIcon />,
       type: "filter",
     },
+    {
+      title: "Otázka expertovi",
+      description: "Finančné otázky pre odborníkov a expertov",
+      icon: <SchoolIcon />,
+      href: `/forum/questions?category=expert`,
+      type: "filter",
+    },
+    {
+      title: "Otázka právnikovi",
+      description: "Právne otázky a právne poradenstvo",
+      icon: <GavelIcon />,
+      href: `/forum/questions?category=lawyer`,
+      type: "filter",
+    },
   ];
-
-  // Получаем категории с сервера
-  let categories = [];
-  try {
-    const categoriesData = await categoriesService.getAll(true); // with stats
-    categories = categoriesData.map((category) => ({
-      title: category.name,
-      description: category.description,
-      href: `/forum/questions?category=${category.slug}`,
-      icon: category.icon,
-      type: "category",
-      questionsCount: category.questionsCount || 0,
-    }));
-  } catch (error) {
-    console.error("Failed to load categories:", error);
-    // Если не получилось загрузить - fallback на пустой массив
-  }
-
-  // Объединяем статические фильтры + динамические категории
-  const navigationItems = [...staticFilters, ...categories];
 
   return (
     <section className="quick-navigation">
@@ -64,11 +59,6 @@ export default async function QuickNavigation() {
                 <p className="quick-navigation__card-description">
                   {item.description}
                 </p>
-                {item.type === "category" && item.questionsCount > 0 && (
-                  <span className="quick-navigation__card-count">
-                    {item.questionsCount} otázok
-                  </span>
-                )}
               </div>
             </Link>
           ))}

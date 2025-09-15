@@ -16,10 +16,9 @@ export default function QuestionsFilters({
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
 
-  // Локальний стан для швидкої реакції UI
+  // Локальний стан для швидкої реакції UI (без status)
   const [localFilters, setLocalFilters] = useState({
     category: currentFilters.category || "",
-    status: currentFilters.status || "",
     period: currentFilters.period || "",
     sortBy: currentFilters.sortBy || "createdAt",
   });
@@ -51,14 +50,11 @@ export default function QuestionsFilters({
 
     setLocalFilters(newFilters);
     updateFilters(newFilters);
-
-    // Не закрываем модал сразу, даем пользователю настроить все фильтры
   };
 
   const clearAllFilters = () => {
     const clearedFilters = {
       category: "",
-      status: "",
       period: "",
       sortBy: "createdAt",
     };
@@ -69,12 +65,10 @@ export default function QuestionsFilters({
     });
   };
 
-  const hasActiveFilters =
-    localFilters.category || localFilters.status || localFilters.period;
+  const hasActiveFilters = localFilters.category || localFilters.period;
 
   const activeFiltersCount = [
     localFilters.category,
-    localFilters.status,
     localFilters.period,
   ].filter(Boolean).length;
 
@@ -157,30 +151,6 @@ export default function QuestionsFilters({
           </select>
         </div>
 
-        {/* Status */}
-        <div className="questions-filters__group">
-          <label htmlFor="status-filter" className="questions-filters__label">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-            </svg>
-            Stav
-          </label>
-          <select
-            id="status-filter"
-            value={localFilters.status}
-            onChange={(e) => handleFilterChange("status", e.target.value)}
-            className="questions-filters__select"
-            disabled={isPending}
-          >
-            {filterOptions.statuses?.map((status) => (
-              <option key={status.value} value={status.value}>
-                {status.label}
-                {status.count && ` (${status.count})`}
-              </option>
-            ))}
-          </select>
-        </div>
-
         {/* Obdobie */}
         <div className="questions-filters__group">
           <label htmlFor="period-filter" className="questions-filters__label">
@@ -252,31 +222,6 @@ export default function QuestionsFilters({
                   className="questions-filters__pill-remove"
                   disabled={isPending}
                   aria-label="Odstrániť filter kategórie"
-                >
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
-                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-                  </svg>
-                </button>
-              </div>
-            )}
-
-            {localFilters.status && (
-              <div className="questions-filters__pill">
-                <span>
-                  {filterOptions.statuses?.find(
-                    (s) => s.value === localFilters.status
-                  )?.label || localFilters.status}
-                </span>
-                <button
-                  onClick={() => handleFilterChange("status", "")}
-                  className="questions-filters__pill-remove"
-                  disabled={isPending}
-                  aria-label="Odstrániť filter stavu"
                 >
                   <svg
                     width="12"

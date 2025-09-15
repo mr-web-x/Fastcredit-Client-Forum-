@@ -5,6 +5,8 @@
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import LockIcon from "@mui/icons-material/Lock";
 import "./SuccessStep.scss";
 
 export default function SuccessStep({ onBackToPassword }) {
@@ -24,7 +26,9 @@ export default function SuccessStep({ onBackToPassword }) {
   return (
     <div className="success-step">
       <div className="success-step__content">
-        <div className="success-step__icon">✅</div>
+        <div className="success-step__icon">
+          <CheckCircleIcon />
+        </div>
 
         <div className="success-step__message">
           <h2 className="success-step__title">Heslo obnovené!</h2>
@@ -35,7 +39,7 @@ export default function SuccessStep({ onBackToPassword }) {
         </div>
 
         <div className="success-step__security-info">
-          <div className="success-step__security-icon">🔒</div>
+          <div className="success-step__security-icon"><LockIcon/></div>
           <p className="success-step__security-text">
             Z bezpečnostných dôvodov boli všetky vaše aktívne relácie ukončené.
             Budete sa musieť prihlásiť znovu na všetkých zariadeniach.

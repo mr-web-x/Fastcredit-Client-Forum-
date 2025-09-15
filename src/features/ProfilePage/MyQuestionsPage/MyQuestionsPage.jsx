@@ -157,12 +157,8 @@ export default function MyQuestionsPage({
       {/* Header с заголовком и кнопкой создания */}
       <div className="my-questions-page__header">
         <div className="my-questions-page__title-section">
-          <h1 className="my-questions-page__title">
-            <span className="my-questions-page__title-icon">❓</span>
-            Moje otázky
-          </h1>
+          <h1 className="my-questions-page__title">Moje otázky</h1>
           <Link href={`/forum/ask`} className="my-questions-page__create-btn">
-            <span className="my-questions-page__create-icon">➕</span>
             Nová otázka
           </Link>
         </div>
@@ -250,7 +246,6 @@ export default function MyQuestionsPage({
         {/* Error State */}
         {error && (
           <div className="my-questions-page__error">
-            <div className="my-questions-page__error-icon">⚠️</div>
             <p className="my-questions-page__error-text">{error}</p>
             <button
               onClick={() => loadQuestions()}
@@ -272,7 +267,6 @@ export default function MyQuestionsPage({
         {/* Empty State */}
         {!isLoading && !error && questions.length === 0 && (
           <div className="my-questions-page__empty">
-            <div className="my-questions-page__empty-icon">❓</div>
             <h3 className="my-questions-page__empty-title">
               {filters.status
                 ? "Žiadne otázky s týmto stavom"
@@ -284,7 +278,7 @@ export default function MyQuestionsPage({
                 : "Začnite sa pýtať a získajte odpovede od našich expertov"}
             </p>
             <Link href={`/forum/ask`} className="my-questions-page__empty-btn">
-              🌟 Zadať prvú otázku
+              Zadať prvú otázku
             </Link>
           </div>
         )}

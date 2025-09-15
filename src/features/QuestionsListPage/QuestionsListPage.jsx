@@ -122,7 +122,6 @@ export default function QuestionsListPage({
               {(() => {
                 const activeCount = [
                   currentFilters.category,
-                  currentFilters.status,
                   currentFilters.period,
                 ].filter(Boolean).length;
 

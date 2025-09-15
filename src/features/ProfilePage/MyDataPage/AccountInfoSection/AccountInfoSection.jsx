@@ -56,17 +56,6 @@ export default function AccountInfoSection({ user }) {
     return roleTexts[role] || role;
   };
 
-  // Получение иконки роли
-  const getRoleIcon = (role) => {
-    const roleIcons = {
-      user: "👤",
-      expert: "👨‍💼",
-      moderator: "🛡️",
-      admin: "⚙️",
-    };
-    return roleIcons[role] || "👤";
-  };
-
   // Получение цвета роли для бейджа
   const getRoleClass = (role) => {
     return `account-info-section__badge--${role}`;
@@ -93,10 +82,7 @@ export default function AccountInfoSection({ user }) {
   return (
     <section className="account-info-section">
       <div className="account-info-section__header">
-        <h2 className="account-info-section__title">
-          <span className="account-info-section__title-icon">🔐</span>
-          Informácie o účte
-        </h2>
+        <h2 className="account-info-section__title">Informácie o účte</h2>
         <p className="account-info-section__description">
           Základné informácie o vašom účte a registrácii
         </p>
@@ -106,28 +92,20 @@ export default function AccountInfoSection({ user }) {
         <div className="account-info-section__grid">
           {/* Email */}
           <div className="account-info-section__field">
-            <div className="account-info-section__label">
-              <span className="account-info-section__label-icon">📧</span>
-              Email
-            </div>
+            <div className="account-info-section__label">Email</div>
             <div className="account-info-section__value">{user.email}</div>
           </div>
 
           {/* Email verification status */}
           <div className="account-info-section__field">
-            <div className="account-info-section__label">
-              <span className="account-info-section__label-icon">✅</span>
-              Stav overenia
-            </div>
+            <div className="account-info-section__label">Stav overenia</div>
             <div className="account-info-section__value">
               {user.isEmailVerified ? (
                 <span className="account-info-section__badge account-info-section__badge--verified">
-                  <span className="account-info-section__badge-icon">✅</span>
                   Email overený
                 </span>
               ) : (
                 <span className="account-info-section__badge account-info-section__badge--unverified">
-                  <span className="account-info-section__badge-icon">⏳</span>
                   Email neoverený
                 </span>
               )}
@@ -136,10 +114,7 @@ export default function AccountInfoSection({ user }) {
 
           {/* Registration date */}
           <div className="account-info-section__field">
-            <div className="account-info-section__label">
-              <span className="account-info-section__label-icon">📅</span>
-              Registrovaný
-            </div>
+            <div className="account-info-section__label">Registrovaný</div>
             <div className="account-info-section__value">
               {formatDate(user.createdAt)}
             </div>
@@ -148,7 +123,6 @@ export default function AccountInfoSection({ user }) {
           {/* Last login */}
           <div className="account-info-section__field">
             <div className="account-info-section__label">
-              <span className="account-info-section__label-icon">🕐</span>
               Posledné prihlásenie
             </div>
             <div className="account-info-section__value">
@@ -158,19 +132,13 @@ export default function AccountInfoSection({ user }) {
 
           {/* User role */}
           <div className="account-info-section__field">
-            <div className="account-info-section__label">
-              <span className="account-info-section__label-icon">🏷️</span>
-              Rola
-            </div>
+            <div className="account-info-section__label">Rola</div>
             <div className="account-info-section__value">
               <span
                 className={`account-info-section__badge ${getRoleClass(
                   user.role
                 )}`}
               >
-                <span className="account-info-section__badge-icon">
-                  {getRoleIcon(user.role)}
-                </span>
                 {getRoleText(user.role)}
               </span>
             </div>
@@ -178,10 +146,7 @@ export default function AccountInfoSection({ user }) {
 
           {/* Registration method */}
           <div className="account-info-section__field">
-            <div className="account-info-section__label">
-              <span className="account-info-section__label-icon">🌐</span>
-              Registrácia cez
-            </div>
+            <div className="account-info-section__label">Registrácia cez</div>
             <div className="account-info-section__value">
               <span className="account-info-section__provider">
                 <span className="account-info-section__provider-icon">
@@ -194,10 +159,7 @@ export default function AccountInfoSection({ user }) {
 
           {/* Account status */}
           <div className="account-info-section__field account-info-section__field--full-width">
-            <div className="account-info-section__label">
-              <span className="account-info-section__label-icon">⚡</span>
-              Stav účtu
-            </div>
+            <div className="account-info-section__label">Stav účtu</div>
             <div className="account-info-section__value">
               <div className="account-info-section__status-grid">
                 {/* Active status */}
@@ -208,16 +170,12 @@ export default function AccountInfoSection({ user }) {
                       : "account-info-section__badge--inactive"
                   }`}
                 >
-                  <span className="account-info-section__badge-icon">
-                    {user.isActive ? "✅" : "❌"}
-                  </span>
                   {user.isActive ? "Aktívny" : "Neaktívny"}
                 </span>
 
                 {/* Ban status */}
                 {user.isBanned && (
                   <span className="account-info-section__badge account-info-section__badge--banned">
-                    <span className="account-info-section__badge-icon">🚫</span>
                     Zablokovaný
                   </span>
                 )}

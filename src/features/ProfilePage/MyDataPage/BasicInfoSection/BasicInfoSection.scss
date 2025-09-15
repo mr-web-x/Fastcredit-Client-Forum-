@@ -129,7 +129,7 @@
   &__label {
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: space-between;
     font-size: 14px;
     font-weight: 600;
     color: var(--black);
@@ -141,6 +141,15 @@
     line-height: 1;
     color: var(--accent);
     flex-shrink: 0;
+  }
+
+  // ===== НОВЫЕ СТИЛИ ДЛЯ LOCKED ПОЛЕЙ =====
+  &__lock-icon {
+    display: inline-flex;
+    align-items: center;
+    color: #9ca3af;
+    opacity: 0.7;
+    margin-left: 6px;
   }
 
   /* ===== INPUT STYLES ===== */
@@ -204,11 +213,38 @@
     min-height: 44px;
     display: flex;
     align-items: center;
+    position: relative;
 
     &:empty::before {
       content: "Nezadané";
       color: #9ca3af;
       font-style: italic;
+    }
+
+    // ===== СТИЛИ ДЛЯ LOCKED ПОЛЕЙ В РЕЖИМЕ РЕДАКТИРОВАНИЯ =====
+    &--locked {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border: 2px solid #cbd5e1;
+      color: #64748b;
+
+      // Диагональные полоски для эффекта "заблокированности"
+      &::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 3px,
+          rgba(148, 163, 184, 0.15) 3px,
+          rgba(148, 163, 184, 0.15) 6px
+        );
+        pointer-events: none;
+        border-radius: 8px;
+      }
     }
 
     &--multiline {
@@ -220,6 +256,25 @@
       &:empty::before {
         content: "Žiadny popis";
       }
+    }
+  }
+
+  // ===== ПОМОЩНЫЙ ТЕКСТ ДЛЯ LOCKED ПОЛЕЙ =====
+  &__locked-help {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #64748b;
+    background: rgba(148, 163, 184, 0.1);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-style: italic;
+    margin-top: 4px;
+
+    svg {
+      color: #94a3b8;
     }
   }
 
@@ -294,7 +349,8 @@
 
   /* ===== NOTIFICATIONS ===== */
   &__error-banner,
-  &__success-banner {
+  &__success-banner,
+  &__info-banner {
     display: flex;
     align-items: flex-start;
     gap: 12px;
@@ -316,8 +372,29 @@
     color: #16a34a;
   }
 
-  &__error-icon,
+  // ===== НОВЫЙ СТИЛЬ ДЛЯ INFO BANNER =====
+  &__info-banner {
+    background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%);
+    border: 1px solid #bfdbfe;
+    color: #1d4ed8;
+  }
+
+  &__error-icon {
+    color: orange;
+  }
+
   &__success-icon {
+    color: var(--status-success-color);
+  }
+
+  // ===== ИКОНКА ДЛЯ INFO BANNER =====
+  &__info-icon {
+    color: #3b82f6;
+  }
+
+  &__error-icon,
+  &__success-icon,
+  &__info-icon {
     font-size: 20px;
     line-height: 1;
     flex-shrink: 0;
@@ -325,14 +402,16 @@
   }
 
   &__error-banner strong,
-  &__success-banner strong {
+  &__success-banner strong,
+  &__info-banner strong {
     display: block;
     font-weight: 600;
     margin-bottom: 4px;
   }
 
   &__error-banner p,
-  &__success-banner p {
+  &__success-banner p,
+  &__info-banner p {
     margin: 0;
     font-size: 14px;
     line-height: 1.4;
@@ -343,6 +422,18 @@
     display: flex;
     flex-direction: column;
     gap: 32px;
+  }
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -398,6 +489,24 @@
 
     &__save-button {
       width: 100%;
+    }
+
+    // ===== MOBILE СТИЛИ ДЛЯ LOCKED ПОЛЕЙ =====
+    &__locked-help {
+      font-size: 11px;
+      padding: 6px 10px;
+    }
+
+    &__info-banner {
+      padding: 12px 16px;
+
+      strong {
+        font-size: 13px;
+      }
+
+      p {
+        font-size: 12px;
+      }
     }
   }
 }
@@ -458,7 +567,8 @@
     }
 
     &__error-banner,
-    &__success-banner {
+    &__success-banner,
+    &__info-banner {
       padding: 14px 16px;
       margin-bottom: 20px;
     }
@@ -466,6 +576,16 @@
     &__save-button {
       padding: 14px 20px;
       font-size: 15px;
+    }
+
+    // ===== МОБИЛЬНЫЕ СТИЛИ ДЛЯ LOCKED ПОЛЕЙ =====
+    &__locked-help {
+      font-size: 10px;
+      padding: 5px 8px;
+    }
+
+    &__lock-icon svg {
+      font-size: 12px !important;
     }
   }
 }

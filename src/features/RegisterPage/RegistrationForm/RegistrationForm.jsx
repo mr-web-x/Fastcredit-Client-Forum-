@@ -6,6 +6,8 @@ import { useState, useEffect, useActionState } from "react";
 import Link from "next/link";
 import { registerAction } from "@/app/actions/auth";
 import "./RegistrationForm.scss";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 export default function RegistrationForm({ onSuccess }) {
   // Собственный useActionState для registerAction
@@ -195,7 +197,11 @@ export default function RegistrationForm({ onSuccess }) {
             disabled={isPending}
             aria-label={showPassword ? "Skryť heslo" : "Zobraziť heslo"}
           >
-            {showPassword ? "🙈" : "👁️"}
+            {showPassword ? (
+              <VisibilityOffIcon sx={{ fontSize: "14px" }} />
+            ) : (
+              <VisibilityIcon sx={{ fontSize: "14px" }} />
+            )}
           </button>
         </div>
         {formState?.fieldErrors?.password && (
@@ -237,7 +243,11 @@ export default function RegistrationForm({ onSuccess }) {
             disabled={isPending}
             aria-label={showConfirmPassword ? "Skryť heslo" : "Zobraziť heslo"}
           >
-            {showConfirmPassword ? "🙈" : "👁️"}
+            {showConfirmPassword ? (
+              <VisibilityOffIcon sx={{ fontSize: "14px" }} />
+            ) : (
+              <VisibilityIcon sx={{ fontSize: "14px" }} />
+            )}
           </button>
         </div>
         {formState?.fieldErrors?.confirmPassword && (
