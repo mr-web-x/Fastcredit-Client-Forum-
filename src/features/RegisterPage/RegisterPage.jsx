@@ -11,7 +11,7 @@ import VerificationForm from "./VerificationForm/VerificationForm";
 import SuccessForm from "./SuccessForm/SuccessForm";
 import "./RegisterPage.scss";
 
-export default function RegisterPage({ redirectTo = "/" }) {
+export default function RegisterPage({ redirectTo = "/forum" }) {
   const router = useRouter();
 
   // Локальный state для управления шагами
@@ -110,7 +110,7 @@ export default function RegisterPage({ redirectTo = "/" }) {
                 <div className="register-page__login">
                   <span>Už máte účet? </span>
                   <Link
-                    href="/login"
+                    href="/forum/login"
                     className="register-page__link register-page__link--primary"
                   >
                     Prihláste sa

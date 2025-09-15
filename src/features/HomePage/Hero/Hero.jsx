@@ -1,7 +1,6 @@
 import "./Hero.scss";
 
 export default function Hero() {
-  const base = process.env.NEXT_PUBLIC_BASE_PATH || "/";
   return (
     <section className="hero">
       <div className="container hero__container">
@@ -12,10 +11,10 @@ export default function Hero() {
             slov.
           </p>
           <div className="hero__actions">
-            <a className="btn btn--main" href={`${base}/(private)/ask`}>
+            <a className="btn btn--main" href={`/forum/ask`}>
               Zadať otázku
             </a>
-            <a className="btn btn--secondary" href={`${base}/questions`}>
+            <a className="btn btn--secondary" href={`/forum/questions`}>
               Prejsť na otázky
             </a>
           </div>

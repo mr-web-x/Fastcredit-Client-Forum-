@@ -51,7 +51,6 @@ export default function ForgotPasswordPage() {
       <div className="container">
         <div className="forgot-password-page__wrapper">
           <div className="forgot-password-page__card">
-            
             {/* Header */}
             <div className="forgot-password-page__header">
               <h1 className="forgot-password-page__title">
@@ -61,7 +60,8 @@ export default function ForgotPasswordPage() {
                 {step === "success" && "Heslo obnovené!"}
               </h1>
               <p className="forgot-password-page__subtitle">
-                {step === "email" && "Zadajte svoj email a pošleme vám kód na obnovenie hesla"}
+                {step === "email" &&
+                  "Zadajte svoj email a pošleme vám kód na obnovenie hesla"}
                 {step === "code" && `Odoslali sme kód na ${email}`}
                 {step === "password" && "Vytvorte si nové bezpečné heslo"}
                 {step === "success" && "Vaše heslo bolo úspešne zmenené"}
@@ -73,17 +73,25 @@ export default function ForgotPasswordPage() {
               <div className="forgot-password-page__progress">
                 <div
                   className={`forgot-password-page__step ${
-                    step === "email" ? "active" : 
-                    (step === "code" || step === "password") ? "completed" : ""
+                    step === "email"
+                      ? "active"
+                      : step === "code" || step === "password"
+                      ? "completed"
+                      : ""
                   }`}
                 >
                   <span className="forgot-password-page__step-number">1</span>
-                  <span className="forgot-password-page__step-label">Email</span>
+                  <span className="forgot-password-page__step-label">
+                    Email
+                  </span>
                 </div>
                 <div
                   className={`forgot-password-page__step ${
-                    step === "code" ? "active" : 
-                    step === "password" ? "completed" : ""
+                    step === "code"
+                      ? "active"
+                      : step === "password"
+                      ? "completed"
+                      : ""
                   }`}
                 >
                   <span className="forgot-password-page__step-number">2</span>
@@ -103,9 +111,7 @@ export default function ForgotPasswordPage() {
             )}
 
             {/* Step Components - каждый со своим useActionState */}
-            {step === "email" && (
-              <EmailStep onSuccess={handleEmailSuccess} />
-            )}
+            {step === "email" && <EmailStep onSuccess={handleEmailSuccess} />}
 
             {step === "code" && (
               <CodeStep
@@ -125,22 +131,23 @@ export default function ForgotPasswordPage() {
             )}
 
             {step === "success" && (
-              <SuccessStep
-                onBackToPassword={handleBackToPassword}
-              />
+              <SuccessStep onBackToPassword={handleBackToPassword} />
             )}
 
             {/* Footer - only show on email step */}
             {step === "email" && (
               <div className="forgot-password-page__footer">
-                <Link href="/login" className="forgot-password-page__link">
+                <Link
+                  href="/forum/login"
+                  className="forgot-password-page__link"
+                >
                   ← Späť na prihlásenie
                 </Link>
 
                 <div className="forgot-password-page__register">
                   <span>Nemáte účet? </span>
                   <Link
-                    href="/register"
+                    href="/forum/register"
                     className="forgot-password-page__link forgot-password-page__link--primary"
                   >
                     Zaregistrujte sa

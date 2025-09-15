@@ -59,7 +59,7 @@ export default function UsersPage({
       if (newFilters.limit !== 20)
         params.set("limit", newFilters.limit.toString());
 
-      const newURL = `/profile/users${
+      const newURL = `/forum/profile/users${
         params.toString() ? `?${params.toString()}` : ""
       }`;
       router.replace(newURL, { scroll: false });

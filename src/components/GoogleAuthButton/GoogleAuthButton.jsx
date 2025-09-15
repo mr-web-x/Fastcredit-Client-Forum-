@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { basePath } from "@/src/constants/config";
 import "./GoogleAuthButton.scss";
 
 export default function GoogleAuthButton({ onSuccess, onError }) {
@@ -113,7 +112,7 @@ export default function GoogleAuthButton({ onSuccess, onError }) {
 
       setLoading(true);
       try {
-        const res = await fetch(basePath + "/api/auth/google", {
+        const res = await fetch("/forum/api/auth/google", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${credential}`,
@@ -132,7 +131,7 @@ export default function GoogleAuthButton({ onSuccess, onError }) {
         const { user } = data.data || {};
         onSuccess?.({ user, message: data.data?.message });
 
-        const redirectTo = searchParams.get("next") || basePath;
+        const redirectTo = searchParams.get("next") || "/forum";
         window.location.href = redirectTo;
       } catch (error) {
         console.error("[Google OAuth] Route handler error:", error);

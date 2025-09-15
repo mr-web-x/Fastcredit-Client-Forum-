@@ -93,9 +93,9 @@ export async function createAnswerAction(questionId, answerData) {
     console.log(`✅ Answer created successfully:`, data.data._id);
 
     // Revalidate страницы
-    revalidatePath("/questions/[slug]", "page");
-    revalidatePath("/profile/answers", "page");
-    revalidatePath("/profile/all-questions", "page");
+    revalidatePath("/forum/questions/[slug]", "page");
+    revalidatePath("/forum/profile/answers", "page");
+    revalidatePath("/forum/profile/all-questions", "page");
 
     return {
       success: true,
@@ -187,8 +187,8 @@ export async function updateAnswerAction(answerId, updateData) {
     console.log(`✅ Answer updated successfully`);
 
     // Revalidate страницы
-    revalidatePath("/questions/[slug]", "page");
-    revalidatePath("/profile/answers", "page");
+    revalidatePath("/forum/questions/[slug]", "page");
+    revalidatePath("/forum/profile/answers", "page");
 
     return {
       success: true,
@@ -277,9 +277,9 @@ export async function updateApprovedAnswerAction(
     }
 
     // Revalidate всех нужных страниц
-    revalidatePath("/questions/[slug]", "page");
-    revalidatePath("/profile/new-answers", "page");
-    revalidatePath("/profile/answers", "page");
+    revalidatePath("/forum/questions/[slug]", "page");
+    revalidatePath("/forum/profile/new-answers", "page");
+    revalidatePath("/forum/profile/answers", "page");
 
     return {
       success: true,
@@ -353,8 +353,8 @@ export async function deleteAnswerAction(answerId) {
     console.log(`✅ Answer deleted successfully`);
 
     // Revalidate страницы
-    revalidatePath("/questions/[slug]", "page");
-    revalidatePath("/profile/answers", "page");
+    revalidatePath("/forum/questions/[slug]", "page");
+    revalidatePath("/forum/profile/answers", "page");
 
     return {
       success: true,

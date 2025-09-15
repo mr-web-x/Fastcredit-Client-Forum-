@@ -30,13 +30,16 @@ export const NotFoundPage = () => {
 
           {/* Кнопки навигации */}
           <div className="not-found__actions">
-            <Link href="/" className="not-found__btn not-found__btn--primary">
+            <Link
+              href="/forum"
+              className="not-found__btn not-found__btn--primary"
+            >
               <HomeIcon />
-              <span>Späť na hlavnú</span>
+              <span>Späť na Forum</span>
             </Link>
 
             <Link
-              href="/questions"
+              href="/forum/questions"
               className="not-found__btn not-found__btn--secondary"
             >
               <HelpIcon />

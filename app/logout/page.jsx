@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import { authService } from "@/src/services/client";
-import { basePath } from "@/src/constants/config";
 
 export default function LogoutPage() {
   useEffect(() => {
@@ -12,7 +11,7 @@ export default function LogoutPage() {
       } catch {
         // на всякий — запасной редирект
         if (typeof window !== "undefined") {
-          window.location.replace(`${basePath}login`);
+          window.location.replace(`/forum/login`);
         }
       }
     })();

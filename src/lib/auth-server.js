@@ -3,7 +3,6 @@
 import "server-only";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { basePath } from "@/src/constants/config";
 
 /**
  * Получение данных пользователя из HttpOnly cookie
@@ -107,14 +106,11 @@ export async function validateSession() {
  * Guard для защищенных страниц - требует авторизации
  * @param {string} redirectTo - куда перенаправить если не авторизован
  */
-export async function requireAuth(redirectTo = "/login") {
+export async function requireAuth(redirectTo = "/forum/login") {
   const user = await getServerUser();
 
   if (!user) {
-    const loginUrl = redirectTo.startsWith("/")
-      ? `${basePath}${redirectTo}`
-      : `${basePath}${redirectTo}`;
-    redirect(loginUrl);
+    redirect(redirectTo);
   }
 
   return user;
@@ -124,11 +120,10 @@ export async function requireAuth(redirectTo = "/login") {
  * Guard для гостевых страниц - перенаправляет авторизованных
  * @param {string} redirectTo - куда перенаправить (относительный путь)
  */
-export async function requireGuest(redirectTo = "/") {
+export async function requireGuest(redirectTo = "/forum") {
   const user = await getServerUser();
 
   if (user) {
-    // Просто делаем редирект - middleware сам добавит basePath если нужно
     redirect(redirectTo);
   }
 }
@@ -160,14 +155,11 @@ export function hasPermission(user, requiredRole) {
  * @param {string} requiredRole - требуемая роль
  * @param {string} redirectTo - куда перенаправить при отсутствии прав
  */
-export async function requireRole(requiredRole, redirectTo = "/") {
+export async function requireRole(requiredRole, redirectTo = "/forum") {
   const user = await requireAuth(); // Сначала проверяем авторизацию
 
   if (!hasPermission(user, requiredRole)) {
-    const accessDeniedUrl = redirectTo.startsWith("/")
-      ? `${basePath}${redirectTo}`
-      : `${basePath}${redirectTo}`;
-    redirect(accessDeniedUrl);
+    redirect(redirectTo);
   }
 
   return user;

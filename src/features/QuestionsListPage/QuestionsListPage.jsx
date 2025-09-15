@@ -54,7 +54,10 @@ export default function QuestionsListPage({
           className="questions-list-page__breadcrumbs"
           aria-label="Breadcrumb"
         >
-          <Link href={`/`} className="questions-list-page__breadcrumb-link">
+          <Link
+            href={`/forum`}
+            className="questions-list-page__breadcrumb-link"
+          >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
             </svg>
@@ -88,7 +91,7 @@ export default function QuestionsListPage({
           </div>
 
           <div className="questions-list-page__header-actions">
-            <Link href={`/ask`} className="questions-list-page__ask-btn">
+            <Link href={`/forum/ask`} className="questions-list-page__ask-btn">
               <svg
                 width="20"
                 height="20"

@@ -23,7 +23,7 @@ export const metadata = {
 
 export default async function ForgotPassword() {
   // Server-side guard - перенаправляем авторизованных пользователей
-  await requireGuest("/");
+  await requireGuest("/forum");
 
   return <ForgotPasswordPage />;
 }

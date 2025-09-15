@@ -4,7 +4,6 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { basePath } from "@/src/constants/config";
 import { setAuthCookie, clearAuthCookie } from "@/src/lib/auth-server";
 
 /**
@@ -103,9 +102,9 @@ export async function loginAction(prevState, formData) {
 
     // ВАЖНО: revalidatePath должен работать в Server Actions
     try {
-      revalidatePath("/");
-      revalidatePath("//profile");
-      revalidatePath("/", "layout"); // Revalidate всего layout
+      revalidatePath("/forum");
+      revalidatePath("/forum/profile");
+      revalidatePath("/forum", "layout"); // Revalidate всего layout
     } catch (revalidateError) {
       console.warn("[loginAction] Revalidate error:", revalidateError);
       // Не прерываем процесс из-за ошибки revalidate
@@ -373,9 +372,9 @@ export async function verifyEmailAction(prevState, formData) {
 
     // Email верифицирован успешно
     try {
-      revalidatePath("/");
-      revalidatePath("//profile");
-      revalidatePath("/", "layout");
+      revalidatePath("/forum");
+      revalidatePath("/forum/profile");
+      revalidatePath("/forum", "layout");
     } catch (revalidateError) {
       console.warn("[verifyEmailAction] Revalidate error:", revalidateError);
     }
@@ -596,9 +595,9 @@ export async function resetPasswordAction(prevState, formData) {
 
     // Revalidate paths после успешного сброса пароля
     try {
-      revalidatePath("/");
-      revalidatePath("//profile");
-      revalidatePath("/", "layout");
+      revalidatePath("/forum");
+      revalidatePath("/forum/profile");
+      revalidatePath("/forum", "layout");
     } catch (revalidateError) {
       console.warn("[resetPasswordAction] Revalidate error:", revalidateError);
     }
@@ -630,14 +629,14 @@ export async function logoutAction() {
     await clearAuthCookie();
 
     // Revalidate paths
-    revalidatePath("/");
+    revalidatePath("/forum");
 
     // Redirect на главную
-    redirect(`${basePath}`);
+    redirect("/forum");
   } catch (error) {
     console.error("[logoutAction] Error:", error);
     // В случае ошибки все равно пытаемся очистить cookie и редирект
     await clearAuthCookie();
-    redirect(`${basePath}`);
+    redirect("/forum");
   }
 }

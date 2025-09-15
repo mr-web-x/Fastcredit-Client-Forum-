@@ -3,7 +3,6 @@
 "use client";
 import "./Header.scss";
 import { useState } from "react";
-import { basePath } from "@/src/constants/config";
 import { logoutAction } from "@/app/actions/auth";
 
 // Material UI imports
@@ -67,17 +66,17 @@ export default function Header({ user = null }) {
       console.error("[Header] Logout error:", error);
       // В случае ошибки пытаемся сделать fallback через Route Handler
       try {
-        const response = await fetch(`${basePath}api/auth/logout`, {
+        const response = await fetch(`/forum/api/auth/logout`, {
           method: "POST",
           credentials: "include",
         });
         if (response.ok) {
-          window.location.href = `${basePath}`;
+          window.location.href = "/forum";
         }
       } catch (fallbackError) {
         console.error("[Header] Fallback logout failed:", fallbackError);
         // Последний fallback - просто редирект
-        window.location.href = `${basePath}login`;
+        window.location.href = `/forum/login`;
       }
     }
   };
@@ -125,7 +124,7 @@ export default function Header({ user = null }) {
         <div className="header__wrapper">
           {/* Лого */}
           <a className="logo" href="/" onClick={closeMenu}>
-            <img alt="FastCredit Forum logo" src={`${basePath}logo.svg`} />
+            <img alt="FastCredit Forum logo" src={`/forum/logo.svg`} />
           </a>
 
           {/* Навигация */}
@@ -152,16 +151,12 @@ export default function Header({ user = null }) {
               </li>
               {/* Форумные ссылки */}
               <li>
-                <a itemProp="url" href={`${basePath}`} onClick={closeMenu}>
+                <a itemProp="url" href={"/forum"} onClick={closeMenu}>
                   Fórum
                 </a>
               </li>
               <li>
-                <a
-                  itemProp="url"
-                  href={`${basePath}experts`}
-                  onClick={closeMenu}
-                >
+                <a itemProp="url" href={`/forum/experts`} onClick={closeMenu}>
                   Experti
                 </a>
               </li>
@@ -231,40 +226,12 @@ export default function Header({ user = null }) {
 
                     {/* Ссылка на профиль */}
                     <MenuItem
-                      onClick={() =>
-                        (window.location.href = `${basePath}profile`)
-                      }
+                      onClick={() => (window.location.href = `/forum/profile`)}
                       sx={{ py: 1.5 }}
                     >
                       <PersonIcon sx={{ mr: 2, color: "#666" }} />
                       <Typography variant="body2">Môj profil</Typography>
                     </MenuItem>
-
-                    {/* Expert panel для экспертов */}
-                    {user.role === "expert" && (
-                      <MenuItem
-                        onClick={() =>
-                          (window.location.href = `${basePath}expert/dashboard`)
-                        }
-                        sx={{ py: 1.5 }}
-                      >
-                        <WorkIcon sx={{ mr: 2, color: "#666" }} />
-                        <Typography variant="body2">Expert panel</Typography>
-                      </MenuItem>
-                    )}
-
-                    {/* Admin panel для админов */}
-                    {user.role === "admin" && (
-                      <MenuItem
-                        onClick={() =>
-                          (window.location.href = `${basePath}admin`)
-                        }
-                        sx={{ py: 1.5 }}
-                      >
-                        <AdminIcon sx={{ mr: 2, color: "#666" }} />
-                        <Typography variant="body2">Admin panel</Typography>
-                      </MenuItem>
-                    )}
 
                     {/* Выход */}
                     <MenuItem
@@ -304,7 +271,7 @@ export default function Header({ user = null }) {
                       backgroundColor: "rgba(4, 156, 161, 0.04)",
                     },
                   }}
-                  href={`${basePath}login`}
+                  href={`/forum/login`}
                 >
                   Prihlásiť sa
                 </Button>
@@ -326,7 +293,7 @@ export default function Header({ user = null }) {
                         backgroundColor: "#037d81",
                       },
                     }}
-                    href={`${basePath}register`}
+                    href={`/forum/register`}
                   >
                     Registrovať sa
                   </Button>

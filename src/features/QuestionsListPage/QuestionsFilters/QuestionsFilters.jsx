@@ -65,7 +65,7 @@ export default function QuestionsFilters({
 
     setLocalFilters(clearedFilters);
     startTransition(() => {
-      router.push("/questions", { scroll: false });
+      router.push("/forum/questions", { scroll: false });
     });
   };
 

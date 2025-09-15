@@ -8,7 +8,7 @@ import { loginAction } from "@/app/actions/auth";
 import GoogleAuthButton from "@/src/components/GoogleAuthButton/GoogleAuthButton";
 import "./LoginPage.scss";
 
-export default function LoginPage({ redirectTo = "/" }) {
+export default function LoginPage({ redirectTo = "/forum" }) {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -180,7 +180,7 @@ export default function LoginPage({ redirectTo = "/" }) {
                 {/* Forgot password link */}
                 <div className="login-page__forgot">
                   <Link
-                    href={`/forgot-password${
+                    href={`/forum/forgot-password${
                       redirectTo !== "/"
                         ? `?next=${encodeURIComponent(redirectTo)}`
                         : ""
@@ -198,7 +198,7 @@ export default function LoginPage({ redirectTo = "/" }) {
               <p className="login-page__register-link">
                 Nemáte účet?{" "}
                 <Link
-                  href={`/register${
+                  href={`/forum/register${
                     redirectTo !== "/"
                       ? `?next=${encodeURIComponent(redirectTo)}`
                       : ""

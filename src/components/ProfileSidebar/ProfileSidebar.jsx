@@ -94,7 +94,7 @@ export default function ProfileSidebar({ user }) {
         <div className="profile-sidebar__nav-divider"></div>
         {(user.role === "admin" || user.role === "moderator") && (
           <Link
-            href="/profile/users"
+            href="/forum/profile/users"
             className={`profile-sidebar__nav-link  ${
               isActiveLink("/profile/users")
                 ? "profile-sidebar__nav-link--active"
@@ -111,7 +111,7 @@ export default function ProfileSidebar({ user }) {
           user.role === "expert" ||
           user.role === "lawyer") && (
           <Link
-            href="/profile/all-questions"
+            href="/forum/profile/all-questions"
             className={`profile-sidebar__nav-link  ${
               isActiveLink("/profile/all-questions")
                 ? "profile-sidebar__nav-link--active"
@@ -126,7 +126,7 @@ export default function ProfileSidebar({ user }) {
         )}
         {/* Ссылка на мои вопросы */}
         <Link
-          href="/profile/my-questions"
+          href="/forum/profile/my-questions"
           className={`profile-sidebar__nav-link profile-sidebar__nav-link--myquestions ${
             isActiveLink("/profile/my-questions")
               ? "profile-sidebar__nav-link--active"
@@ -140,7 +140,7 @@ export default function ProfileSidebar({ user }) {
         </Link>
         <div className="profile-sidebar__nav-divider"></div>
         <Link
-          href="/profile"
+          href="/forum/profile"
           className={`profile-sidebar__nav-link profile-sidebar__nav-link--dashboard ${
             isActiveLink("/profile") ? "profile-sidebar__nav-link--active" : ""
           }`}
@@ -151,7 +151,7 @@ export default function ProfileSidebar({ user }) {
           <span className="profile-sidebar__nav-label">Dashboard</span>
         </Link>
         <Link
-          href="/profile/my-data"
+          href="/forum/profile/my-data"
           className={`profile-sidebar__nav-link profile-sidebar__nav-link--mydata ${
             isActiveLink("/profile/my-data")
               ? "profile-sidebar__nav-link--active"

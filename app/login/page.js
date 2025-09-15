@@ -25,7 +25,7 @@ export const metadata = {
 
 export default async function Login({ searchParams }) {
   // Server-side guard - перенаправляем авторизованных пользователей
-  await requireGuest("/");
+  await requireGuest("/forum");
 
   const redirectTo = searchParams?.next || "/";
 

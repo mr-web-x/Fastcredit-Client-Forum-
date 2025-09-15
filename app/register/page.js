@@ -17,7 +17,7 @@ export const metadata = {
     title: "Registrácia — FastCredit Fórum",
     description:
       "Vytvorte si účet na FastCredit fóre a získajte prístup k expertným finančným poradám",
-    url: "https://fastcredit.sk//register",
+    url: "https://fastcredit.sk/register",
     type: "website",
   },
   twitter: {
@@ -27,14 +27,14 @@ export const metadata = {
       "Vytvorte si účet na FastCredit fóre a získajte prístup k expertným finančným poradám",
   },
   alternates: {
-    canonical: "https://fastcredit.sk//register",
+    canonical: "https://fastcredit.sk/register",
   },
 };
 
 // ✅ ИСПРАВЛЕНИЕ: Добавляем { searchParams } и передаем redirectTo как prop
 export default async function Register({ searchParams }) {
   // Server-side guard - перенаправляем авторизованных пользователей
-  await requireGuest("/");
+  await requireGuest("/forum");
 
   // ✅ Читаем searchParams на сервере (Server Component)
   const redirectTo = searchParams?.next || "/";

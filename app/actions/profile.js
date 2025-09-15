@@ -5,7 +5,6 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
-import { basePath } from "@/src/constants/config";
 import { getServerUser } from "@/src/lib/auth-server";
 
 /**
@@ -16,7 +15,7 @@ export async function updateMyDataAction(prevState, formData) {
     // Проверяем авторизацию
     const currentUser = await getServerUser();
     if (!currentUser) {
-      redirect(`${basePath}login`);
+      redirect(`/forum/login`);
     }
 
     // Получаем данные из формы
@@ -81,7 +80,7 @@ export async function updateMyDataAction(prevState, formData) {
     const jwtCookie = cookieStore.get("fc_jwt");
 
     if (!jwtCookie?.value) {
-      redirect(`${basePath}login`);
+      redirect(`/forum/login`);
     }
 
     const response = await fetch(`${backendUrl}/auth/profile`, {
@@ -125,7 +124,7 @@ export async function updateMyDataAction(prevState, formData) {
       }
 
       if (response.status === 401) {
-        redirect(`${basePath}login`);
+        redirect(`/forum/login`);
       }
 
       if (response.status === 403) {
@@ -161,9 +160,9 @@ export async function updateMyDataAction(prevState, formData) {
 
     // Успех! Обновляем кеш
     try {
-      revalidatePath("//profile");
-      revalidatePath("//profile/my-data");
-      revalidatePath("/", "layout");
+      revalidatePath("/forum/profile");
+      revalidatePath("/forum/profile/my-data");
+      revalidatePath("/forum", "layout");
     } catch (revalidateError) {
       console.warn("[updateMyDataAction] Revalidate error:", revalidateError);
     }

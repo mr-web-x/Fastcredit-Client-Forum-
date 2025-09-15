@@ -59,8 +59,8 @@ export default function SuccessForm({
           <Link
             href={
               redirectTo === "/"
-                ? "/login"
-                : `/login?next=${encodeURIComponent(redirectTo)}`
+                ? "/forum/login"
+                : `/forum/login?next=${encodeURIComponent(redirectTo)}`
             }
             className="success-form__login-btn"
           >
@@ -88,7 +88,7 @@ export default function SuccessForm({
         <div className="success-form__contact">
           <p className="success-form__contact-text">
             Potrebujete pomoc?{" "}
-            <Link href="/contact" className="success-form__contact-link">
+            <Link href="/kontakty.html" className="success-form__contact-link">
               Kontaktujte nás
             </Link>
           </p>

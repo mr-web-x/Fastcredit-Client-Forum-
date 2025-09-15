@@ -14,7 +14,7 @@ export default function SuccessStep({ onBackToPassword }) {
   // Auto redirect після 5 секунд
   useEffect(() => {
     const redirectTimer = setTimeout(() => {
-      const redirectTo = searchParams.get("next") || "/login";
+      const redirectTo = searchParams.get("next") || "/forum/login";
       router.replace(redirectTo);
     }, 5000);
 
@@ -43,7 +43,7 @@ export default function SuccessStep({ onBackToPassword }) {
         </div>
 
         <div className="success-step__actions">
-          <Link href="/login" className="success-step__login-btn">
+          <Link href="/forum/login" className="success-step__login-btn">
             Prihlásiť sa s novým heslom
           </Link>
 
@@ -68,9 +68,9 @@ export default function SuccessStep({ onBackToPassword }) {
         <div className="success-step__contact">
           <p className="success-step__contact-text">
             Potrebujete ďalšiu pomoc?{" "}
-            <Link href="/contact" className="success-step__contact-link">
+            <a href="/kontakty.html" className="success-step__contact-link">
               Kontaktujte podporu
-            </Link>
+            </a>
           </p>
         </div>
       </div>

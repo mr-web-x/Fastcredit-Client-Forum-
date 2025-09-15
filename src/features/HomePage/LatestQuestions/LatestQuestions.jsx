@@ -84,7 +84,7 @@ export default async function LatestQuestions() {
         {questions.length === 0 ? (
           <div className="latest-questions__empty">
             <p>Zatiaľ nie sú žiadne otázky.</p>
-            <Link href="/ask" className="btn">
+            <Link href="/forum/ask" className="btn">
               Položiť prvú otázku
             </Link>
           </div>
@@ -94,7 +94,7 @@ export default async function LatestQuestions() {
               {questions.map((question) => (
                 <Link
                   key={question._id}
-                  href={`/questions/${question.slug || question._id}`}
+                  href={`/forum/questions/${question.slug || question._id}`}
                   className="latest-questions__item"
                 >
                   {/* Первый ряд: Заголовок + бейджи (на ПК) */}
@@ -183,7 +183,7 @@ export default async function LatestQuestions() {
             </div>
 
             <div className="latest-questions__footer">
-              <Link href="/questions" className="btn btn--secondary">
+              <Link href="/forum/questions" className="btn btn--secondary">
                 Zobraziť všetky otázky
               </Link>
             </div>

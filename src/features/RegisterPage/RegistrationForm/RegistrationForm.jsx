@@ -266,11 +266,11 @@ export default function RegistrationForm({ onSuccess }) {
           />
           <span className="registration-form__checkbox-text">
             Súhlasím s{" "}
-            <Link href="/terms" className="registration-form__link">
+            <Link href="/forum/terms" className="registration-form__link">
               podmienkami použitia
             </Link>{" "}
             a{" "}
-            <Link href="/privacy" className="registration-form__link">
+            <Link href="/forum/privacy" className="registration-form__link">
               ochranou osobných údajov
             </Link>
           </span>

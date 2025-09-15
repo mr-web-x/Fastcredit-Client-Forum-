@@ -154,8 +154,8 @@ export async function changeUserRoleAction(userId, role, reason = "") {
     console.log(`✅ User role changed successfully`);
 
     // Revalidate соответствующие пути
-    revalidatePath("/profile/users");
-    revalidatePath("/", "layout"); // Перезагрузить кэш пользователей
+    revalidatePath("/forum/profile/users");
+    revalidatePath("/forum", "layout"); // Перезагрузить кэш пользователей
 
     return {
       success: true,
@@ -230,8 +230,8 @@ export async function banUserAction(userId, banData = {}) {
     console.log(`✅ User banned successfully`);
 
     // Revalidate страницы
-    revalidatePath("/profile/users");
-    revalidatePath("/", "layout");
+    revalidatePath("/forum/profile/users");
+    revalidatePath("/forum", "layout");
 
     return {
       success: true,
@@ -280,8 +280,8 @@ export async function unbanUserAction(userId) {
     console.log(`✅ User unbanned successfully`);
 
     // Revalidate страницы
-    revalidatePath("/profile/users");
-    revalidatePath("/", "layout");
+    revalidatePath("/forum/profile/users");
+    revalidatePath("/forum", "layout");
 
     return {
       success: true,

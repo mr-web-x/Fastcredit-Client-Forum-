@@ -24,7 +24,7 @@ export default function AskQuestionPage({ user }) {
             FastCredit
           </a>
           <span className="ask-question-page__breadcrumb-separator">›</span>
-          <a href="/" className="ask-question-page__breadcrumb-link">
+          <a href="/forum" className="ask-question-page__breadcrumb-link">
             Fórum
           </a>
           <span className="ask-question-page__breadcrumb-separator">›</span>
@@ -52,7 +52,7 @@ export default function AskQuestionPage({ user }) {
                 <p>{state.message}</p>
                 {state.questionSlug && (
                   <a
-                    href={`//questions/${state.questionSlug}`}
+                    href={`/forum/questions/${state.questionSlug}`}
                     className="ask-question-page__success-link"
                   >
                     Zobraziť otázku →

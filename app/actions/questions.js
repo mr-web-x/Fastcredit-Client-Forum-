@@ -5,7 +5,6 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { getServerUser } from "@/src/lib/auth-server";
-import { basePath } from "@/src/constants/config";
 import { questionsService } from "@/src/services/server";
 
 /**
@@ -16,7 +15,7 @@ export async function createQuestionAction(prevState, formData) {
     // Проверяем авторизацию
     const currentUser = await getServerUser();
     if (!currentUser) {
-      redirect(`${basePath}login`);
+      redirect(`/forum/login`);
     }
 
     // Получаем данные из FormData
@@ -75,7 +74,7 @@ export async function createQuestionAction(prevState, formData) {
     const jwtCookie = cookieStore.get("fc_jwt");
 
     if (!jwtCookie?.value) {
-      redirect(`${basePath}login`);
+      redirect(`/forum/login`);
     }
 
     const response = await fetch(`${backendUrl}/questions`, {
@@ -110,7 +109,7 @@ export async function createQuestionAction(prevState, formData) {
       const errorMessage = data.message || "Nepodarilo sa vytvoriť otázku";
 
       if (response.status === 401) {
-        redirect(`${basePath}login`);
+        redirect(`/forum/login`);
       }
 
       if (response.status === 429) {
@@ -139,14 +138,14 @@ export async function createQuestionAction(prevState, formData) {
 
     // Revalidate relevantné paths
     try {
-      revalidatePath("/");
-      revalidatePath("//questions");
-      revalidatePath("//profile");
-      revalidatePath(`//questions/${questionSlug}`);
+      revalidatePath("/forum");
+      revalidatePath("/forum/questions");
+      revalidatePath("/forum/profile");
+      revalidatePath(`/forum/questions/${questionSlug}`);
 
       // Revalidate kategóriu ak je známa
       if (category) {
-        revalidatePath(`//categories/${category}`);
+        revalidatePath(`/forum/categories/${category}`);
       }
     } catch (revalidateError) {
       console.warn("[createQuestionAction] Revalidate error:", revalidateError);
@@ -223,10 +222,10 @@ export async function deleteQuestionAction(questionId) {
     }
 
     // Revalidate paths
-    revalidatePath("/");
-    revalidatePath("//questions");
-    revalidatePath("//profile");
-    revalidatePath("/profile/all-questions");
+    revalidatePath("/forum");
+    revalidatePath("/forum/questions");
+    revalidatePath("/forum/profile");
+    revalidatePath("/forum/profile/all-questions");
 
     return {
       success: true,

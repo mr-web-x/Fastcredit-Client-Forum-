@@ -59,7 +59,7 @@ export default function AllQuestionsPage({
     if (newFilters.limit !== 10)
       params.set("limit", newFilters.limit.toString());
 
-    const newURL = `/profile/all-questions${
+    const newURL = `/forum/profile/all-questions${
       params.toString() ? `?${params.toString()}` : ""
     }`;
     router.replace(newURL, { scroll: false });
@@ -162,7 +162,7 @@ export default function AllQuestionsPage({
 
   // Обработка просмотра вопроса
   const handleViewQuestion = (question) => {
-    router.push(`/questions/${question.slug || question._id}`);
+    router.push(`/forum/questions/${question.slug || question._id}`);
   };
 
   // Получение текста роли для заголовка

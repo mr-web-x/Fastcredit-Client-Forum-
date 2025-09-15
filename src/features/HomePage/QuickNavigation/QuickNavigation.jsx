@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { basePath } from "@/src/constants/config";
 import { categoriesService } from "@/src/services/server";
 import "./QuickNavigation.scss";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import StarIcon from "@mui/icons-material/Star";
 
 export default async function QuickNavigation() {
   // Статические фильтры (всегда показываем)
@@ -9,15 +10,15 @@ export default async function QuickNavigation() {
     {
       title: "Nové otázky",
       description: "Najnovšie otázky od používateľov",
-      href: `/questions?sortBy=createdAt&sortOrder=-1`,
-      icon: "🆕",
+      href: `/forum/questions?sortBy=createdAt&sortOrder=-1`,
+      icon: <AccessTimeIcon />,
       type: "filter",
     },
     {
       title: "Populárne otázky",
       description: "Najviac hodnotené otázky",
-      href: `/questions?sortBy=likes&sortOrder=-1`,
-      icon: "⭐",
+      href: `/forum/questions?sortBy=likes&sortOrder=-1`,
+      icon: <StarIcon />,
       type: "filter",
     },
   ];
@@ -29,7 +30,7 @@ export default async function QuickNavigation() {
     categories = categoriesData.map((category) => ({
       title: category.name,
       description: category.description,
-      href: `/questions?category=${category.slug}`,
+      href: `/forum/questions?category=${category.slug}`,
       icon: category.icon,
       type: "category",
       questionsCount: category.questionsCount || 0,
@@ -75,7 +76,7 @@ export default async function QuickNavigation() {
 
         <div className="quick-navigation__footer">
           <Link
-            href={`/questions`}
+            href={`/forum/questions`}
             className="btn btn--secondary quick-navigation__view-all"
           >
             Zobraziť všetky otázky

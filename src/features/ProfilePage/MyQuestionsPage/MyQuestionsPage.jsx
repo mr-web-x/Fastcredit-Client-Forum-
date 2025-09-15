@@ -11,7 +11,6 @@ import {
 } from "@/app/actions/questions";
 // import MyQuestionCard from "./MyQuestionCard/MyQuestionCard";
 import QuestionCard from "@/src/components/QuestionCard/QuestionCard";
-import { basePath } from "@/src/constants/config";
 import "./MyQuestionsPage.scss";
 
 export default function MyQuestionsPage({
@@ -45,7 +44,7 @@ export default function MyQuestionsPage({
     if (newFilters.limit !== 10)
       params.set("limit", newFilters.limit.toString());
 
-    const newURL = `/profile/my-questions${
+    const newURL = `/forum/profile/my-questions${
       params.toString() ? `?${params.toString()}` : ""
     }`;
     router.replace(newURL, { scroll: false });
@@ -98,7 +97,7 @@ export default function MyQuestionsPage({
 
   // Обработчики действий с вопросами
   const handleEdit = (question) => {
-    router.push(`/questions/${question.slug}/edit`);
+    router.push(`/forum/questions/${question.slug}/edit`);
   };
 
   const handleDelete = async (question) => {
@@ -124,7 +123,7 @@ export default function MyQuestionsPage({
   };
 
   const handleShare = (question) => {
-    const url = `${window.location.origin}${basePath}questions/${question.slug}`;
+    const url = `${window.location.origin}/questions/${question.slug}`;
 
     if (navigator.share) {
       navigator.share({
@@ -162,7 +161,7 @@ export default function MyQuestionsPage({
             <span className="my-questions-page__title-icon">❓</span>
             Moje otázky
           </h1>
-          <Link href={`/ask`} className="my-questions-page__create-btn">
+          <Link href={`/forum/ask`} className="my-questions-page__create-btn">
             <span className="my-questions-page__create-icon">➕</span>
             Nová otázka
           </Link>
@@ -284,7 +283,7 @@ export default function MyQuestionsPage({
                 ? "Skúste zmeniť filter alebo zadajte novú otázku"
                 : "Začnite sa pýtať a získajte odpovede od našich expertov"}
             </p>
-            <Link href={`/ask`} className="my-questions-page__empty-btn">
+            <Link href={`/forum/ask`} className="my-questions-page__empty-btn">
               🌟 Zadať prvú otázku
             </Link>
           </div>

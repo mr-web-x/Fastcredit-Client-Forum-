@@ -16,7 +16,7 @@ export default async function ProfileAllQuestions({ searchParams }) {
 
   // Проверка прав доступа - только эксперты, правники, админы и модераторы
   if (!["expert", "lawyer", "admin", "moderator"].includes(user.role)) {
-    redirect("/profile");
+    redirect("/forum/profile");
   }
 
   // Параметры фильтрации и пагинации из URL

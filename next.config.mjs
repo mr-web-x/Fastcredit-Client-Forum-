@@ -1,14 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Форум живёт под /forum
+  // Next.js автоматически добавляет /forum ко всем ссылкам
   // basePath: "/forum",
-  // // Если статика будет кешироваться/отдаваться через основной сайт:
   assetPrefix: "/forum",
-  // trailingSlash: true,
-  // Для Server Actions (если будешь их использовать)
-  experimental: { serverActions: { bodySizeLimit: "2mb" } },
 
-  // Проксирование запросов к твоему API (удобно на dev)
+  // Для Server Actions
+  experimental: {
+    serverActions: { bodySizeLimit: "2mb" },
+  },
+
+  // Проксирование API запросов к backend
   async rewrites() {
     return [
       {
@@ -17,5 +18,13 @@ const nextConfig = {
       },
     ];
   },
+
+  // Отключаем trailing slash
+  trailingSlash: false,
+
+  // Дополнительные настройки
+  poweredByHeader: false,
+  reactStrictMode: true,
 };
+
 export default nextConfig;

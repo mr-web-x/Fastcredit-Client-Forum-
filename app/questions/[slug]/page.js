@@ -1,11 +1,7 @@
 // Файл: app/questions/[slug]/page.js
 
 import { notFound } from "next/navigation";
-import {
-  questionsService,
-  answersService,
-  commentsService,
-} from "@/src/services/server";
+import { questionsService, answersService } from "@/src/services/server";
 import { getServerUser } from "@/src/lib/auth-server";
 import QuestionDetailPage from "@/src/features/QuestionDetailPage/QuestionDetailPage";
 

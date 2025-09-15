@@ -17,14 +17,14 @@ export default function ProfilePage({ user, latestQuestion }) {
 
           <div className="profile-page__questions-actions">
             <Link
-              href="/ask"
+              href="/forum/ask"
               className="profile-page__action-button profile-page__action-button--primary"
             >
               Zadať novú otázku
             </Link>
             {latestQuestion && (
               <Link
-                href="/profile/my-questions"
+                href="/forum/profile/my-questions"
                 className="profile-page__action-button"
               >
                 Zobraziť všetky otázky
@@ -53,7 +53,7 @@ export default function ProfilePage({ user, latestQuestion }) {
               </span>
             </div>
             <Link
-              href={`/questions/${latestQuestion._id}`}
+              href={`/forum/questions/${latestQuestion._id}`}
               className="profile-page__question-link"
             >
               Zobraziť celú otázku →
@@ -68,7 +68,7 @@ export default function ProfilePage({ user, latestQuestion }) {
             <p className="profile-page__no-questions-text">
               Začnite sa pýtať a získajte odpovede od našich expertov
             </p>
-            <Link href="/ask" className="profile-page__ask-button">
+            <Link href="/forum/ask" className="profile-page__ask-button">
               Zadať prvú otázku
             </Link>
           </div>
@@ -163,7 +163,10 @@ export default function ProfilePage({ user, latestQuestion }) {
             </div>
 
             <div className="profile-page__stats-footer">
-              <Link href="/profile/stats" className="profile-page__stats-link">
+              <Link
+                href="/forum/profile/stats"
+                className="profile-page__stats-link"
+              >
                 📈 Detailné štatistiky →
               </Link>
             </div>
@@ -175,18 +178,21 @@ export default function ProfilePage({ user, latestQuestion }) {
       <div className="profile-page__quick-actions">
         <h3 className="profile-page__actions-title">Rýchle akcie</h3>
         <div className="profile-page__actions-grid">
-          <Link href="/profile/my-data" className="profile-page__action-card">
+          <Link
+            href="/forum/profile/my-data"
+            className="profile-page__action-card"
+          >
             <span className="profile-page__action-text">Upraviť profil</span>
           </Link>
 
           <Link
-            href="/profile/my-questions"
+            href="/forum/profile/my-questions"
             className="profile-page__action-card"
           >
             <span className="profile-page__action-text">Moje otázky</span>
           </Link>
 
-          <Link href="/ask" className="profile-page__action-card">
+          <Link href="/forum/ask" className="profile-page__action-card">
             <span className="profile-page__action-text">Nová otázka</span>
           </Link>
         </div>
