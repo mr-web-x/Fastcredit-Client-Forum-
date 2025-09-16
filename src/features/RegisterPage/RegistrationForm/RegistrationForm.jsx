@@ -198,9 +198,9 @@ export default function RegistrationForm({ onSuccess }) {
             aria-label={showPassword ? "Skryť heslo" : "Zobraziť heslo"}
           >
             {showPassword ? (
-              <VisibilityOffIcon sx={{ fontSize: "14px" }} />
+              <VisibilityOffIcon sx={{ fontSize: "18px" }} />
             ) : (
-              <VisibilityIcon sx={{ fontSize: "14px" }} />
+              <VisibilityIcon sx={{ fontSize: "18px" }} />
             )}
           </button>
         </div>
@@ -244,9 +244,9 @@ export default function RegistrationForm({ onSuccess }) {
             aria-label={showConfirmPassword ? "Skryť heslo" : "Zobraziť heslo"}
           >
             {showConfirmPassword ? (
-              <VisibilityOffIcon sx={{ fontSize: "14px" }} />
+              <VisibilityOffIcon sx={{ fontSize: "18px" }} />
             ) : (
-              <VisibilityIcon sx={{ fontSize: "14px" }} />
+              <VisibilityIcon sx={{ fontSize: "18px" }} />
             )}
           </button>
         </div>

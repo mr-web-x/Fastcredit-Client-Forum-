@@ -84,9 +84,9 @@ export default function GoogleAuthButton({ onSuccess, onError }) {
         size: "large",
         shape: "pill",
         text: "continue_with",
+        width: "100%",
       });
       renderedRef.current = true;
-      // window.google.accounts.id.prompt(); // voliteľné
     } catch (e) {
       handleError(e);
     }
@@ -128,8 +128,7 @@ export default function GoogleAuthButton({ onSuccess, onError }) {
           );
         }
 
-        const { user } = data.data || {};
-        onSuccess?.({ user, message: data.data?.message });
+        onSuccess();
 
         const redirectTo = searchParams.get("next") || "/forum";
         window.location.href = redirectTo;

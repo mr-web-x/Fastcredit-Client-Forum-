@@ -37,7 +37,7 @@ export default async function Register({ searchParams }) {
   await requireGuest("/forum");
 
   // ✅ Читаем searchParams на сервере (Server Component)
-  const redirectTo = searchParams?.next || "/";
+  const redirectTo = searchParams?.next || "/forum/login";
 
   // ✅ Передаем redirectTo в Client Component как prop
   return <RegisterPage redirectTo={redirectTo} />;

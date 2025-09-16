@@ -27,7 +27,7 @@ export default async function Login({ searchParams }) {
   // Server-side guard - перенаправляем авторизованных пользователей
   await requireGuest("/forum");
 
-  const redirectTo = searchParams?.next || "/";
+  const redirectTo = searchParams?.next || "/forum/profile";
 
   return <LoginPage redirectTo={redirectTo} />;
 }

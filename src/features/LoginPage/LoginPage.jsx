@@ -10,7 +10,7 @@ import "./LoginPage.scss";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
-export default function LoginPage({ redirectTo = "/forum" }) {
+export default function LoginPage({ redirectTo = "/forum/profile" }) {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -34,7 +34,7 @@ export default function LoginPage({ redirectTo = "/forum" }) {
     }
   }, [formState?.success, router, redirectTo]);
 
-  const handleGoogleSuccess = ({ user }) => {
+  const handleGoogleSuccess = () => {
     router.replace(redirectTo);
   };
 
@@ -161,9 +161,9 @@ export default function LoginPage({ redirectTo = "/forum" }) {
                       disabled={isPending}
                     >
                       {showPassword ? (
-                        <VisibilityOffIcon sx={{ fontSize: "14px" }} />
+                        <VisibilityOffIcon sx={{ fontSize: "18px" }} />
                       ) : (
-                        <VisibilityIcon sx={{ fontSize: "14px" }} />
+                        <VisibilityIcon sx={{ fontSize: "18px" }} />
                       )}
                     </button>
                   </div>

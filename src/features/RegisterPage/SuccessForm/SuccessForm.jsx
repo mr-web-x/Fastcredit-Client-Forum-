@@ -28,7 +28,7 @@ export default function SuccessForm({
     <div className="success-form">
       <div className="success-form__content">
         <div className="success-form__icon">
-          <CheckCircleIcon />
+          <CheckCircleIcon sx={{ fontSize: "48px" }} />
         </div>
 
         <div className="success-form__message">

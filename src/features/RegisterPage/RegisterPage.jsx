@@ -11,7 +11,7 @@ import VerificationForm from "./VerificationForm/VerificationForm";
 import SuccessForm from "./SuccessForm/SuccessForm";
 import "./RegisterPage.scss";
 
-export default function RegisterPage({ redirectTo = "/forum" }) {
+export default function RegisterPage({ redirectTo = "/forum/login" }) {
   const router = useRouter();
 
   // Локальный state для управления шагами
@@ -19,8 +19,8 @@ export default function RegisterPage({ redirectTo = "/forum" }) {
   const [email, setEmail] = useState("");
 
   // Handle Google OAuth success
-  const handleGoogleSuccess = ({ user }) => {
-    router.replace(redirectTo);
+  const handleGoogleSuccess = () => {
+    router.replace("/forum/profile");
   };
 
   const handleGoogleError = (error) => {

@@ -12,7 +12,7 @@
   // БЛОК 1: ВОПРОС + ОТВЕТЫ
   // ===============================================
   .question-block {
-    margin: 60px 0;
+    margin: 32px 0;
   }
 
   .question-block-box {
@@ -28,6 +28,55 @@
     &:hover {
       box-shadow: var(--shadow-card-hover);
     }
+  }
+
+  // === BREADCRUMBS ===
+  &__breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 32px;
+    margin-top: 24px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  &__breadcrumb-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--accent);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    padding: 4px 8px;
+    border-radius: 6px;
+
+    &:hover {
+      background: var(--accent-bg-light);
+      color: var(--accent-dark);
+    }
+
+    svg {
+      opacity: 0.8;
+    }
+  }
+
+  &__breadcrumb-separator {
+    color: var(--text-secondary);
+
+    svg {
+      display: block;
+    }
+  }
+
+  &__breadcrumb-current {
+    color: var(--text-secondary);
+    font-weight: 600;
+    display: block;
+    width: 480px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   // ===============================================
@@ -113,6 +162,17 @@
 
   // Мобильные устройства
   @media (max-width: 768px) {
+    &__breadcrumbs {
+      margin-bottom: 20px;
+      margin-top: 16px;
+      font-size: 12px;
+      gap: 6px;
+    }
+
+    &__breadcrumb-current {
+      width: 150px;
+    }
+
     .question-divider {
       margin: 20px 0;
 

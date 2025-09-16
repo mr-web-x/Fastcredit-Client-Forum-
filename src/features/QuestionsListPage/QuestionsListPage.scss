@@ -457,7 +457,8 @@
 
     &__breadcrumbs {
       margin-bottom: 20px;
-      font-size: 13px;
+      font-size: 12px;
+      gap: 6px;
     }
 
     &__header {
@@ -550,11 +551,6 @@
 
     &__subtitle {
       font-size: 14px;
-    }
-
-    &__breadcrumbs {
-      font-size: 12px;
-      gap: 6px;
     }
 
     &__filter-toggle {
