@@ -94,15 +94,6 @@ export async function clearAuthCookie() {
 }
 
 /**
- * Проверка валидности сессии
- * @returns {boolean} - валидна ли сессия
- */
-export async function validateSession() {
-  const user = await getServerUser();
-  return !!user;
-}
-
-/**
  * Guard для защищенных страниц - требует авторизации
  * @param {string} redirectTo - куда перенаправить если не авторизован
  */
@@ -126,93 +117,4 @@ export async function requireGuest(redirectTo = "/forum") {
   if (user) {
     redirect(redirectTo);
   }
-}
-
-/**
- * Проверка ролей пользователя
- * @param {Object} user - данные пользователя
- * @param {string} requiredRole - требуемая роль
- * @returns {boolean} - имеет ли пользователь нужные права
- */
-export function hasPermission(user, requiredRole) {
-  if (!user) return false;
-
-  const roleHierarchy = {
-    user: 1,
-    expert: 2,
-    moderator: 3,
-    admin: 4,
-  };
-
-  const userLevel = roleHierarchy[user.role] || 0;
-  const requiredLevel = roleHierarchy[requiredRole] || 0;
-
-  return userLevel >= requiredLevel;
-}
-
-/**
- * Guard для страниц с ограничением по ролям
- * @param {string} requiredRole - требуемая роль
- * @param {string} redirectTo - куда перенаправить при отсутствии прав
- */
-export async function requireRole(requiredRole, redirectTo = "/forum") {
-  const user = await requireAuth(); // Сначала проверяем авторизацию
-
-  if (!hasPermission(user, requiredRole)) {
-    redirect(redirectTo);
-  }
-
-  return user;
-}
-
-/**
- * Проверка активности пользователя
- * @param {Object} user - данные пользователя
- * @returns {boolean} - активен ли пользователь
- */
-export function isUserActive(user) {
-  if (!user) return false;
-  return user.isActive && !user.isBanned;
-}
-
-/**
- * Получение инициалов пользователя для аватара
- * @param {Object} user - данные пользователя
- * @returns {string} - инициалы
- */
-export function getUserInitials(user) {
-  if (!user) return "?";
-
-  const firstName = user.firstName || "";
-  const lastName = user.lastName || "";
-
-  if (firstName && lastName) {
-    return `${firstName[0]}${lastName[0]}`.toUpperCase();
-  }
-
-  if (firstName) {
-    return firstName[0].toUpperCase();
-  }
-
-  if (user.username) {
-    return user.username.slice(0, 2).toUpperCase();
-  }
-
-  return "?";
-}
-
-/**
- * Форматирование роли пользователя для отображения
- * @param {string} role - роль пользователя
- * @returns {string} - отформатированная роль
- */
-export function formatUserRole(role) {
-  const roleNames = {
-    user: "Používateľ",
-    expert: "Expert",
-    moderator: "Moderátor",
-    admin: "Administrátor",
-  };
-
-  return roleNames[role] || role;
 }

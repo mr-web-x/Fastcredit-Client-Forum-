@@ -2,7 +2,7 @@
 module.exports = {
   apps: [
     {
-      name: "[next]-forum-fastcredit-sk",
+      name: "[fastcredit-sk]-forum-next",
       script: "node_modules/.bin/next",
       args: "start",
       env: {
