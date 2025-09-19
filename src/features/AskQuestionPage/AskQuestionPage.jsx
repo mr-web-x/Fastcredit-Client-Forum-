@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { createQuestionAction } from "@/app/actions/questions";
 import "./AskQuestionPage.scss";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -17,6 +17,15 @@ export default function AskQuestionPage({ user }) {
     fieldErrors: null,
     questionSlug: null,
   });
+
+  useEffect(() => {
+    if (state?.success) {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+  }, [state?.success]);
 
   return (
     <div className="ask-question-page">

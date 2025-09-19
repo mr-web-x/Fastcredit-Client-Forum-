@@ -1,14 +1,10 @@
-// Файл: src/features/ProfilePage/AllQuestionsPage/AllQuestionsPage.jsx
-
 "use client";
 
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import {
-  getAllQuestionsAction,
-  deleteQuestionAction,
-} from "@/app/actions/questions";
+import { deleteQuestionAction } from "@/app/actions/questions";
 import QuestionCard from "@/src/components/QuestionCard/QuestionCard";
+import Pagination from "@/src/components/Pagination/Pagination";
 import "./AllQuestionsPage.scss";
 
 export default function AllQuestionsPage({
@@ -21,104 +17,23 @@ export default function AllQuestionsPage({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  // State для данных
-  const [questions, setQuestions] = useState(initialQuestions);
-  const [pagination, setPagination] = useState(initialPagination);
-  const [error, setError] = useState(initialError);
-
-  // State для фильтров
-  const [filters, setFilters] = useState({
-    hasApprovedAnswers: initialFilters.hasApprovedAnswers || null,
-    hasPendingAnswers: initialFilters.hasPendingAnswers || null,
-    sortBy: initialFilters.sortBy || "createdAt",
-    sortOrder: initialFilters.sortOrder || "desc",
-    page: initialFilters.page || 1,
-    limit: initialFilters.limit || 10,
-  });
-
-  // Обновление URL при изменении фильтров
-  const updateURL = (newFilters) => {
-    const params = new URLSearchParams();
-
-    if (newFilters.page > 1) params.set("page", newFilters.page.toString());
-
-    if (newFilters.hasApprovedAnswers !== null) {
-      params.set(
-        "hasApprovedAnswers",
-        newFilters.hasApprovedAnswers.toString()
-      );
-    }
-    if (newFilters.hasPendingAnswers !== null) {
-      params.set("hasPendingAnswers", newFilters.hasPendingAnswers.toString());
-    }
-
-    if (newFilters.sortBy !== "createdAt")
-      params.set("sortBy", newFilters.sortBy);
-    if (newFilters.sortOrder !== "desc")
-      params.set("sortOrder", newFilters.sortOrder);
-    if (newFilters.limit !== 10)
-      params.set("limit", newFilters.limit.toString());
-
-    const newURL = `/forum/profile/all-questions${
-      params.toString() ? `?${params.toString()}` : ""
-    }`;
-    router.replace(newURL, { scroll: false });
-  };
-
-  // Загрузка вопросов через Server Action
-  const loadQuestions = async (newFilters = filters) => {
-    startTransition(async () => {
-      try {
-        setError(null);
-
-        const result = await getAllQuestionsAction(newFilters);
-
-        if (result.success) {
-          setQuestions(result.data.items);
-          setPagination(result.data.pagination);
-        } else {
-          setError(result.error);
-          setQuestions([]);
-          setPagination(null);
-        }
-      } catch (loadError) {
-        console.error("Failed to load questions:", loadError);
-        setError("Nepodarilo sa načítať otázky. Skúste to znovu.");
-      }
-    });
-  };
-
   // Обработка удаления вопроса
   const handleDeleteQuestion = async (questionId) => {
     const confirmDelete = confirm(
       "Naozaj chcete zmazať túto otázku? Táto akcia sa nedá vrátiť späť."
     );
 
-    if (!confirmDelete) {
-      return;
-    }
+    if (!confirmDelete) return;
 
     startTransition(async () => {
       try {
         const result = await deleteQuestionAction(questionId);
 
-        if (result.success) {
-          // Удаляем вопрос из локального state
-          setQuestions((prev) => prev.filter((q) => q._id !== questionId));
-
-          // Показываем сообщение об успехе (можно добавить toast)
-          console.log("✅", result.message);
-
-          // Обновляем pagination если нужно
-          if (pagination) {
-            setPagination((prev) => ({
-              ...prev,
-              totalItems: prev.totalItems - 1,
-            }));
-          }
+        if (result?.success) {
+          console.log("✅ Otázka zmazaná");
+          // revalidation в Server Action обновит данные автоматически
         } else {
-          // Показываем ошибку
-          alert(result.error || "Nepodarilo sa zmazať otázku");
+          alert(result?.error || "Chyba pri mazaní");
         }
       } catch (error) {
         console.error("Failed to delete question:", error);
@@ -127,60 +42,53 @@ export default function AllQuestionsPage({
     });
   };
 
-  // Обработка изменения фильтров по ответам
+  // Server-side навигация для фильтров
   const handleAnswerFilterToggle = (filterType, value) => {
-    const newFilters = {
-      ...filters,
-      [filterType]: filters[filterType] === value ? null : value,
-      page: 1, // Сбрасываем на первую страницу
-    };
-    setFilters(newFilters);
-    updateURL(newFilters);
-    loadQuestions(newFilters);
+    const params = new URLSearchParams();
+
+    // Берем текущие фильтры
+    Object.entries(initialFilters).forEach(([key, val]) => {
+      if (val && key !== "page" && key !== filterType) {
+        params.set(key, val.toString());
+      }
+    });
+
+    // Добавляем новый фильтр (toggle логика)
+    const newValue = initialFilters[filterType] === value ? null : value;
+    if (newValue !== null) {
+      params.set(filterType, newValue.toString());
+    }
+
+    const newURL = `/forum/profile/all-questions${
+      params.toString() ? `?${params.toString()}` : ""
+    }`;
+    router.replace(newURL);
   };
 
-  // Обработка изменения сортировки
   const handleSortChange = (newSortBy, newSortOrder) => {
-    const newFilters = {
-      ...filters,
-      sortBy: newSortBy,
-      sortOrder: newSortOrder,
-      page: 1,
-    };
-    setFilters(newFilters);
-    updateURL(newFilters);
-    loadQuestions(newFilters);
+    const params = new URLSearchParams();
+
+    // Сохраняем все фильтры кроме сортировки
+    Object.entries(initialFilters).forEach(([key, val]) => {
+      if (val && key !== "page" && key !== "sortBy" && key !== "sortOrder") {
+        params.set(key, val.toString());
+      }
+    });
+
+    // Добавляем новую сортировку
+    if (newSortBy !== "createdAt") params.set("sortBy", newSortBy);
+    if (newSortOrder !== "desc") params.set("sortOrder", newSortOrder);
+
+    const newURL = `/forum/profile/all-questions${
+      params.toString() ? `?${params.toString()}` : ""
+    }`;
+    router.replace(newURL);
   };
 
-  // Обработка смены страницы
-  const handlePageChange = (page) => {
-    const newFilters = { ...filters, page };
-    setFilters(newFilters);
-    updateURL(newFilters);
-    loadQuestions(newFilters);
-  };
-
-  // Обработка просмотра вопроса
   const handleViewQuestion = (question) => {
     router.push(`/forum/questions/${question.slug || question._id}`);
   };
 
-  // Получение текста роли для заголовка
-  const getRoleText = () => {
-    switch (user.role) {
-      case "expert":
-        return "Pre expertov";
-      case "lawyer":
-        return "Pre právnikov";
-      case "admin":
-      case "moderator":
-        return "Všetky otázky";
-      default:
-        return "";
-    }
-  };
-
-  // Получение опций сортировки
   const getSortOptions = () => [
     {
       value: "createdAt-desc",
@@ -220,34 +128,32 @@ export default function AllQuestionsPage({
     },
   ];
 
-  const currentSortValue = `${filters.sortBy}-${filters.sortOrder}`;
+  const currentSortValue = `${initialFilters.sortBy || "createdAt"}-${
+    initialFilters.sortOrder || "desc"
+  }`;
 
   return (
     <div className="all-questions-page">
-      {/* Заголовок */}
+      {/* Header */}
       <div className="all-questions-page__header">
         <div className="all-questions-page__title-section">
           <h1 className="all-questions-page__title">Všetky otázky</h1>
           <p className="all-questions-page__subtitle">
-            Otázok celkom - {pagination?.totalItems || 0}
+            Otázok celkom - {initialPagination?.totalItems || 0}
           </p>
         </div>
       </div>
 
-      {/* Фильтры и статистика */}
+      {/* Controls */}
       <div className="all-questions-page__controls">
-        {/* Статистика */}
-
-        {/* Фильтры и сортировка */}
         <div className="all-questions-page__filters">
-          {/* Фильтры по ответам */}
           <div className="all-questions-page__answer-filters">
             <button
               onClick={() =>
                 handleAnswerFilterToggle("hasApprovedAnswers", true)
               }
               className={`all-questions-page__filter-btn ${
-                filters.hasApprovedAnswers === true ? "active" : ""
+                initialFilters.hasApprovedAnswers === true ? "active" : ""
               }`}
             >
               S odpoveďami
@@ -257,7 +163,7 @@ export default function AllQuestionsPage({
                 handleAnswerFilterToggle("hasApprovedAnswers", false)
               }
               className={`all-questions-page__filter-btn ${
-                filters.hasApprovedAnswers === false ? "active" : ""
+                initialFilters.hasApprovedAnswers === false ? "active" : ""
               }`}
             >
               Bez odpovedí
@@ -267,14 +173,13 @@ export default function AllQuestionsPage({
                 handleAnswerFilterToggle("hasPendingAnswers", true)
               }
               className={`all-questions-page__filter-btn ${
-                filters.hasPendingAnswers === true ? "active" : ""
+                initialFilters.hasPendingAnswers === true ? "active" : ""
               }`}
             >
               Na moderácii
             </button>
           </div>
 
-          {/* Сортировка */}
           <select
             value={currentSortValue}
             onChange={(e) => {
@@ -296,14 +201,14 @@ export default function AllQuestionsPage({
         </div>
       </div>
 
-      {/* Список вопросов */}
+      {/* Content */}
       <div className="all-questions-page__content">
-        {error ? (
+        {initialError ? (
           <div className="all-questions-page__error">
             <div className="all-questions-page__error-icon">⚠️</div>
-            <p className="all-questions-page__error-text">{error}</p>
+            <p className="all-questions-page__error-text">{initialError}</p>
             <button
-              onClick={() => loadQuestions()}
+              onClick={() => window.location.reload()}
               className="all-questions-page__retry-btn"
             >
               Skúsiť znovu
@@ -314,7 +219,7 @@ export default function AllQuestionsPage({
             <div className="all-questions-page__loading-spinner"></div>
             <p>Načítavam otázky...</p>
           </div>
-        ) : questions.length === 0 ? (
+        ) : initialQuestions.length === 0 ? (
           <div className="all-questions-page__empty">
             <div className="all-questions-page__empty-icon">📭</div>
             <h3 className="all-questions-page__empty-title">
@@ -326,7 +231,7 @@ export default function AllQuestionsPage({
           </div>
         ) : (
           <div className="all-questions-page__questions">
-            {questions.map((question) => (
+            {initialQuestions.map((question) => (
               <QuestionCard
                 key={question._id}
                 question={question}
@@ -339,30 +244,16 @@ export default function AllQuestionsPage({
           </div>
         )}
 
-        {/* Пагинация */}
-        {pagination && pagination.total > 1 && (
-          <div className="all-questions-page__pagination">
-            <button
-              onClick={() => handlePageChange(pagination.page - 1)}
-              disabled={!pagination.hasPrev}
-              className="all-questions-page__pagination-btn"
-            >
-              ←
-            </button>
-
-            <span className="all-questions-page__pagination-info">
-               {pagination.current} / {pagination.total}
-            </span>
-
-            <button
-              onClick={() => handlePageChange(pagination.page + 1)}
-              disabled={!pagination.hasNext}
-              className="all-questions-page__pagination-btn"
-            >
-              →
-            </button>
-          </div>
-        )}
+        {/* Pagination */}
+        <div className="all-questions-page__pagination">
+          {initialPagination && initialPagination.total > 1 && (
+            <Pagination
+              pagination={initialPagination}
+              currentFilters={initialFilters}
+              basePath="/forum/profile/all-questions"
+            />
+          )}
+        </div>
       </div>
     </div>
   );

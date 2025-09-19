@@ -1,15 +1,19 @@
-// Файл: src/features/QuestionsListPage/QuestionsPagination/QuestionsPagination.jsx
+// Файл: src/features/QuestionsListPage/Pagination/Pagination.jsx
 
 "use client";
 
-import "./QuestionsPagination.scss";
+import "./Pagination.scss";
 
-export default function QuestionsPagination({ pagination, currentFilters }) {
+export default function Pagination({
+  pagination,
+  currentFilters,
+  basePath = "/forum/questions",
+}) {
   if (!pagination || pagination.total <= 1) {
     return null;
   }
 
-  const { current, count, total, totalItems, hasNext, hasPrev } = pagination;
+  const { current, limit, total, totalItems, hasNext, hasPrev } = pagination;
 
   // Создание URL с параметрами фильтров
   const createPageUrl = (page) => {
@@ -35,7 +39,7 @@ export default function QuestionsPagination({ pagination, currentFilters }) {
     }
 
     const queryString = params.toString();
-    return `/forum/questions${queryString ? `?${queryString}` : ""}`;
+    return `${basePath}${queryString ? `?${queryString}` : ""}`;
   };
 
   // Генерация массива страниц для отображения
@@ -78,26 +82,23 @@ export default function QuestionsPagination({ pagination, currentFilters }) {
   const pageNumbers = generatePageNumbers();
 
   return (
-    <div className="questions-pagination">
+    <div className="pagination">
       {/* Информация о результатах */}
-      <div className="questions-pagination__info">
-        <span className="questions-pagination__results">
-          Zobrazujeme {Math.min((current - 1) * 15 + 1, totalItems)}–
-          {Math.min(current * 15, totalItems)} z <strong>{totalItems}</strong>{" "}
-          otázok
+      <div className="pagination__info">
+        <span className="pagination__results">
+          Zobrazujeme {Math.min((current - 1) * Number(limit) + 1, totalItems)}–
+          {Math.min(current * Number(limit), totalItems)} z{" "}
+          <strong>{totalItems}</strong> otázok
         </span>
       </div>
 
       {/* Навигация по страницам */}
-      <nav
-        className="questions-pagination__nav"
-        aria-label="Pagination Navigation"
-      >
+      <nav className="pagination__nav" aria-label="Pagination Navigation">
         {/* Кнопка "Предыдущая" */}
         {hasPrev ? (
           <a
             href={createPageUrl(current - 1)}
-            className="questions-pagination__button questions-pagination__button--prev"
+            className="pagination__button pagination__button--prev"
             aria-label="Predchádzajúca stránka"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -105,7 +106,7 @@ export default function QuestionsPagination({ pagination, currentFilters }) {
             </svg>
           </a>
         ) : (
-          <span className="questions-pagination__button questions-pagination__button--prev questions-pagination__button--disabled">
+          <span className="pagination__button pagination__button--prev pagination__button--disabled">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <path d="M15.41 16.59L10.83 12L15.41 7.41L14 6L8 12L14 18L15.41 16.59Z" />
             </svg>
@@ -113,13 +114,13 @@ export default function QuestionsPagination({ pagination, currentFilters }) {
         )}
 
         {/* Номера страниц */}
-        <div className="questions-pagination__pages">
+        <div className="pagination__pages">
           {pageNumbers.map((page, index) => {
             if (page === "...") {
               return (
                 <span
                   key={`ellipsis-${index}`}
-                  className="questions-pagination__ellipsis"
+                  className="pagination__ellipsis"
                   aria-hidden="true"
                 >
                   …
@@ -132,7 +133,7 @@ export default function QuestionsPagination({ pagination, currentFilters }) {
             return isCurrentPage ? (
               <span
                 key={page}
-                className="questions-pagination__page questions-pagination__page--current"
+                className="pagination__page pagination__page--current"
                 aria-current="page"
                 aria-label={`Stránka ${page}, aktuálna stránka`}
               >
@@ -142,7 +143,7 @@ export default function QuestionsPagination({ pagination, currentFilters }) {
               <a
                 key={page}
                 href={createPageUrl(page)}
-                className="questions-pagination__page"
+                className="pagination__page"
                 aria-label={`Prejsť na stránku ${page}`}
               >
                 {page}
@@ -155,7 +156,7 @@ export default function QuestionsPagination({ pagination, currentFilters }) {
         {hasNext ? (
           <a
             href={createPageUrl(current + 1)}
-            className="questions-pagination__button questions-pagination__button--next"
+            className="pagination__button pagination__button--next"
             aria-label="Nasledujúca stránka"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -163,7 +164,7 @@ export default function QuestionsPagination({ pagination, currentFilters }) {
             </svg>
           </a>
         ) : (
-          <span className="questions-pagination__button questions-pagination__button--next questions-pagination__button--disabled">
+          <span className="pagination__button pagination__button--next pagination__button--disabled">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <path d="M8.59 7.41L13.17 12L8.59 16.59L10 18L16 12L10 6L8.59 7.41Z" />
             </svg>
@@ -172,35 +173,35 @@ export default function QuestionsPagination({ pagination, currentFilters }) {
       </nav>
 
       {/* Мобильная версия - простая навигация */}
-      <div className="questions-pagination__mobile">
+      <div className="pagination__mobile">
         {hasPrev ? (
           <a
             href={createPageUrl(current - 1)}
-            className="questions-pagination__mobile-button"
+            className="pagination__mobile-button"
             aria-label="Predchádzajúca stránka"
           >
             ←
           </a>
         ) : (
-          <span className="questions-pagination__mobile-button questions-pagination__mobile-button--disabled">
+          <span className="pagination__mobile-button pagination__mobile-button--disabled">
             ←
           </span>
         )}
 
-        <span className="questions-pagination__mobile-info">
+        <span className="pagination__mobile-info">
           {current} / {total}
         </span>
 
         {hasNext ? (
           <a
             href={createPageUrl(current + 1)}
-            className="questions-pagination__mobile-button"
+            className="pagination__mobile-button"
             aria-label="Nasledujúca stránka"
           >
             →
           </a>
         ) : (
-          <span className="questions-pagination__mobile-button questions-pagination__mobile-button--disabled">
+          <span className="pagination__mobile-button pagination__mobile-button--disabled">
             →
           </span>
         )}

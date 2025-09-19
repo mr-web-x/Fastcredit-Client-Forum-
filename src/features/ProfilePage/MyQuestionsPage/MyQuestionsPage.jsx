@@ -1,16 +1,11 @@
-// Файл: src/features/ProfilePage/MyQuestionsPage/MyQuestionsPage.jsx
-
 "use client";
 
-import { useState } from "react";
+import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  getUserQuestionsAction,
-  deleteQuestionAction,
-} from "@/app/actions/questions";
-// import MyQuestionCard from "./MyQuestionCard/MyQuestionCard";
+import { deleteQuestionAction } from "@/app/actions/questions";
 import QuestionCard from "@/src/components/QuestionCard/QuestionCard";
+import Pagination from "@/src/components/Pagination/Pagination";
 import "./MyQuestionsPage.scss";
 
 export default function MyQuestionsPage({
@@ -21,109 +16,59 @@ export default function MyQuestionsPage({
   error: initialError = null,
 }) {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
-  // State для данных
-  const [questions, setQuestions] = useState(initialQuestions);
-  const [pagination, setPagination] = useState(initialPagination);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(initialError);
-
-  // State для фильтров
-  const [filters, setFilters] = useState({
-    status: initialFilters.status || "",
-    page: initialFilters.page || 1,
-    limit: initialFilters.limit || 10,
-  });
-
-  // Обновление URL при изменении фильтров
-  const updateURL = (newFilters) => {
-    const params = new URLSearchParams();
-
-    if (newFilters.page > 1) params.set("page", newFilters.page.toString());
-    if (newFilters.status) params.set("status", newFilters.status);
-    if (newFilters.limit !== 10)
-      params.set("limit", newFilters.limit.toString());
-
-    const newURL = `/forum/profile/my-questions${
-      params.toString() ? `?${params.toString()}` : ""
-    }`;
-    router.replace(newURL, { scroll: false });
-  };
-
-  // Вместо questionsService.getUserQuestions используй:
-  const loadQuestions = async (newFilters = filters) => {
-    try {
-      setIsLoading(true);
-      setError(null);
-
-      const result = await getUserQuestionsAction({
-        page: newFilters.page,
-        limit: newFilters.limit,
-        status: newFilters.status,
-      });
-
-      if (result.success) {
-        setQuestions(result.data.items);
-        setPagination(result.data.pagination);
-      } else {
-        setError(result.error);
-        setQuestions([]);
-        setPagination(null);
-      }
-    } catch (loadError) {
-      console.error("Failed to load questions:", loadError);
-      setError("Nepodarilo sa načítať otázky. Skúste to znovu.");
-      setQuestions([]);
-      setPagination(null);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Обработчики фильтров
-  const handleStatusFilter = (status) => {
-    const newFilters = { ...filters, status, page: 1 };
-    setFilters(newFilters);
-    updateURL(newFilters);
-    loadQuestions(newFilters);
-  };
-
-  const handlePageChange = (page) => {
-    const newFilters = { ...filters, page };
-    setFilters(newFilters);
-    updateURL(newFilters);
-    loadQuestions(newFilters);
-  };
-
-  // Обработчики действий с вопросами
-  const handleEdit = (question) => {
-    router.push(`/forum/questions/${question.slug}/edit`);
-  };
-
+  // Обработка удаления вопроса
   const handleDelete = async (question) => {
     if (!confirm(`Naozaj chcete vymazať otázku "${question.title}"?`)) {
       return;
     }
 
-    try {
-      const result = await deleteQuestionAction(question._id || question.id);
+    startTransition(async () => {
+      try {
+        const result = await deleteQuestionAction(question._id || question.id);
 
-      if (result.success) {
-        // Обновляем список после удаления
-        setQuestions((prev) =>
-          prev.filter((q) => (q._id || q.id) !== (question._id || question.id))
-        );
-
-        console.log("Question deleted successfully");
+        if (result?.success) {
+          console.log("✅ Otázka zmazaná");
+          // revalidation в Server Action обновит данные автоматически
+        } else {
+          alert(result?.error || "Nepodarilo sa vymazať otázku");
+        }
+      } catch (deleteError) {
+        console.error("Failed to delete question:", deleteError);
+        alert("Nepodarilo sa vymazať otázku. Skúste to znovu.");
       }
-    } catch (deleteError) {
-      console.error("Failed to delete question:", deleteError);
-      alert("Nepodarilo sa vymazať otázku. Skúste to znovu.");
+    });
+  };
+
+  // Server-side навигация для фильтров
+  const handleStatusFilter = (status) => {
+    const params = new URLSearchParams();
+
+    // Сохраняем остальные фильтры кроме page и status
+    Object.entries(initialFilters).forEach(([key, val]) => {
+      if (val && key !== "page" && key !== "status") {
+        params.set(key, val.toString());
+      }
+    });
+
+    // Добавляем новый статус
+    if (status) {
+      params.set("status", status);
     }
+
+    const newURL = `/forum/profile/my-questions${
+      params.toString() ? `?${params.toString()}` : ""
+    }`;
+    router.replace(newURL);
+  };
+
+  const handleEdit = (question) => {
+    router.push(`/forum/questions/${question.slug}/edit`);
   };
 
   const handleShare = (question) => {
-    const url = `${window.location.origin}/questions/${question.slug}`;
+    const url = `${window.location.origin}/forum/questions/${question.slug}`;
 
     if (navigator.share) {
       navigator.share({
@@ -137,9 +82,9 @@ export default function MyQuestionsPage({
     }
   };
 
-  // Получение статистики
+  // Получение статистики из текущих вопросов
   const getStatusCounts = () => {
-    return questions.reduce(
+    return initialQuestions.reduce(
       (acc, question) => {
         const status = question.status || "pending";
         acc[status] = (acc[status] || 0) + 1;
@@ -158,7 +103,7 @@ export default function MyQuestionsPage({
       <div className="my-questions-page__header">
         <div className="my-questions-page__title-section">
           <h1 className="my-questions-page__title">Moje otázky</h1>
-          <Link href={`/forum/ask`} className="my-questions-page__create-btn">
+          <Link href="/forum/ask" className="my-questions-page__create-btn">
             Nová otázka
           </Link>
         </div>
@@ -203,7 +148,7 @@ export default function MyQuestionsPage({
           <button
             onClick={() => handleStatusFilter("")}
             className={`my-questions-page__filter ${
-              filters.status === "" ? "my-questions-page__filter--active" : ""
+              !initialFilters.status ? "my-questions-page__filter--active" : ""
             }`}
           >
             Všetky
@@ -211,7 +156,7 @@ export default function MyQuestionsPage({
           <button
             onClick={() => handleStatusFilter("pending")}
             className={`my-questions-page__filter ${
-              filters.status === "pending"
+              initialFilters.status === "pending"
                 ? "my-questions-page__filter--active"
                 : ""
             }`}
@@ -221,7 +166,7 @@ export default function MyQuestionsPage({
           <button
             onClick={() => handleStatusFilter("answered")}
             className={`my-questions-page__filter ${
-              filters.status === "answered"
+              initialFilters.status === "answered"
                 ? "my-questions-page__filter--active"
                 : ""
             }`}
@@ -231,7 +176,7 @@ export default function MyQuestionsPage({
           <button
             onClick={() => handleStatusFilter("closed")}
             className={`my-questions-page__filter ${
-              filters.status === "closed"
+              initialFilters.status === "closed"
                 ? "my-questions-page__filter--active"
                 : ""
             }`}
@@ -244,11 +189,11 @@ export default function MyQuestionsPage({
       {/* Основной контент */}
       <div className="my-questions-page__content">
         {/* Error State */}
-        {error && (
+        {initialError && (
           <div className="my-questions-page__error">
-            <p className="my-questions-page__error-text">{error}</p>
+            <p className="my-questions-page__error-text">{initialError}</p>
             <button
-              onClick={() => loadQuestions()}
+              onClick={() => window.location.reload()}
               className="my-questions-page__error-retry"
             >
               Skúsiť znovu
@@ -257,7 +202,7 @@ export default function MyQuestionsPage({
         )}
 
         {/* Loading State */}
-        {isLoading && (
+        {isPending && (
           <div className="my-questions-page__loading">
             <div className="my-questions-page__loading-spinner"></div>
             <p className="my-questions-page__loading-text">Načítava sa...</p>
@@ -265,28 +210,28 @@ export default function MyQuestionsPage({
         )}
 
         {/* Empty State */}
-        {!isLoading && !error && questions.length === 0 && (
+        {!isPending && !initialError && initialQuestions.length === 0 && (
           <div className="my-questions-page__empty">
             <h3 className="my-questions-page__empty-title">
-              {filters.status
+              {initialFilters.status
                 ? "Žiadne otázky s týmto stavom"
                 : "Zatiaľ ste nezadali žiadne otázky"}
             </h3>
             <p className="my-questions-page__empty-text">
-              {filters.status
+              {initialFilters.status
                 ? "Skúste zmeniť filter alebo zadajte novú otázku"
                 : "Začnite sa pýtať a získajte odpovede od našich expertov"}
             </p>
-            <Link href={`/forum/ask`} className="my-questions-page__empty-btn">
+            <Link href="/forum/ask" className="my-questions-page__empty-btn">
               Zadať prvú otázku
             </Link>
           </div>
         )}
 
         {/* Questions List */}
-        {!isLoading && !error && questions.length > 0 && (
+        {!isPending && !initialError && initialQuestions.length > 0 && (
           <div className="my-questions-page__list">
-            {questions.map((question) => (
+            {initialQuestions.map((question) => (
               <QuestionCard
                 key={question._id || question.id}
                 question={question}
@@ -301,27 +246,13 @@ export default function MyQuestionsPage({
         )}
 
         {/* Пагинация */}
-        {pagination && pagination.total > 1 && (
+        {initialPagination && initialPagination.total > 1 && (
           <div className="my-questions-page__pagination">
-            <button
-              onClick={() => handlePageChange(filters.page - 1)}
-              disabled={!pagination.hasPrev || filters.page <= 1}
-              className="my-questions-page__pagination-btn my-questions-page__pagination-btn--prev"
-            >
-              ←
-            </button>
-
-            <span className="my-questions-page__pagination-info">
-              {filters.page} / {pagination.total}
-            </span>
-
-            <button
-              onClick={() => handlePageChange(filters.page + 1)}
-              disabled={!pagination.hasNext || filters.page >= pagination.total}
-              className="my-questions-page__pagination-btn my-questions-page__pagination-btn--next"
-            >
-              →
-            </button>
+            <Pagination
+              pagination={initialPagination}
+              currentFilters={initialFilters}
+              basePath="/forum/profile/my-questions"
+            />
           </div>
         )}
       </div>

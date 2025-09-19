@@ -1,16 +1,14 @@
-// Файл: src/features/ProfilePage/UsersPage/UsersPage.jsx
-
 "use client";
 
 import { useState, useTransition, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {
-  getUsersAction,
   changeUserRoleAction,
   banUserAction,
   unbanUserAction,
 } from "@/app/actions/users";
 import UserCard from "./UserCard/UserCard";
+import Pagination from "@/src/components/Pagination/Pagination";
 import "./UsersPage.scss";
 
 export default function UsersPage({
@@ -23,111 +21,71 @@ export default function UsersPage({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  // State для данных
-  const [users, setUsers] = useState(initialUsers);
-  const [pagination, setPagination] = useState(initialPagination);
-  const [error, setError] = useState(initialError);
-
-  // State для фильтров
-  const [filters, setFilters] = useState({
-    role: initialFilters.role || "",
-    isActive: initialFilters.isActive || "",
-    search: initialFilters.search || "",
-    page: initialFilters.page || 1,
-    limit: initialFilters.limit || 20,
-    sortBy: initialFilters.sortBy || "createdAt",
-  });
-
-  // State для поискового запроса (отдельно от фильтров для debounce)
+  // State только для поискового запроса (для debounce)
   const [searchQuery, setSearchQuery] = useState(initialFilters.search || "");
-
-  // Таймер для debounce
   const [searchTimeout, setSearchTimeout] = useState(null);
 
-  // Обновление URL при изменении фильтров
-  const updateURL = useCallback(
-    (newFilters) => {
+  // Server-side навигация для фильтров (кроме поиска)
+  const handleFilterChange = useCallback(
+    (key, value) => {
       const params = new URLSearchParams();
 
-      if (newFilters.page > 1) params.set("page", newFilters.page.toString());
-      if (newFilters.role) params.set("role", newFilters.role);
-      if (newFilters.isActive !== "")
-        params.set("isActive", newFilters.isActive);
-      if (newFilters.search) params.set("search", newFilters.search);
-      if (newFilters.sortBy !== "createdAt")
-        params.set("sortBy", newFilters.sortBy);
-      if (newFilters.limit !== 20)
-        params.set("limit", newFilters.limit.toString());
+      // Сохраняем все текущие фильтры
+      Object.entries(initialFilters).forEach(([filterKey, filterValue]) => {
+        if (filterValue && filterKey !== "page" && filterKey !== key) {
+          params.set(filterKey, filterValue.toString());
+        }
+      });
+
+      // Добавляем новый фильтр
+      if (value) {
+        params.set(key, value.toString());
+      }
 
       const newURL = `/forum/profile/users${
         params.toString() ? `?${params.toString()}` : ""
       }`;
-      router.replace(newURL, { scroll: false });
+      router.replace(newURL);
     },
-    [router]
+    [initialFilters, router]
   );
 
-  // Загрузка пользователей через Server Action
-  const loadUsers = useCallback(
-    async (newFilters = filters) => {
-      startTransition(async () => {
-        try {
-          setError(null);
-
-          const result = await getUsersAction(newFilters);
-
-          if (result.success) {
-            setUsers(result.data.items);
-            setPagination(result.data.pagination);
-          } else {
-            setError(result.error);
-            setUsers([]);
-            setPagination(null);
-          }
-        } catch (loadError) {
-          console.error("Failed to load users:", loadError);
-          setError("Nepodarilo sa načítať používateľov. Skúste to znovu.");
-        }
-      });
-    },
-    [filters]
-  );
-
-  // Обработка изменения фильтров
-  const handleFilterChange = useCallback(
-    (key, value) => {
-      const newFilters = { ...filters, [key]: value, page: 1 };
-      setFilters(newFilters);
-      updateURL(newFilters);
-      loadUsers(newFilters);
-    },
-    [filters, updateURL, loadUsers]
-  );
-
-  // Обработка изменения поискового запроса с debounce
+  // Обработка поиска с debounce (единственная client-side операция)
   const handleSearchChange = useCallback(
     (searchValue) => {
       setSearchQuery(searchValue);
 
-      // Очищаем предыдущий таймер
       if (searchTimeout) {
         clearTimeout(searchTimeout);
       }
 
-      // Устанавливаем новый таймер с задержкой 500ms
       const newTimeout = setTimeout(() => {
-        const newFilters = { ...filters, search: searchValue, page: 1 };
-        setFilters(newFilters);
-        updateURL(newFilters);
-        loadUsers(newFilters);
+        const params = new URLSearchParams();
+
+        // Сохраняем все фильтры кроме search и page
+        Object.entries(initialFilters).forEach(([key, val]) => {
+          if (val && key !== "page" && key !== "search") {
+            params.set(key, val.toString());
+          }
+        });
+
+        // Добавляем поисковый запрос
+        if (searchValue.trim()) {
+          params.set("search", searchValue.trim());
+        }
+
+        const newURL = `/forum/profile/users${
+          params.toString() ? `?${params.toString()}` : ""
+        }`;
+        router.replace(newURL);
       }, 800);
 
       setSearchTimeout(newTimeout);
     },
-    [filters, updateURL, loadUsers, searchTimeout]
+    [initialFilters, router, searchTimeout]
   );
 
-  // Очищаем таймер при размонтировании компонента
+  // Очистка таймера
   useEffect(() => {
     return () => {
       if (searchTimeout) {
@@ -136,86 +94,78 @@ export default function UsersPage({
     };
   }, [searchTimeout]);
 
-  // Обработка смены страницы
-  const handlePageChange = useCallback(
-    (page) => {
-      const newFilters = { ...filters, page };
-      setFilters(newFilters);
-      updateURL(newFilters);
-      loadUsers(newFilters);
-    },
-    [filters, updateURL, loadUsers]
-  );
-
-  // Смена роли пользователя
-  const handleChangeUserRole = useCallback(
-    async (userId, newRole, reason) => {
-      startTransition(async () => {
+  // Действия с пользователями (с revalidation)
+  const handleChangeUserRole = useCallback(async (userId, newRole, reason) => {
+    startTransition(async () => {
+      try {
         const result = await changeUserRoleAction(userId, newRole, reason);
 
-        if (result.success) {
-          // Перезагружаем список пользователей
-          await loadUsers(filters);
+        if (result?.success) {
+          console.log("✅ Rola používateľa zmenená");
+          // revalidation обновит данные автоматически
         } else {
-          setError(result.error);
+          alert(result?.error || "Chyba pri zmene role");
         }
-      });
-    },
-    [filters, loadUsers]
-  );
+      } catch (error) {
+        console.error("Failed to change user role:", error);
+        alert("Chyba pri zmene role používateľa");
+      }
+    });
+  }, []);
 
-  // Бан пользователя
-  const handleBanUser = useCallback(
-    async (userId, banData) => {
-      startTransition(async () => {
+  const handleBanUser = useCallback(async (userId, banData) => {
+    startTransition(async () => {
+      try {
         const result = await banUserAction(userId, banData);
 
-        if (result.success) {
-          await loadUsers(filters);
+        if (result?.success) {
+          console.log("✅ Používateľ zablokovaný");
         } else {
-          setError(result.error);
+          alert(result?.error || "Chyba pri blokovaní");
         }
-      });
-    },
-    [filters, loadUsers]
-  );
+      } catch (error) {
+        console.error("Failed to ban user:", error);
+        alert("Chyba pri blokovaní používateľa");
+      }
+    });
+  }, []);
 
-  // Разбан пользователя
-  const handleUnbanUser = useCallback(
-    async (userId) => {
-      startTransition(async () => {
+  const handleUnbanUser = useCallback(async (userId) => {
+    startTransition(async () => {
+      try {
         const result = await unbanUserAction(userId);
 
-        if (result.success) {
-          await loadUsers(filters);
+        if (result?.success) {
+          console.log("✅ Používateľ odblokovaný");
         } else {
-          setError(result.error);
+          alert(result?.error || "Chyba pri odblokovaní");
         }
-      });
-    },
-    [filters, loadUsers]
-  );
+      } catch (error) {
+        console.error("Failed to unban user:", error);
+        alert("Chyba pri odblokovaní používateľa");
+      }
+    });
+  }, []);
 
   return (
     <div className="users-page">
-      {/* Заголовок */}
+      {/* Header */}
       <div className="users-page__header">
         <div className="users-page__title-section">
           <h1 className="users-page__title">Správa používateľov</h1>
           <p className="users-page__subtitle">
-            Celkový počet používateľov: {pagination?.totalItems || 0}
+            Celkový počet používateľov: {initialPagination?.totalItems || 0}
           </p>
         </div>
       </div>
 
-      {/* Фильтры и поиск */}
+      {/* Controls */}
       <div className="users-page__controls">
-        {/* Фильтры */}
         <div className="users-page__filters">
           <div className="users-page__filters-selects">
             {/* Фильтр по роли */}
             <select
-              value={filters.role}
+              value={initialFilters.role || ""}
               onChange={(e) => handleFilterChange("role", e.target.value)}
               className="users-page__filter-select"
               disabled={isPending}
@@ -230,7 +180,7 @@ export default function UsersPage({
 
             {/* Фильтр по статусу */}
             <select
-              value={filters.isActive}
+              value={initialFilters.isActive || ""}
               onChange={(e) => handleFilterChange("isActive", e.target.value)}
               className="users-page__filter-select"
               disabled={isPending}
@@ -253,15 +203,15 @@ export default function UsersPage({
         </div>
       </div>
 
-      {/* Сообщение об ошибке */}
-      {error && (
+      {/* Error State */}
+      {initialError && (
         <div className="users-page__error">
           <span className="users-page__error-icon">⚠️</span>
-          {error}
+          {initialError}
         </div>
       )}
 
-      {/* Loading состояние */}
+      {/* Loading State */}
       {isPending && (
         <div className="users-page__loading">
           <span className="users-page__loading-spinner"></span>
@@ -269,10 +219,10 @@ export default function UsersPage({
         </div>
       )}
 
-      {/* Список пользователей */}
+      {/* Users List */}
       <div className="users-page__list">
-        {users.length > 0
-          ? users.map((targetUser) => (
+        {initialUsers.length > 0
+          ? initialUsers.map((targetUser) => (
               <UserCard
                 key={targetUser._id}
                 targetUser={targetUser}
@@ -295,28 +245,14 @@ export default function UsersPage({
             )}
       </div>
 
-      {/* Пагинация */}
-      {pagination && pagination.total > 1 && (
+      {/* Pagination */}
+      {initialPagination && initialPagination.total > 1 && (
         <div className="users-page__pagination">
-          <button
-            onClick={() => handlePageChange(pagination.page - 1)}
-            disabled={!pagination.hasPrev || isPending}
-            className="users-page__pagination-button"
-          >
-            ←
-          </button>
-
-          <div className="users-page__pagination-info">
-            {pagination.current} / {pagination.total}
-          </div>
-
-          <button
-            onClick={() => handlePageChange(pagination.page + 1)}
-            disabled={!pagination.hasNext || isPending}
-            className="users-page__pagination-button"
-          >
-            →
-          </button>
+          <Pagination
+            pagination={initialPagination}
+            currentFilters={initialFilters}
+            basePath="/forum/profile/users"
+          />
         </div>
       )}
     </div>

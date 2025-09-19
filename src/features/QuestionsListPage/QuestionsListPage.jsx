@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import QuestionsFilters from "./QuestionsFilters/QuestionsFilters";
 import QuestionsList from "./QuestionsList/QuestionsList";
-import QuestionsPagination from "./QuestionsPagination/QuestionsPagination";
+import Pagination from "@/src/components/Pagination/Pagination";
 import "./QuestionsListPage.scss";
 
 export default function QuestionsListPage({
@@ -235,9 +235,10 @@ export default function QuestionsListPage({
             {/* Pagination */}
             {pagination && pagination.total > 1 && (
               <div className="questions-list-page__pagination">
-                <QuestionsPagination
+                <Pagination
                   pagination={pagination}
                   currentFilters={currentFilters}
+                  basePath="/forum/questions"
                 />
               </div>
             )}

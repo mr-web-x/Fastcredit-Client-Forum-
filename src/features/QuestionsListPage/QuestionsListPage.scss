@@ -378,15 +378,12 @@
   }
 
   // === QUESTIONS AREA ===
-  &__questions {
-    // Стили применяются к QuestionsList
-  }
 
   // === PAGINATION ===
   &__pagination {
     padding: 24px;
     border-top: 1px solid var(--card-border-light);
-    background: var(--background);
+    background: var(--white);
   }
 
   // === RESPONSIVE ===

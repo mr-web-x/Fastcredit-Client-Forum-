@@ -1,6 +1,6 @@
 // Файл: src/features/QuestionsListPage/QuestionsPagination/QuestionsPagination.scss
 
-.questions-pagination {
+.pagination {
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -115,7 +115,7 @@
     padding: 8px;
     border: 2px solid transparent;
     border-radius: 8px;
-    background: var(--white);
+    background: var(--accentLight);
     color: var(--accent);
     font-size: 14px;
     font-weight: 600;
@@ -285,6 +285,9 @@
       padding: 8px 12px;
       font-size: 13px;
       min-height: 40px;
+      width: fit-content;
+      display: block;
+      flex: none;
     }
 
     &__mobile-info {
@@ -320,7 +323,7 @@
 
   // Hover эффект для всего компонента
   &:hover {
-    .questions-pagination__page:not(.questions-pagination__page--current) {
+    .pagination__page:not(.pagination__page--current) {
       border-color: var(--card-border);
     }
   }
@@ -374,32 +377,32 @@
   &--compact {
     gap: 12px;
 
-    .questions-pagination__button {
+    .pagination__button {
       padding: 6px 12px;
       font-size: 13px;
       min-height: 32px;
     }
 
-    .questions-pagination__page {
+    .pagination__page {
       min-width: 32px;
       height: 32px;
       font-size: 13px;
     }
 
-    .questions-pagination__ellipsis {
+    .pagination__ellipsis {
       min-width: 32px;
       height: 32px;
       font-size: 14px;
     }
 
-    .questions-pagination__results {
+    .pagination__results {
       font-size: 12px;
     }
   }
 
   // Версия без информации о результатах
   &--no-info {
-    .questions-pagination__info {
+    .pagination__info {
       display: none;
     }
   }
