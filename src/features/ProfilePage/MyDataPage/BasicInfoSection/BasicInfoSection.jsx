@@ -55,7 +55,9 @@ export default function BasicInfoSection({ user }) {
               <span className="basic-info-section__button-icon">
                 <EditIcon />
               </span>
-              Upraviť profil
+              <span className="basic-info-section__button-text">
+                Upraviť profil
+              </span>
             </button>
           ) : (
             <button

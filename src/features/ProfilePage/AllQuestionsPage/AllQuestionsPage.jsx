@@ -340,18 +340,18 @@ export default function AllQuestionsPage({
         )}
 
         {/* Пагинация */}
-        {pagination && pagination.totalPages > 1 && (
+        {pagination && pagination.total > 1 && (
           <div className="all-questions-page__pagination">
             <button
               onClick={() => handlePageChange(pagination.page - 1)}
               disabled={!pagination.hasPrev}
               className="all-questions-page__pagination-btn"
             >
-              ← Predchádzajúca
+              ←
             </button>
 
             <span className="all-questions-page__pagination-info">
-              Stránka {pagination.page} z {pagination.totalPages}
+               {pagination.current} / {pagination.total}
             </span>
 
             <button
@@ -359,7 +359,7 @@ export default function AllQuestionsPage({
               disabled={!pagination.hasNext}
               className="all-questions-page__pagination-btn"
             >
-              Nasledujúca →
+              →
             </button>
           </div>
         )}

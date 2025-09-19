@@ -22,7 +22,9 @@ export async function createQuestionAction(prevState, formData) {
     const title = formData.get("title")?.toString().trim();
     const content = formData.get("content")?.toString().trim();
     const category = formData.get("category")?.toString().trim();
-    const priority = formData.get("priority")?.toString().trim() || "normal";
+    const priority = formData.get("priority")?.toString().trim() || "low";
+
+    console.log(priority);
 
     // Валидация на сервере
     const fieldErrors = {};
@@ -49,7 +51,7 @@ export async function createQuestionAction(prevState, formData) {
       fieldErrors.category = "Neplatná kategória";
     }
 
-    if (!["normal", "high", "urgent"].includes(priority)) {
+    if (!["low", "medium", "high"].includes(priority)) {
       fieldErrors.priority = "Neplatná priorita";
     }
 
@@ -313,7 +315,7 @@ export async function getUserQuestionsAction(filters = {}) {
       items: result.data.data || [],
       pagination: {
         page: result.data.pagination.current,
-        totalPages: result.data.pagination.total,
+        total: result.data.pagination.total,
         totalItems: result.data.pagination.totalItems,
         hasNext: result.data.pagination.hasNext,
         hasPrev: result.data.pagination.hasPrev,
@@ -405,7 +407,7 @@ export async function getAllQuestionsAction(params = {}) {
       items: Array.isArray(result.items) ? result.items : [],
       pagination: result.pagination || {
         page: parseInt(page),
-        totalPages: 0,
+        total: 0,
         totalItems: 0,
         hasNext: false,
         hasPrev: false,
@@ -500,7 +502,7 @@ export async function getNewQuestionsAction(params = {}) {
       items: Array.isArray(result.data) ? result.data : result.questions || [],
       pagination: result.pagination || {
         page,
-        totalPages: Math.ceil((result.total || 0) / limit),
+        total: Math.ceil((result.total || 0) / limit),
         totalItems: result.total || 0,
         hasNext: false,
         hasPrev: false,

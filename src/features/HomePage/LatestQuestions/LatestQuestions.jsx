@@ -55,9 +55,9 @@ export default async function LatestQuestions() {
 
   const getPriorityText = (priority) => {
     switch (priority) {
-      case "high":
+      case "medium":
         return "Vysoká";
-      case "urgent":
+      case "high":
         return "Urgentná";
       case "low":
         return "Nízka";

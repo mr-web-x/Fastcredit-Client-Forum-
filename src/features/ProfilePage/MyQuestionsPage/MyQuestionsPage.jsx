@@ -301,28 +301,26 @@ export default function MyQuestionsPage({
         )}
 
         {/* Пагинация */}
-        {pagination && pagination.totalPages > 1 && (
+        {pagination && pagination.total > 1 && (
           <div className="my-questions-page__pagination">
             <button
               onClick={() => handlePageChange(filters.page - 1)}
               disabled={!pagination.hasPrev || filters.page <= 1}
               className="my-questions-page__pagination-btn my-questions-page__pagination-btn--prev"
             >
-              ← Predchádzajúca
+              ←
             </button>
 
             <span className="my-questions-page__pagination-info">
-              Strana {filters.page} z {pagination.totalPages}
+              {filters.page} / {pagination.total}
             </span>
 
             <button
               onClick={() => handlePageChange(filters.page + 1)}
-              disabled={
-                !pagination.hasNext || filters.page >= pagination.totalPages
-              }
+              disabled={!pagination.hasNext || filters.page >= pagination.total}
               className="my-questions-page__pagination-btn my-questions-page__pagination-btn--next"
             >
-              Nasledujúca →
+              →
             </button>
           </div>
         )}

@@ -10,7 +10,7 @@
   gap: 12px;
   background: var(--white);
   border: 2px solid var(--google-border);
-  border-radius: 12px;
+  border-radius: 10px;
   font-size: 16px;
   font-weight: 500;
   color: var(--google-text);
@@ -42,7 +42,7 @@
   height: 40px;
   background: var(--google-placeholder-bg);
   border: 1px solid #dadce0;
-  border-radius: 25px;
+  border-radius: 10px;
   font-size: 12px;
   font-weight: 500;
   color: var(--google-placeholder-text);
@@ -77,11 +77,12 @@
 }
 
 .GoogleAuthHost {
-  width: 100%; /* обёртка под кнопку Google; сама кнопка имеет width по опции renderButton */
+  width: fit-content; /* обёртка под кнопку Google; сама кнопка имеет width по опции renderButton */
   opacity: 1;
   pointer-events: auto;
   transition: opacity 0.2s ease;
   min-height: 40px; /* чтобы не прыгала верстка до отрисовки */
+  margin: 0 auto;
 
   &.is-hidden {
     visibility: hidden; /* сохраняем место в потоке */
@@ -99,7 +100,7 @@
   font-weight: 500;
   color: var(--text-secondary);
   background: var(--google-border);
-  border-radius: 12px;
+  border-radius: 10px;
   pointer-events: none;
 }
 

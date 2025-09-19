@@ -4,6 +4,7 @@
 import BasicInfoSection from "./BasicInfoSection/BasicInfoSection";
 import AccountInfoSection from "./AccountInfoSection/AccountInfoSection";
 import "./MyDataPage.scss";
+import LogoutBtn from "@/src/components/LogoutBtn/LogoutBtn";
 
 export default function MyDataPage({ user }) {
   return (
@@ -23,6 +24,10 @@ export default function MyDataPage({ user }) {
 
       {/* Секция информации об аккаунте */}
       <AccountInfoSection user={user} />
+
+      <div className="my-data-page__logout">
+        <LogoutBtn />
+      </div>
     </div>
   );
 }

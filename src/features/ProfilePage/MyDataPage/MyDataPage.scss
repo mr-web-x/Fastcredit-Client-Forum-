@@ -5,6 +5,15 @@
   width: 100%;
   margin: 0 auto;
 
+  &__logout {
+    display: none;
+    .LogoutBtn {
+      background: var(--priority-urgent-color);
+      color: var(--white);
+      justify-content: center;
+    }
+  }
+
   /* ===== HEADER SECTION ===== */
   &__header {
     display: flex;
@@ -58,6 +67,9 @@
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
   .my-data-page {
+    &__logout {
+      display: block;
+    }
     &__header {
       flex-direction: column;
       gap: 20px;

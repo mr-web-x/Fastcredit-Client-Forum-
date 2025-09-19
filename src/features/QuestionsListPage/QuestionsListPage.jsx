@@ -18,6 +18,8 @@ export default function QuestionsListPage({
 }) {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
+  console.log("pagination", pagination);
+
   // Закрытие modal по Escape
   useEffect(() => {
     const handleEscape = (e) => {
@@ -78,9 +80,9 @@ export default function QuestionsListPage({
           <div className="questions-list-page__header-content">
             <h1 className="questions-list-page__title">
               Všetky otázky
-              {pagination && pagination.totalQuestions > 0 && (
+              {pagination && pagination.totalItems > 0 && (
                 <span className="questions-list-page__count">
-                  ({pagination.totalQuestions})
+                  ({pagination.totalItems})
                 </span>
               )}
             </h1>
@@ -185,15 +187,15 @@ export default function QuestionsListPage({
             {pagination && (
               <div className="questions-list-page__results-summary">
                 <div className="questions-list-page__results-info">
-                  {pagination.totalQuestions > 0 ? (
+                  {pagination.totalItems > 0 ? (
                     <>
                       <span className="questions-list-page__results-text">
-                        Zobrazujeme {(pagination.currentPage - 1) * 20 + 1}–
+                        Zobrazujeme {(pagination.current - 1) * 15 + 1}–
                         {Math.min(
-                          pagination.currentPage * 20,
-                          pagination.totalQuestions
+                          pagination.current * 15,
+                          pagination.totalItems
                         )}{" "}
-                        z <strong>{pagination.totalQuestions}</strong> otázok
+                        z <strong>{pagination.totalItems}</strong> otázok
                       </span>
                     </>
                   ) : (
@@ -231,7 +233,7 @@ export default function QuestionsListPage({
             </div>
 
             {/* Pagination */}
-            {pagination && pagination.totalPages > 1 && (
+            {pagination && pagination.total > 1 && (
               <div className="questions-list-page__pagination">
                 <QuestionsPagination
                   pagination={pagination}

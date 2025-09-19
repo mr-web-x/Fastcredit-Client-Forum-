@@ -2,6 +2,7 @@
 
 import "./globals.css";
 import Header from "@/src/components/Header/Header";
+import Footer from "@/src/components/Footer/Footer";
 import { Montserrat } from "next/font/google";
 import { getServerUser } from "@/src/lib/auth-server";
 
@@ -144,31 +145,7 @@ export default async function RootLayout({ children }) {
         {/* Main content area */}
         <main role="main">{children}</main>
 
-        {/* Footer - пока простой, потом можем расширить */}
-        <footer role="contentinfo">
-          <div className="container">
-            <div
-              style={{
-                padding: "40px 0",
-                textAlign: "center",
-                borderTop: "1px solid #e5e5e5",
-                color: "#666",
-                fontSize: "14px",
-              }}
-            >
-              <p>
-                © {new Date().getFullYear()} FastCredit Forum. Všetky práva
-                vyhradené.
-              </p>
-              {user && (
-                <p style={{ marginTop: "8px", opacity: 0.7 }}>
-                  Prihlásený ako: {user.firstName || user.username} ({user.role}
-                  )
-                </p>
-              )}
-            </div>
-          </div>
-        </footer>
+        <Footer />
 
         {/* Analytics и другие скрипты только в production */}
         {process.env.NODE_ENV === "production" && (

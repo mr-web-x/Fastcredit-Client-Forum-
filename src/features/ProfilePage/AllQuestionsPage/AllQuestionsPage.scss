@@ -93,7 +93,7 @@
     padding: 10px 16px;
     border: 2px solid var(--card-border);
     background: var(--white);
-    border-radius: 12px;
+    border-radius: 10px;
     font-size: 14px;
     font-weight: 600;
     color: var(--text-secondary);
@@ -129,7 +129,7 @@
     appearance: none;
     background: var(--white);
     border: 2px solid var(--card-border);
-    border-radius: 12px;
+    border-radius: 10px;
     padding: 10px 32px 10px 14px;
     font-size: 14px;
     font-weight: 500;
@@ -191,7 +191,7 @@
     color: var(--white);
     border: none;
     padding: 12px 24px;
-    border-radius: 12px;
+    border-radius: 10px;
     font-weight: 600;
     cursor: pointer;
     transition: background-color 0.2s ease;
@@ -268,7 +268,7 @@
     border: 2px solid var(--card-border);
     color: var(--text-primary);
     padding: 10px 20px;
-    border-radius: 12px;
+    border-radius: 10px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -324,7 +324,6 @@
     }
 
     &__pagination {
-      flex-direction: column;
       gap: 16px;
     }
 

@@ -18,14 +18,14 @@ export default function ProfilePage({ user, latestQuestion }) {
               href="/forum/ask"
               className="profile-page__action-button profile-page__action-button--primary"
             >
-              Zadať novú otázku
+              Nová otázka
             </Link>
             {latestQuestion && (
               <Link
                 href="/forum/profile/my-questions"
-                className="profile-page__action-button"
+                className="profile-page__action-button profile-page__action-button--all"
               >
-                Zobraziť všetky otázky
+                Všetky otázky
               </Link>
             )}
           </div>
@@ -47,7 +47,7 @@ export default function ProfilePage({ user, latestQuestion }) {
                 {latestQuestion.answersCount} odpovedí
               </span>
               <span className="profile-page__question-likes">
-                {latestQuestion.likesCount} páči sa
+                {latestQuestion.views || 0} názory
               </span>
             </div>
             <Link

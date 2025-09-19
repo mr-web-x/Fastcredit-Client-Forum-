@@ -70,14 +70,6 @@ export default function AccountInfoSection({ user }) {
     return providerTexts[provider] || provider;
   };
 
-  // Получение иконки провайдера
-  const getProviderIcon = (provider) => {
-    const providerIcons = {
-      local: "📧",
-      google: "🔗",
-    };
-    return providerIcons[provider] || "🔗";
-  };
 
   return (
     <section className="account-info-section">
@@ -149,9 +141,6 @@ export default function AccountInfoSection({ user }) {
             <div className="account-info-section__label">Registrácia cez</div>
             <div className="account-info-section__value">
               <span className="account-info-section__provider">
-                <span className="account-info-section__provider-icon">
-                  {getProviderIcon(user.provider)}
-                </span>
                 {getProviderText(user.provider)}
               </span>
             </div>

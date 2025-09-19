@@ -217,7 +217,6 @@ class AdminServiceServer {
       low: "success",
       medium: "warning",
       high: "danger",
-      urgent: "dark",
     };
     return colors[priority] || "secondary";
   }
@@ -227,7 +226,6 @@ class AdminServiceServer {
       low: "Nízka",
       medium: "Stredná",
       high: "Vysoká",
-      urgent: "Urgentná",
     };
     return texts[priority] || priority;
   }

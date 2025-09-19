@@ -18,7 +18,7 @@ export default function QuestionMeta({ question }) {
       high: { label: "Vysoká", className: "question-meta__priority--high" },
       urgent: {
         label: "Urgentná",
-        className: "question-meta__priority--urgent",
+        className: "question-meta__priority--medium",
       },
     };
     return configs[priority] || configs.normal;

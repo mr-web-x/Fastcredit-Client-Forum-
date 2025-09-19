@@ -296,18 +296,18 @@ export default function UsersPage({
       </div>
 
       {/* Пагинация */}
-      {pagination && pagination.totalPages > 1 && (
+      {pagination && pagination.total > 1 && (
         <div className="users-page__pagination">
           <button
             onClick={() => handlePageChange(pagination.page - 1)}
             disabled={!pagination.hasPrev || isPending}
             className="users-page__pagination-button"
           >
-            ← Predchádzajúca
+            ←
           </button>
 
           <div className="users-page__pagination-info">
-            Strana {pagination.page} z {pagination.totalPages}
+            {pagination.current} / {pagination.total}
           </div>
 
           <button
@@ -315,7 +315,7 @@ export default function UsersPage({
             disabled={!pagination.hasNext || isPending}
             className="users-page__pagination-button"
           >
-            Nasledujúca →
+            →
           </button>
         </div>
       )}

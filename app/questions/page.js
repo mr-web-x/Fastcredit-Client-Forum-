@@ -2,6 +2,7 @@
 
 import { questionsService, categoriesService } from "@/src/services/server";
 import QuestionsListPage from "@/src/features/QuestionsListPage/QuestionsListPage";
+import Script from "next/script";
 
 export const metadata = {
   title: "Všetky otázky | FastCredit Forum",
@@ -17,7 +18,7 @@ export default async function QuestionsPage({ searchParams }) {
 
   const apiParams = {
     page: parseInt(params.page) || 1,
-    limit: 20,
+    limit: 15,
     category: params.category || null,
     priority: params.priority || null,
     sortBy: params.sortBy || "createdAt",
@@ -173,12 +174,18 @@ export default async function QuestionsPage({ searchParams }) {
   });
 
   return (
-    <QuestionsListPage
-      questions={questionsData.items || []}
-      pagination={questionsData.pagination}
-      filterOptions={filterOptions}
-      currentFilters={currentFilters}
-      error={error}
-    />
+    <>
+      <QuestionsListPage
+        questions={questionsData.items || []}
+        pagination={questionsData.pagination}
+        filterOptions={filterOptions}
+        currentFilters={currentFilters}
+        error={error}
+      />
+      <Script
+        src="https://calculator-widget.vercel.app/widget.js"
+        strategy="afterInteractive"
+      />
+    </>
   );
 }

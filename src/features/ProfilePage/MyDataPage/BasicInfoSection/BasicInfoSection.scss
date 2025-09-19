@@ -17,7 +17,7 @@
   /* ===== HEADER ===== */
   &__header {
     padding: 24px 32px 20px 32px;
-    background: linear-gradient(135deg, var(--background) 0%, #f0fdfa 100%);
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
     border-bottom: 1px solid var(--card-border);
     display: flex;
     justify-content: space-between;
@@ -60,7 +60,7 @@
     gap: 8px;
     padding: 12px 20px;
     border: none;
-    border-radius: 12px;
+    border-radius: 10px;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
@@ -318,7 +318,7 @@
     background: var(--accentGradient);
     color: var(--white);
     border: none;
-    border-radius: 14px;
+    border-radius: 10px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
@@ -478,6 +478,17 @@
       justify-content: center;
     }
 
+    &__edit-button,
+    &__cancel-button {
+      padding: 8px;
+      .basic-info-section__button-text {
+        display: none;
+      }
+      .basic-info-section__button-icon svg {
+        font-size: 18px;
+      }
+    }
+
     &__form {
       gap: 24px;
     }
@@ -557,12 +568,6 @@
     }
 
     &__label {
-      font-size: 13px;
-    }
-
-    &__edit-button,
-    &__cancel-button {
-      padding: 14px 18px;
       font-size: 13px;
     }
 

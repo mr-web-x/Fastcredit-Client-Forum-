@@ -42,7 +42,7 @@ export default async function ProfileMyQuestions({ searchParams }) {
         items: Array.isArray(result.data) ? result.data : [],
         pagination: result.pagination || {
           page,
-          totalPages: Math.ceil((result.total || 0) / limit),
+          total: Math.ceil((result.total || 0) / limit),
           totalItems: result.total || 0,
           hasNext: false,
           hasPrev: false,
@@ -63,7 +63,7 @@ export default async function ProfileMyQuestions({ searchParams }) {
       items: [],
       pagination: {
         page: 1,
-        totalPages: 0,
+        total: 0,
         totalItems: 0,
         hasNext: false,
         hasPrev: false,

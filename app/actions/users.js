@@ -52,7 +52,7 @@ export async function getUsersAction(params = {}) {
       items: Array.isArray(result.data) ? result.data : result.users || [],
       pagination: result.pagination || {
         page,
-        totalPages: Math.ceil((result.total || 0) / limit),
+        total: Math.ceil((result.total || 0) / limit),
         totalItems: result.total || 0,
         hasNext: false,
         hasPrev: false,

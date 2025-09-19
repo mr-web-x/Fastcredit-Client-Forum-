@@ -70,7 +70,7 @@ export default async function ProfileUsers({ searchParams }) {
       items: [],
       pagination: {
         page: 1,
-        totalPages: 0,
+        total: 0,
         totalItems: 0,
         hasNext: false,
         hasPrev: false,

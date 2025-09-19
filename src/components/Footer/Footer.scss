@@ -1,0 +1,141 @@
+.FooterMain {
+  background: linear-gradient(to right, #045c68, #22baac);
+  padding: 30px 0;
+}
+
+.FooterMain * {
+  color: white;
+}
+
+.footer__contacts {
+  display: flex;
+  gap: 30px;
+  margin-top: 10px;
+  align-items: center;
+}
+
+.FooterMain .logo {
+  margin: 0 auto;
+  height: 64px;
+}
+
+.FooterMain h2 {
+  text-align: left;
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.FooterMain .logo img {
+  height: 64px;
+  filter: invert(1) brightness(5);
+}
+
+.footer-sitemap ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.footer-sitemap > ul > li {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.footer-sitemap ul ul {
+  margin-top: 5px;
+  margin-left: 20px;
+  font-weight: normal;
+}
+
+.footer-sitemap a {
+  color: white;
+  text-decoration: none;
+}
+
+.footer-sitemap a:hover {
+  text-decoration: underline;
+}
+
+.footer-sitemap-ul {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+.footer-sitemap ul ul li a {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px; /* или другая нужная ширина */
+}
+
+.footer__item-second {
+  width: 100%;
+}
+
+footer .row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 50px;
+}
+
+.footer__under p {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.slovnik-pojmov {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+}
+
+@media all and (max-width: 1200px) {
+  .FooterMain {
+    padding: 40px 0;
+  }
+
+  .FooterMain .row {
+    gap: 20px;
+  }
+
+  .footer__item {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .footer__contacts {
+    padding-left: 0;
+  }
+
+  .footer__wrapper,
+  .footer__contacts {
+    flex-direction: column;
+    justify-content: center;
+  }
+  .footer-sitemap-ul {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    max-width: 420px;
+  }
+
+  .footer-sitemap ul ul li a {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 420px; /* или другая нужная ширина */
+  }
+
+  .footer__under p {
+    align-items: flex-start;
+    text-align: left;
+    justify-content: flex-start;
+  }
+}

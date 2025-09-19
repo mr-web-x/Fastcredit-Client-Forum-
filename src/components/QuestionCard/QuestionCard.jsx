@@ -65,9 +65,9 @@ export default function QuestionCard({
   const getPriorityInfo = (priority) => {
     switch (priority) {
       case "high":
-        return { text: "Vysoká", type: "high" };
-      case "urgent":
-        return { text: "Urgentná", type: "urgent" };
+        return { text: "Urgentná", type: "high" };
+      case "medium":
+        return { text: "Vysoká", type: "medium" };
       case "low":
         return { text: "Nízka", type: "low" };
       default:
@@ -186,7 +186,6 @@ export default function QuestionCard({
 
   const statusInfo = getStatusInfo(question.status);
   const priorityInfo = getPriorityInfo(question.priority);
-  const questionUrl = `/questions/${question.slug || question._id}`;
 
   return (
     <div className="question-card" onClick={() => onClick && onClick(question)}>

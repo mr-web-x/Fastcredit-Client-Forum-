@@ -8,6 +8,7 @@
   overflow: hidden;
   transition: box-shadow 0.2s ease;
   margin: 0;
+  margin-bottom: 32px;
 
   &:hover {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
@@ -93,99 +94,6 @@
     min-height: 20px;
   }
 
-  /* ===== BADGES ===== */
-  &__badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 600;
-    line-height: 1.4;
-    white-space: nowrap;
-
-    &-icon {
-      font-size: 14px;
-      line-height: 1;
-      flex-shrink: 0;
-    }
-
-    /* Badge variants */
-    &--verified {
-      background: #dcfce7;
-      color: #16a34a;
-      border: 1px solid #bbf7d0;
-    }
-
-    &--unverified {
-      background: #fef3c7;
-      color: #d97706;
-      border: 1px solid #fde68a;
-    }
-
-    &--user {
-      background: #f3f4f6;
-      color: #6b7280;
-      border: 1px solid #e5e7eb;
-    }
-
-    &--expert {
-      background: #dbeafe;
-      color: #1d4ed8;
-      border: 1px solid #bfdbfe;
-    }
-
-    &--moderator {
-      background: #fef3c7;
-      color: #d97706;
-      border: 1px solid #fde68a;
-    }
-
-    &--admin {
-      background: #fee2e2;
-      color: #dc2626;
-      border: 1px solid #fecaca;
-    }
-
-    &--active {
-      background: #dcfce7;
-      color: #16a34a;
-      border: 1px solid #bbf7d0;
-    }
-
-    &--inactive {
-      background: #f3f4f6;
-      color: #6b7280;
-      border: 1px solid #e5e7eb;
-    }
-
-    &--banned {
-      background: #fee2e2;
-      color: #dc2626;
-      border: 1px solid #fecaca;
-    }
-  }
-
-  /* ===== PROVIDER ===== */
-  &__provider {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 8px;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 500;
-    color: #475569;
-  }
-
-  &__provider-icon {
-    font-size: 14px;
-    line-height: 1;
-  }
-
   /* ===== STATUS GRID ===== */
   &__status-grid {
     display: flex;
@@ -256,6 +164,7 @@
 @media (max-width: 480px) {
   .account-info-section {
     border-radius: 12px;
+    margin-bottom: 24px;
 
     &__header {
       padding: 16px 20px 12px 20px;
@@ -290,20 +199,6 @@
       font-size: 13px;
     }
 
-    &__badge {
-      padding: 3px 8px;
-      font-size: 11px;
-
-      &-icon {
-        font-size: 12px;
-      }
-    }
-
-    &__provider {
-      padding: 3px 6px;
-      font-size: 11px;
-    }
-
     &__ban-info {
       padding: 10px;
       font-size: 11px;
@@ -323,45 +218,6 @@
   .account-info-section {
     border-width: 2px;
 
-    &__badge {
-      border-width: 2px;
-      font-weight: 700;
-
-      &--verified {
-        background: #16a34a;
-        color: white;
-        border-color: #16a34a;
-      }
-
-      &--unverified {
-        background: #d97706;
-        color: white;
-        border-color: #d97706;
-      }
-
-      &--expert {
-        background: #1d4ed8;
-        color: white;
-        border-color: #1d4ed8;
-      }
-
-      &--admin {
-        background: #dc2626;
-        color: white;
-        border-color: #dc2626;
-      }
-
-      &--banned {
-        background: #dc2626;
-        color: white;
-        border-color: #dc2626;
-      }
-    }
-
-    &__provider {
-      border-width: 2px;
-    }
-
     &__ban-info {
       border-width: 2px;
     }
@@ -377,12 +233,6 @@
 
     &__label-icon {
       color: #9ca3af;
-    }
-
-    &__provider {
-      background: #374151;
-      border-color: #4b5563;
-      color: #d1d5db;
     }
 
     &__ban-info {

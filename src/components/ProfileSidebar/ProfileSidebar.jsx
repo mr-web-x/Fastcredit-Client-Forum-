@@ -8,6 +8,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import HelpIcon from "@mui/icons-material/Help";
 import PeopleIcon from "@mui/icons-material/People";
 import QuizIcon from "@mui/icons-material/Quiz";
+import LogoutBtn from "../LogoutBtn/LogoutBtn";
 
 export default function ProfileSidebar({ user }) {
   const pathname = usePathname();
@@ -163,6 +164,9 @@ export default function ProfileSidebar({ user }) {
           </span>
           <span className="profile-sidebar__nav-label">Moje údaje</span>
         </Link>
+        <div className="profile-sidebar__logout ">
+          <LogoutBtn />
+        </div>
       </nav>
 
       {/* Краткая статистика */}

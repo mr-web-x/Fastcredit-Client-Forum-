@@ -149,7 +149,7 @@ export default function AskQuestionPage({ user }) {
                 <input
                   type="radio"
                   name="priority"
-                  value="medium"
+                  value="low"
                   defaultChecked
                   disabled={isPending}
                 />
@@ -159,7 +159,7 @@ export default function AskQuestionPage({ user }) {
                 <input
                   type="radio"
                   name="priority"
-                  value="high"
+                  value="medium"
                   disabled={isPending}
                 />
                 <span className="ask-question-page__radio-label">Vysoká</span>
@@ -168,7 +168,7 @@ export default function AskQuestionPage({ user }) {
                 <input
                   type="radio"
                   name="priority"
-                  value="urgent"
+                  value="high"
                   disabled={isPending}
                 />
                 <span className="ask-question-page__radio-label">Urgentná</span>

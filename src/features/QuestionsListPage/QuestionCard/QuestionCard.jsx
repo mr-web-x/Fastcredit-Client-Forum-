@@ -32,10 +32,10 @@ export default function QuestionCard({ question, index = 0 }) {
 
   const getPriorityInfo = (priority) => {
     switch (priority) {
+      case "medium":
+        return { text: "Vysoká", type: "medium" };
       case "high":
-        return { text: "Vysoká", type: "high" };
-      case "urgent":
-        return { text: "Urgentná", type: "urgent" };
+        return { text: "Urgentná", type: "high" };
       case "low":
         return { text: "Nízka", type: "low" };
       default:

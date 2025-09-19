@@ -82,16 +82,6 @@
     }
   }
 
-  &__question-date::before {
-    content: "🗓";
-  }
-  &__question-answers::before {
-    content: "💬";
-  }
-  &__question-likes::before {
-    content: "👍";
-  }
-
   &__question-link {
     display: inline-flex;
     align-items: center;
@@ -497,6 +487,14 @@
     }
     &__questions-actions {
       gap: 10px;
+    }
+
+    &__last-question__top {
+      margin-bottom: 12px;
+    }
+
+    &__action-button--all {
+      display: none;
     }
   }
 }

@@ -3,94 +3,31 @@
 "use client";
 import "./Header.scss";
 import { useState } from "react";
-import { logoutAction } from "@/app/actions/auth";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 // Material UI imports
-import {
-  IconButton,
-  Menu,
-  MenuItem,
-  Avatar,
-  Typography,
-  Button,
-  Box,
-} from "@mui/material";
-import {
-  Person as PersonIcon,
-  ExitToApp as ExitToAppIcon,
-  AdminPanelSettings as AdminIcon,
-  Work as WorkIcon,
-} from "@mui/icons-material";
+import { Button } from "@mui/material";
 
 export default function Header({ user = null }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const profileMenuOpen = Boolean(anchorEl);
+  const pathname = usePathname();
 
-  // Сохраняем ориентацию меню в состоянии
-  const [menuPosition, setMenuPosition] = useState({
-    anchorOrigin: { vertical: "bottom", horizontal: "left" },
-    transformOrigin: { vertical: "top", horizontal: "left" },
-  });
-
-  const handleProfileMenuClick = (event) => {
-    setAnchorEl(event.currentTarget);
-
-    const rect = event.currentTarget.getBoundingClientRect();
-    const middle = window.innerWidth / 2;
-
-    // Если иконка справа от середины экрана → меню открываем влево
-    if (rect.left > middle) {
-      setMenuPosition({
-        anchorOrigin: { vertical: "bottom", horizontal: "right" },
-        transformOrigin: { vertical: "top", horizontal: "right" },
-      });
-    } else {
-      // Иначе вправо
-      setMenuPosition({
-        anchorOrigin: { vertical: "bottom", horizontal: "left" },
-        transformOrigin: { vertical: "top", horizontal: "left" },
-      });
-    }
-  };
-
-  const handleLogout = async () => {
-    try {
-      // Закрываем меню перед logout
-      handleCloseProfileMenu();
-
-      // Используем Server Action для logout
-      await logoutAction();
-      // logoutAction уже делает redirect и очищает cookie
-    } catch (error) {
-      console.error("[Header] Logout error:", error);
-      // В случае ошибки пытаемся сделать fallback через Route Handler
-      try {
-        const response = await fetch(`/forum/api/auth/logout`, {
-          method: "POST",
-          credentials: "include",
-        });
-        if (response.ok) {
-          window.location.href = "/forum";
-        }
-      } catch (fallbackError) {
-        console.error("[Header] Fallback logout failed:", fallbackError);
-        // Последний fallback - просто редирект
-        window.location.href = `/forum/login`;
-      }
-    }
-  };
+  const isProfilePage =
+    pathname === "/forum/profile" || pathname.startsWith("/forum/profile/");
 
   const toggleMenu = () => {
+    if (!menuOpen) {
+      document.body.classList.add("active-modal");
+    } else {
+      document.body.classList.remove("active-modal");
+    }
     setMenuOpen(!menuOpen);
   };
 
   const closeMenu = () => {
     setMenuOpen(false);
-  };
-
-  const handleCloseProfileMenu = () => {
-    setAnchorEl(null);
+    document.body.classList.remove("active-modal");
   };
 
   // Получаем инициалы пользователя
@@ -104,27 +41,13 @@ export default function Header({ user = null }) {
     return "U";
   };
 
-  // Получаем полное имя пользователя
-  const getUserFullName = () => {
-    if (user?.firstName && user?.lastName) {
-      return `${user.firstName} ${user.lastName}`;
-    }
-    if (user?.firstName) {
-      return user.firstName;
-    }
-    if (user?.username) {
-      return user.username;
-    }
-    return "User";
-  };
-
   return (
     <header>
       <div className="container">
         <div className="header__wrapper">
           {/* Лого */}
           <a className="logo" href="/" onClick={closeMenu}>
-            <img alt="FastCredit Forum logo" src={`/forum/logo.svg`} />
+            <img alt="Fastcredit" src={`/forum/logo.svg`} />
           </a>
 
           {/* Навигация */}
@@ -140,8 +63,18 @@ export default function Header({ user = null }) {
                 </a>
               </li>
               <li>
+                <a itemProp="url" href="/#about" onClick={closeMenu}>
+                  O nás
+                </a>
+              </li>
+              <li>
                 <a itemProp="url" href="/caste-otazky.html" onClick={closeMenu}>
                   Časté otázky
+                </a>
+              </li>
+              <li>
+                <a itemProp="url" href="/#policy" onClick={closeMenu}>
+                  Podmienky používania
                 </a>
               </li>
               <li>
@@ -151,156 +84,83 @@ export default function Header({ user = null }) {
               </li>
               {/* Форумные ссылки */}
               <li>
-                <a itemProp="url" href={"/forum"} onClick={closeMenu}>
+                <Link itemProp="url" href={"/forum"} onClick={closeMenu}>
                   Fórum
-                </a>
-              </li>
-              <li>
-                <a itemProp="url" href={`/forum/experts`} onClick={closeMenu}>
-                  Experti
-                </a>
+                </Link>
               </li>
             </ul>
           </nav>
 
           {/* Блок авторизации/профиля */}
-          <div className={`header__profile ${user ? "loggined" : ""}`}>
-            {user ? (
-              <div className="header__user">
-                {/* Material UI Avatar с dropdown menu */}
-                <Box>
-                  <IconButton
-                    onClick={handleProfileMenuClick}
-                    size="small"
-                    sx={{
-                      ml: 2,
-                      "&:hover": {
-                        backgroundColor: "rgba(4, 156, 161, 0.08)",
-                      },
-                    }}
-                    aria-controls={profileMenuOpen ? "account-menu" : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={profileMenuOpen ? "true" : undefined}
-                  >
-                    <Avatar
-                      sx={{
-                        width: 36,
-                        height: 36,
-                        backgroundColor: "#049ca1",
-                        fontSize: "16px",
-                        fontWeight: 600,
-                      }}
-                    >
+          {!isProfilePage ? (
+            <div className={`header__profile ${user ? "loggined" : ""}`}>
+              {user ? (
+                <div className="header__user">
+                  <Link href="/forum/profile" className="header__profile-link">
+                    <span className="header__user-name">
+                      {`${user.firstName || ""} ${
+                        user.lastName || ""
+                      }`.trim() || user.username}
+                    </span>
+                    <div className="header__user-avatar">
                       {getUserInitials()}
-                    </Avatar>
-                  </IconButton>
-
-                  <Menu
-                    anchorEl={anchorEl}
-                    id="account-menu"
-                    open={profileMenuOpen}
-                    onClose={handleCloseProfileMenu}
-                    onClick={handleCloseProfileMenu}
-                    anchorOrigin={menuPosition.anchorOrigin}
-                    transformOrigin={menuPosition.transformOrigin}
-                  >
-                    {/* Информация о пользователе */}
-                    <Box
-                      sx={{ px: 2, py: 1.5, borderBottom: "1px solid #e0e0e0" }}
-                    >
-                      <Typography
-                        variant="body1"
-                        sx={{ fontWeight: 600, color: "#333" }}
-                      >
-                        {getUserFullName()}
-                      </Typography>
-                      {user?.email && (
-                        <Typography
-                          variant="body2"
-                          sx={{ color: "#666", fontSize: "13px" }}
-                        >
-                          {user.email}
-                        </Typography>
-                      )}
-                    </Box>
-
-                    {/* Ссылка на профиль */}
-                    <MenuItem
-                      onClick={() => (window.location.href = `/forum/profile`)}
-                      sx={{ py: 1.5 }}
-                    >
-                      <PersonIcon sx={{ mr: 2, color: "#666" }} />
-                      <Typography variant="body2">Môj profil</Typography>
-                    </MenuItem>
-
-                    {/* Выход */}
-                    <MenuItem
-                      onClick={handleLogout}
-                      sx={{
-                        py: 1.5,
-                        color: "#d32f2f",
-                        "&:hover": {
-                          backgroundColor: "rgba(211, 47, 47, 0.08)",
-                        },
-                      }}
-                    >
-                      <ExitToAppIcon sx={{ mr: 2, color: "#d32f2f" }} />
-                      <Typography variant="body2" sx={{ color: "#d32f2f" }}>
-                        Odhlásiť sa
-                      </Typography>
-                    </MenuItem>
-                  </Menu>
-                </Box>
-              </div>
-            ) : (
-              /* Компактные кнопки для неавторизованных пользователей */
-              <div className="header__guest">
-                <Button
-                  variant="outlined"
-                  size="small"
-                  sx={{
-                    borderColor: "#049ca1",
-                    color: "#049ca1",
-                    fontWeight: 500,
-                    fontSize: "13px",
-                    textTransform: "none",
-                    minWidth: "70px",
-                    height: "32px",
-                    "&:hover": {
-                      borderColor: "#037d81",
-                      backgroundColor: "rgba(4, 156, 161, 0.04)",
-                    },
-                  }}
-                  href={`/forum/login`}
-                >
-                  Prihlásiť sa
-                </Button>
-
-                <div className="header__registracia">
+                    </div>
+                  </Link>
+                </div>
+              ) : (
+                /* Компактные кнопки для неавторизованных пользователей */
+                <div className="header__guest">
                   <Button
-                    variant="contained"
+                    variant="outlined"
                     size="small"
                     sx={{
-                      backgroundColor: "#049ca1",
-                      color: "white",
+                      borderColor: "#049ca1",
+                      color: "#049ca1",
                       fontWeight: 500,
                       fontSize: "13px",
                       textTransform: "none",
-                      minWidth: "90px",
+                      minWidth: "70px",
                       height: "32px",
-                      marginLeft: "8px",
                       "&:hover": {
-                        backgroundColor: "#037d81",
+                        borderColor: "#037d81",
+                        backgroundColor: "rgba(4, 156, 161, 0.04)",
                       },
                     }}
-                    href={`/forum/register`}
+                    href={`/forum/login`}
                   >
-                    Registrovať sa
+                    Prihlásiť sa
                   </Button>
+
+                  <div className="header__registracia">
+                    <Button
+                      variant="contained"
+                      size="small"
+                      sx={{
+                        backgroundColor: "#049ca1",
+                        color: "white",
+                        fontWeight: 500,
+                        fontSize: "13px",
+                        textTransform: "none",
+                        minWidth: "90px",
+                        height: "32px",
+                        marginLeft: "8px",
+                        "&:hover": {
+                          backgroundColor: "#037d81",
+                        },
+                      }}
+                      href={`/forum/register`}
+                    >
+                      Registrovať sa
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          ) : (
+            <a href="https://fastcredit.sk/#list" className="btn header-btn">
+              Získať pôžičku
+            </a>
+          )}
 
           {/* Мобильное меню (остается как было) */}
           <div className="header__mobile-nav">

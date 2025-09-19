@@ -11,6 +11,12 @@
   width: 100%;
   flex-shrink: 0;
 
+  &__logout {
+    .LogoutBtn {
+      color: var(--priority-urgent-color);
+    }
+  }
+
   // === USER INFO SECTION ==
   &__user-top {
     display: flex;
@@ -126,7 +132,7 @@
     align-items: center;
     gap: 12px;
     padding: 12px 16px;
-    border-radius: 12px;
+    border-radius: 10px;
     text-decoration: none;
     color: #6b7280;
     font-size: 14px;
@@ -231,6 +237,11 @@
     left: 0;
     top: auto;
     z-index: 10;
+    border-radius: 12px 12px 0 0;
+
+    &__logout {
+      display: none;
+    }
 
     &__user-top {
       display: none;

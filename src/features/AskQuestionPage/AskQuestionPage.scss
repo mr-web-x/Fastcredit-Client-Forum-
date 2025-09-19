@@ -8,7 +8,6 @@
   .container {
     max-width: 900px;
     margin: 0 auto;
-    padding: 0 24px;
   }
 
   // === BREADCRUMBS ===
@@ -273,7 +272,7 @@
     background: var(--accent);
     color: var(--white);
     border: none;
-    border-radius: 12px;
+    border-radius: 10px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
@@ -338,10 +337,6 @@
   .ask-question-page {
     padding: 32px 0;
 
-    .container {
-      padding: 0 20px;
-    }
-
     &__title {
       font-size: 28px;
     }
@@ -370,10 +365,6 @@
 @media (max-width: 480px) {
   .ask-question-page {
     padding: 24px 0;
-
-    .container {
-      padding: 0 16px;
-    }
 
     &__header {
       margin-bottom: 32px;
