@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { questionsService, answersService } from "@/src/services/server";
 import { getServerUser } from "@/src/lib/auth-server";
 import QuestionDetailPage from "@/src/features/QuestionDetailPage/QuestionDetailPage";
+import { getQuestionDetailStructuredData } from "@/src/lib/seo/structured-data";
+import Script from "next/script";
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
@@ -27,55 +29,66 @@ export async function generateMetadata({ params }) {
       title: `${question.title} | FastCredit Forum`,
       description,
       keywords: `${question.title}, finančné poradenstvo, ${question.category}, FastCredit`,
+
+      // Максимальный OpenGraph
       openGraph: {
-        title: question.title,
-        description,
-        type: "article",
-        siteName: "FastCredit Forum",
+        type: "website",
+        locale: "sk_SK",
+        url: `https://fastcredit.sk/forum/questions/${question.slug}`,
+        siteName: "FastCredit Forum - Finančné poradenstvo na Slovensku",
+        title: `${question.title} | FastCredit Forum`,
+        description: description,
         images: [
           {
-            url: "/og-question.jpg", // Дефолтное изображение для вопросов
+            url: "https://fastcredit.sk/forum/og.jpg",
             width: 1200,
             height: 630,
-            alt: question.title,
+            alt: "FastCredit Forum - Finančné poradenstvo na Slovensku",
+            type: "image/jpeg",
+          },
+          {
+            url: "https://fastcredit.sk/forum/og-square.jpg",
+            width: 1200,
+            height: 1200,
+            alt: "FastCredit Forum",
+            type: "image/jpeg",
+          },
+          {
+            url: "https://fastcredit.sk/forum/og-vertical.jpg",
+            width: 600,
+            height: 900,
+            alt: "FastCredit Forum - Mobilná verzia",
+            type: "image/jpeg",
           },
         ],
+        determiner: "the",
+        ttl: 604800,
+        emails: ["admin@fastcredit.sk"],
+        faxNumbers: [],
+        streetAddress: "Bratislava, Slovenská republika",
+        locality: "Bratislava",
+        region: "Bratislavský kraj",
+        postalCode: "831 52",
+        countryName: "Slovakia",
       },
+
+      // Максимальные Twitter Cards
       twitter: {
         card: "summary_large_image",
-        title: question.title,
-        description,
+        site: "@Fastcreditsk",
+        creator: "@Fastcreditsk",
+        title: `${question.title} | FastCredit Forum`,
+        description: description,
+        images: {
+          url: "https://fastcredit.sk/forum/og.jpg",
+          alt: "FastCredit Forum - Finančné poradenstvo",
+          width: 1200,
+          height: 630,
+        },
       },
-      // Schema.org QAPage markup
-      other: {
-        "application/ld+json": JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "QAPage",
-          mainEntity: {
-            "@type": "Question",
-            name: question.title,
-            text: question.content,
-            answerCount: question.answersCount || 0,
-            author: {
-              "@type": "Person",
-              name:
-                question.author?.firstName ||
-                question.author?.username ||
-                "Anonym",
-            },
-            dateCreated: question.createdAt,
-            acceptedAnswer: question.bestAnswer
-              ? {
-                  "@type": "Answer",
-                  text: question.bestAnswer.content,
-                  author: {
-                    "@type": "Person",
-                    name: question.bestAnswer.author?.firstName || "Expert",
-                  },
-                }
-              : undefined,
-          },
-        }),
+
+      alternates: {
+        canonical: `https://fastcredit.sk/forum/questions/${question.slug}`,
       },
     };
   } catch (error) {
@@ -133,12 +146,24 @@ export default async function QuestionPage({ params }) {
     }
 
     return (
-      <QuestionDetailPage
-        question={question}
-        answers={answers}
-        user={user}
-        permissions={permissions}
-      />
+      <>
+        <Script
+          id="forum-question-structured-data"
+          type="application/ld+json"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(
+              getQuestionDetailStructuredData(question, answers)
+            ),
+          }}
+        />
+        <QuestionDetailPage
+          question={question}
+          answers={answers}
+          user={user}
+          permissions={permissions}
+        />
+      </>
     );
   } catch (error) {
     console.error("Error loading question page:", error);

@@ -3,13 +3,99 @@
 import { questionsService, categoriesService } from "@/src/services/server";
 import QuestionsListPage from "@/src/features/QuestionsListPage/QuestionsListPage";
 import Script from "next/script";
+import { getQuestionsListStructuredData } from "@/src/lib/seo/structured-data";
 
 export const metadata = {
-  title: "Všetky otázky | FastCredit Forum",
+  title: "Všetky finančné otázky a odpovede | FastCredit Forum Slovensko",
   description:
-    "Prehliadajte všetky otázky na FastCredit fóre. Nájdite odpovede na finančné otázky od expertov.",
-  keywords:
-    "otázky, finančné poradenstvo, FastCredit, fórum, experti, pôžičky, banky",
+    "Prehliadajte finančné otázky a expertné odpovede na FastCredit fóre. Nájdite riešenia pre pôžičky, banky, poistenie a investície. Odpovede na finančné otázky od dôveryhodných odborníkov na Slovensku.",
+
+  // Специфичные keywords для главной
+  keywords: [
+    // Главные термины с высокой конверсией
+    "bezplatné finančné poradenstvo slovensko ",
+    "finančný expert online zdarma slovensko",
+    "ask finančné otázky slovensko",
+    "pôžičky rady expertov slovensko",
+
+    // Проблемно-ориентированные запросы
+    "neviem získať pôžičku slovensko pomoc",
+    "aká banka je najlepšia slovensko",
+    "ako investovať peniaze slovensko začiatočník",
+
+    // Lokálne long-tail
+    "finančný poradca bratislava zdarma online",
+    "pôžičky košice expert rady",
+    "banky prešov porovnanie",
+
+    // Sezónne a aktuálne
+    "daňové priznanie slovensko pomoc",
+    "dph živnostník slovensko rady",
+    "materská dovolenka financie slovensko",
+  ].join(", "),
+
+  // Максимальный OpenGraph
+  openGraph: {
+    type: "website",
+    locale: "sk_SK",
+    url: "https://fastcredit.sk/forum/questions",
+    siteName: "FastCredit Forum - Finančné poradenstvo na Slovensku",
+    title: "Všetky finančné otázky a odpovede | FastCredit Forum Slovensko",
+    description:
+      "Prehliadajte finančné otázky a expertné odpovede na FastCredit fóre. Nájdite riešenia pre pôžičky, banky, poistenie a investície. Odpovede na finančné otázky od dôveryhodných odborníkov na Slovensku.",
+    images: [
+      {
+        url: "https://fastcredit.sk/forum/og.jpg",
+        width: 1200,
+        height: 630,
+        alt: "FastCredit Forum - Finančné poradenstvo na Slovensku",
+        type: "image/jpeg",
+      },
+      {
+        url: "https://fastcredit.sk/forum/og-square.jpg",
+        width: 1200,
+        height: 1200,
+        alt: "FastCredit Forum",
+        type: "image/jpeg",
+      },
+      {
+        url: "https://fastcredit.sk/forum/og-vertical.jpg",
+        width: 600,
+        height: 900,
+        alt: "FastCredit Forum - Mobilná verzia",
+        type: "image/jpeg",
+      },
+    ],
+    determiner: "the",
+    ttl: 604800,
+    emails: ["admin@fastcredit.sk"],
+    faxNumbers: [],
+    streetAddress: "Bratislava, Slovenská republika",
+    locality: "Bratislava",
+    region: "Bratislavský kraj",
+    postalCode: "831 52",
+    countryName: "Slovakia",
+  },
+
+  // Максимальные Twitter Cards
+  twitter: {
+    card: "summary_large_image",
+    site: "@Fastcreditsk",
+    creator: "@Fastcreditsk",
+    title: "Všetky finančné otázky a odpovede | FastCredit Forum Slovensko",
+    description:
+      "Prehliadajte finančné otázky a expertné odpovede na FastCredit fóre. Nájdite riešenia pre pôžičky, banky, poistenie a investície",
+    images: {
+      url: "https://fastcredit.sk/forum/og.jpg",
+      alt: "FastCredit Forum - Finančné poradenstvo",
+      width: 1200,
+      height: 630,
+    },
+  },
+
+  alternates: {
+    canonical: "https://fastcredit.sk/forum/questions",
+  },
 };
 
 export default async function QuestionsPage({ searchParams }) {
@@ -56,8 +142,6 @@ export default async function QuestionsPage({ searchParams }) {
     }
   });
 
-  console.log("🚀 Final API params:", apiParams);
-
   // Загружаем данные с сервера
   let questionsData = { items: [], pagination: null };
   let categories = [];
@@ -89,20 +173,12 @@ export default async function QuestionsPage({ searchParams }) {
     // Обработка результата вопросов
     if (questionsResult.status === "fulfilled") {
       questionsData = questionsResult.value;
-      console.log(
-        "✅ Questions loaded:",
-        questionsData.items?.length || 0,
-        "items"
-      );
 
       // Проверяем структуру данных
       if (!questionsData.items) {
-        console.warn("⚠️ No items in questionsData:", questionsData);
         questionsData = { items: [], pagination: null };
       }
     } else {
-      console.error("❌ Failed to load questions:", questionsResult.reason);
-
       // Детальная обработка ошибок
       const errorMsg = questionsResult.reason?.message || "Unknown error";
       if (errorMsg.includes("timeout")) {
@@ -119,20 +195,16 @@ export default async function QuestionsPage({ searchParams }) {
     // Обработка результата категорий
     if (categoriesResult.status === "fulfilled") {
       categories = categoriesResult.value;
-      console.log("✅ Categories loaded:", categories?.length || 0, "items");
 
       // Проверяем структуру категорий
       if (!Array.isArray(categories)) {
-        console.warn("⚠️ Categories is not array:", categories);
         categories = [];
       }
     } else {
-      console.error("❌ Failed to load categories:", categoriesResult.reason);
       // Категории не критичны, можем продолжать без них
       categories = [];
     }
   } catch (err) {
-    console.error("💥 Unexpected error loading page data:", err);
     error = "Neočakávaná chyba pri načítaní dát. Obnovte stránku.";
   }
 
@@ -164,17 +236,23 @@ export default async function QuestionsPage({ searchParams }) {
     sortOrder: params.sortOrder || "-1",
   };
 
-  // Отладочная информация перед рендером
-  console.log("📊 Final state:", {
-    questionsCount: questionsData.items?.length || 0,
-    pagination: questionsData.pagination,
-    categoriesCount: categories.length,
-    currentFilters,
-    hasError: !!error,
-  });
-
   return (
     <>
+      <Script
+        id="forum-questions-structured-data"
+        type="application/ld+json"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            getQuestionsListStructuredData(
+              questionsData.items || [],
+              params.category || "",
+              params.search || null,
+              parseInt(params.page) || 1
+            )
+          ),
+        }}
+      />
       <QuestionsListPage
         questions={questionsData.items || []}
         pagination={questionsData.pagination}

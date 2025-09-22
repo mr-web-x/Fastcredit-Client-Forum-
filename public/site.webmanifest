@@ -1,1 +1,91 @@
-{"name":"","short_name":"","icons":[{"src":"/android-chrome-192x192.png","sizes":"192x192","type":"image/png"},{"src":"/android-chrome-512x512.png","sizes":"512x512","type":"image/png"}],"theme_color":"#ffffff","background_color":"#ffffff","display":"standalone"}
+{
+  "name": "FastCredit Forum - Finančné poradenstvo na Slovensku",
+  "short_name": "FastCredit Forum",
+  "description": "Bezplatné finančné poradenstvo od expertov na Slovensku. Pôžičky, banky, poistenie, investície.",
+  "lang": "sk-SK",
+  "dir": "ltr",
+  "scope": "/forum/",
+  "start_url": "/forum/?utm_source=pwa",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
+  "theme_color": "#049ca1",
+  "background_color": "#edfffc",
+  "categories": ["finance", "business", "productivity", "education"],
+  "iarc_rating_id": "",
+  "icons": [
+    {
+      "src": "/forum/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/forum/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/forum/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/forum/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/forum/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/forum/og.jpg",
+      "sizes": "1200x630",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "FastCredit Forum - Desktop verzia"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Zadať otázku",
+      "short_name": "Otázka",
+      "description": "Rýchlo zadajte novú finančnú otázku",
+      "url": "/forum/ask"
+    },
+    {
+      "name": "Všetky otázky",
+      "short_name": "Otázky",
+      "description": "Prehliadajte všetky finančné otázky",
+      "url": "/forum/questions"
+    },
+    {
+      "name": "Môj profil",
+      "short_name": "Profil",
+      "description": "Spravujte svoj účet a otázky",
+      "url": "/forum/profile"
+    }
+  ],
+  "prefer_related_applications": false,
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://fastcredit.sk/forum/site.webmanifest"
+    }
+  ],
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "handle_links": "preferred"
+}

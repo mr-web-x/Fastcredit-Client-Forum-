@@ -2,6 +2,7 @@
 
 import { requireGuest } from "@/src/lib/auth-server";
 import RegisterPage from "@/src/features/RegisterPage/RegisterPage";
+import { getRegisterPageStructuredData } from "@/src/lib/seo/structured-data";
 
 export const metadata = {
   title: "Registrácia — FastCredit Fórum",
@@ -9,15 +10,11 @@ export const metadata = {
     "Vytvorte si účet na FastCredit fóre a získajte prístup k expertným finančným poradám zdarma.",
   keywords:
     "registrácia, účet, fastcredit, forum, finančné poradenstvo, expert",
-  robots: {
-    index: true,
-    follow: true,
-  },
   openGraph: {
     title: "Registrácia — FastCredit Fórum",
     description:
       "Vytvorte si účet na FastCredit fóre a získajte prístup k expertným finančným poradám",
-    url: "https://fastcredit.sk/register",
+    url: "https://fastcredit.sk/forum/register",
     type: "website",
   },
   twitter: {
@@ -27,7 +24,7 @@ export const metadata = {
       "Vytvorte si účet na FastCredit fóre a získajte prístup k expertným finančným poradám",
   },
   alternates: {
-    canonical: "https://fastcredit.sk/register",
+    canonical: "https://fastcredit.sk/forum/register",
   },
 };
 
@@ -40,5 +37,17 @@ export default async function Register({ searchParams }) {
   const redirectTo = searchParams?.next || "/forum/login";
 
   // ✅ Передаем redirectTo в Client Component как prop
-  return <RegisterPage redirectTo={redirectTo} />;
+  return (
+    <>
+      <Script
+        id="forum-register-structured-data"
+        type="application/ld+json"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(getRegisterPageStructuredData()),
+        }}
+      />
+      <RegisterPage redirectTo={redirectTo} />;
+    </>
+  );
 }

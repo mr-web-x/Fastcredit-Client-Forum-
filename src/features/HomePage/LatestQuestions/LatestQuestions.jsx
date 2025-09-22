@@ -1,24 +1,11 @@
 import Link from "next/link";
-import { questionsService } from "@/src/services/server";
 import "./LatestQuestions.scss";
 import { formatDate } from "@/src/utils/formatDate";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import InsertCommentIcon from "@mui/icons-material/InsertComment";
 import { getUserInitials } from "@/src/utils/user";
 
-export default async function LatestQuestions() {
-  // Получаем последние вопросы с сервера
-  let questions = [];
-  try {
-    const result = await questionsService.getLatest({
-      limit: 15,
-      status: "answered",
-    });
-    questions = result.items || [];
-  } catch (error) {
-    console.error("Failed to load latest questions:", error);
-  }
-
+export default async function LatestQuestions({ questions }) {
   const getStatusColor = (status) => {
     switch (status) {
       case "answered":
