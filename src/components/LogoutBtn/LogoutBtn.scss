@@ -1,3 +1,7 @@
+.logout-form {
+  display: contents; // Форма не влияет на layout
+}
+
 .LogoutBtn {
   display: flex;
   align-items: center;

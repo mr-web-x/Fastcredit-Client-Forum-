@@ -140,7 +140,7 @@ export async function createQuestionAction(prevState, formData) {
 
     // Revalidate relevantné paths
     try {
-      revalidatePath("/forum");
+      revalidatePath("/forum/");
       revalidatePath("/forum/questions");
       revalidatePath("/forum/profile");
       revalidatePath(`/forum/questions/${questionSlug}`);
@@ -224,7 +224,7 @@ export async function deleteQuestionAction(questionId) {
     }
 
     // Revalidate paths
-    revalidatePath("/forum");
+    revalidatePath("/forum/");
     revalidatePath("/forum/questions");
     revalidatePath("/forum/profile");
     revalidatePath("/forum/profile/all-questions");

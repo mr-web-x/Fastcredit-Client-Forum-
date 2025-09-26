@@ -104,9 +104,9 @@ export async function loginAction(prevState, formData) {
 
     // ВАЖНО: revalidatePath должен работать в Server Actions
     try {
-      revalidatePath("/forum");
+      revalidatePath("/forum/");
       revalidatePath("/forum/profile");
-      revalidatePath("/forum", "layout"); // Revalidate всего layout
+      revalidatePath("/forum/", "layout"); // Revalidate всего layout
     } catch (revalidateError) {
       console.warn("[loginAction] Revalidate error:", revalidateError);
       // Не прерываем процесс из-за ошибки revalidate
@@ -374,9 +374,9 @@ export async function verifyEmailAction(prevState, formData) {
 
     // Email верифицирован успешно
     try {
-      revalidatePath("/forum");
+      revalidatePath("/forum/");
       revalidatePath("/forum/profile");
-      revalidatePath("/forum", "layout");
+      revalidatePath("/forum/", "layout");
     } catch (revalidateError) {
       console.warn("[verifyEmailAction] Revalidate error:", revalidateError);
     }
@@ -597,9 +597,9 @@ export async function resetPasswordAction(prevState, formData) {
 
     // Revalidate paths после успешного сброса пароля
     try {
-      revalidatePath("/forum");
+      revalidatePath("/forum/");
       revalidatePath("/forum/profile");
-      revalidatePath("/forum", "layout");
+      revalidatePath("/forum/", "layout");
     } catch (revalidateError) {
       console.warn("[resetPasswordAction] Revalidate error:", revalidateError);
     }
@@ -631,14 +631,14 @@ export async function logoutAction() {
     await clearAuthCookie();
 
     // Revalidate paths
-    revalidatePath("/forum");
+    revalidatePath("/forum/");
 
     // Redirect на главную
-    redirect("/forum");
+    redirect("/");
   } catch (error) {
     console.error("[logoutAction] Error:", error);
     // В случае ошибки все равно пытаемся очистить cookie и редирект
     await clearAuthCookie();
-    redirect("/forum");
+    redirect("/");
   }
 }

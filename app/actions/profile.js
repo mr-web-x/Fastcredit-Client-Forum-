@@ -146,7 +146,7 @@ export async function updateMyDataAction(prevState, formData) {
     try {
       revalidatePath("/forum/profile");
       revalidatePath("/forum/profile/my-data");
-      revalidatePath("/forum", "layout");
+      revalidatePath("/forum/", "layout");
     } catch (revalidateError) {
       console.warn("[updateMyDataAction] Revalidate error:", revalidateError);
     }
