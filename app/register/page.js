@@ -3,6 +3,7 @@
 import { requireGuest } from "@/src/lib/auth-server";
 import RegisterPage from "@/src/features/RegisterPage/RegisterPage";
 import { getRegisterPageStructuredData } from "@/src/lib/seo/structured-data";
+import Script from "next/script";
 
 export const metadata = {
   title: "Registrácia — FastCredit Fórum",

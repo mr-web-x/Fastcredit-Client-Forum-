@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useActionState } from "react";
 import "./AnswerItem.scss";
 import { formatDate } from "@/src/utils/formatDate";
@@ -32,6 +32,11 @@ export default function AnswerItem({ answer, user, permissions }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(answer.content);
 
+  // Синхронизация локального состояния с props после ревалидации
+  useEffect(() => {
+    setEditContent(answer.content);
+  }, [answer.content]);
+
   const roleInfo = getRoleBadge(answer.expert?.role);
   const displayName = getDisplayName(answer.expert);
   const userInitials = getUserInitials(answer.expert);
@@ -59,7 +64,7 @@ export default function AnswerItem({ answer, user, permissions }) {
 
   // Action для удаления
   const [deleteState, deleteAction, isDeletePending] = useActionState(
-    async (prevState, formData) => {
+    async () => {
       const result = await deleteAnswerAction(answer._id);
       if (result.success) setIsDeleteConfirm(false);
       return result;
@@ -75,7 +80,8 @@ export default function AnswerItem({ answer, user, permissions }) {
       });
       if (result.success) {
         setIsEditing(false);
-        setEditContent(answer.content); // Обновляем локальный state
+        // сохраняем новое содержимое
+        setEditContent(formData.get("content"));
       }
       return result;
     },
@@ -84,7 +90,7 @@ export default function AnswerItem({ answer, user, permissions }) {
 
   const handleEditCancel = () => {
     setIsEditing(false);
-    setEditContent(answer.content); // Возвращаем оригинальный текст
+    setEditContent(answer.content);
   };
 
   return (
@@ -132,28 +138,60 @@ export default function AnswerItem({ answer, user, permissions }) {
       {/* Контент ответа */}
       <div className="answer-item__content">
         {isEditing ? (
-          // Режим редактирования
-          <form action={editAction} className="answer-item__edit-form">
-            <textarea
-              name="content"
-              className="answer-item__edit-textarea"
-              value={editContent}
-              onChange={(e) => setEditContent(e.target.value)}
-              rows={6}
-              disabled={isEditPending}
-              placeholder="Upravte svoju odpoveď..."
-            />
-            <div className="answer-item__character-count">
-              {editContent.length}/5000
-              {editContent.length < 50 && (
-                <span className="answer-item__character-help">
-                  Potrebných ešte {50 - editContent.length} znakov
-                </span>
-              )}
+          <>
+            {/* Форма редактирования */}
+            <form
+              id="edit-form"
+              action={editAction}
+              className="answer-item__edit-form"
+            >
+              <textarea
+                name="content"
+                className="answer-item__edit-textarea"
+                value={editContent}
+                onChange={(e) => setEditContent(e.target.value)}
+                rows={6}
+                disabled={isEditPending}
+                placeholder="Upravte svoju odpoveď..."
+              />
+              <div className="answer-item__character-count">
+                {editContent.length}/5000
+                {editContent.length < 50 && (
+                  <span className="answer-item__character-help">
+                    Potrebných ešte {50 - editContent.length} znakov
+                  </span>
+                )}
+              </div>
+            </form>
+
+            {/* Кнопки управления вынесены за форму */}
+            <div className="answer-item__edit-actions">
+              <button
+                type="button"
+                onClick={handleEditCancel}
+                className="answer-item__btn answer-item__btn--secondary"
+                disabled={isEditPending}
+              >
+                <CloseIcon fontSize="small" />
+                Zrušiť
+              </button>
+              <button
+                type="submit"
+                form="edit-form"
+                className="answer-item__btn answer-item__btn--success"
+                disabled={
+                  isEditPending ||
+                  editContent.length < 50 ||
+                  editContent.length > 5000 ||
+                  editContent === answer.content // 🔑 запрет, если текст не изменился
+                }
+              >
+                <SaveIcon fontSize="small" />
+                {isEditPending ? "Ukladá sa..." : "Uložiť"}
+              </button>
             </div>
-          </form>
+          </>
         ) : (
-          // Обычный режим
           <div className="answer-item__text">
             {answer.content ? (
               answer.content
@@ -174,10 +212,10 @@ export default function AnswerItem({ answer, user, permissions }) {
         )}
       </div>
 
-      {/* Футер с датой и действиями */}
+      {/* Футер */}
       <footer className="answer-item__footer">
         <div className="answer-item__footer-content">
-          {/* Левая часть - дата */}
+          {/* Дата */}
           <div className="answer-item__date">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z" />
@@ -185,44 +223,11 @@ export default function AnswerItem({ answer, user, permissions }) {
             {formatDate(answer.createdAt)}
           </div>
 
-          {/* Правая часть - действия */}
+          {/* Действия */}
           <div className="answer-item__actions">
-            {isEditing ? (
-              // Кнопки редактирования
-              <div className="answer-item__edit-actions">
-                <button
-                  type="button"
-                  onClick={handleEditCancel}
-                  className="answer-item__btn answer-item__btn--secondary"
-                  disabled={isEditPending}
-                >
-                  <CloseIcon fontSize="small" />
-                  Zrušiť
-                </button>
-                <button
-                  type="submit"
-                  form="edit-form"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    const formData = new FormData();
-                    formData.set("content", editContent);
-                    editAction(formData);
-                  }}
-                  className="answer-item__btn answer-item__btn--success"
-                  disabled={
-                    isEditPending ||
-                    editContent.length < 50 ||
-                    editContent.length > 5000
-                  }
-                >
-                  <SaveIcon fontSize="small" />
-                  {isEditPending ? "Ukladá sa..." : "Uložiť"}
-                </button>
-              </div>
-            ) : (
-              // Обычные действия
+            {!isEditing && (
               <>
-                {/* Действия АДМИНА */}
+                {/* Действия админа */}
                 {isAdmin && (
                   <div className="answer-item__admin-actions">
                     {!isApproved ? (
@@ -270,25 +275,27 @@ export default function AnswerItem({ answer, user, permissions }) {
                   </div>
                 )}
 
-                {/* Действия АВТОРА ОТВЕТА (если не админ) */}
+                {/* Действия автора */}
                 {!isAdmin && isAnswerAuthor && (
                   <div className="answer-item__answer-author-actions">
-                    <button
-                      onClick={() => setIsEditing(true)}
-                      className="answer-item__btn"
-                    >
-                      <EditIcon fontSize="small" />
-                      Upraviť
-                    </button>
+                    {!answer.wasApproved && ( // 🔑 теперь и для редактирования
+                      <>
+                        <button
+                          onClick={() => setIsEditing(true)}
+                          className="answer-item__btn"
+                        >
+                          <EditIcon fontSize="small" />
+                          Upraviť
+                        </button>
 
-                    {!answer.wasApproved && (
-                      <button
-                        onClick={() => setIsDeleteConfirm(true)}
-                        className="answer-item__btn answer-item__btn--danger"
-                      >
-                        <DeleteIcon fontSize="small" />
-                        Zmazať
-                      </button>
+                        <button
+                          onClick={() => setIsDeleteConfirm(true)}
+                          className="answer-item__btn answer-item__btn--danger"
+                        >
+                          <DeleteIcon fontSize="small" />
+                          Zmazať
+                        </button>
+                      </>
                     )}
                   </div>
                 )}
@@ -341,7 +348,7 @@ export default function AnswerItem({ answer, user, permissions }) {
           </div>
         )}
 
-        {/* Сообщения об ошибках */}
+        {/* Ошибки */}
         {moderateState.error && (
           <div className="answer-item__error">
             <ErrorIcon fontSize="small" />

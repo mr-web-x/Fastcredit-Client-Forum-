@@ -3,6 +3,7 @@
 import { requireGuest } from "@/src/lib/auth-server";
 import LoginPage from "@/src/features/LoginPage/LoginPage";
 import { getLoginPageStructuredData } from "@/src/lib/seo/structured-data";
+import Script from "next/script";
 
 export const metadata = {
   title: "Prihlásenie — FastCredit Fórum",

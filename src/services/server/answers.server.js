@@ -119,13 +119,13 @@ class AnswersServiceServer {
     if (!answer) return "";
     switch (answer.status) {
       case "approved":
-        return answer.isBest ? "Лучший ответ" : "Опубликован";
+      return answer.isBest ? "Najlepšia odpoveď" : "Publikované";
       case "pending":
-        return "На модерации";
+      return "Na moderácii";
       case "rejected":
-        return "Отклонен";
+      return "Zamietnuté";
       default:
-        return "";
+      return "";
     }
   }
 }

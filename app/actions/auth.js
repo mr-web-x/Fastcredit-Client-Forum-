@@ -56,6 +56,8 @@ export async function loginAction(prevState, formData) {
     if (!response.ok || !data.success) {
       const errorMessage = data.message || "Nepodarilo sa prihlásiť";
 
+      console.log("[LOGIN]", response, data);
+
       // Специфичные ошибки
       if (response.status === 401) {
         return {

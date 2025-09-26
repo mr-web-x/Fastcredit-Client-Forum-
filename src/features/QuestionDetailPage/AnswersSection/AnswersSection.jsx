@@ -19,8 +19,8 @@ export default function AnswersSection({
     (answer) => answer.expert?._id === user?.id
   );
   const canAnswer = permissions.canAnswer && !hasUserAnswer;
-  const isNotExpert = user && !permissions.canAnswer; // Пользователь есть, но не эксперт
-  const alreadyAnswered = user && permissions.canAnswer && hasUserAnswer; // Эксперт уже ответил
+  // const isNotExpert = user && !permissions.canAnswer; // Пользователь есть, но не эксперт
+  // const alreadyAnswered = user && permissions.canAnswer && hasUserAnswer; // Эксперт уже ответил
 
   return (
     <div className="answers-section">

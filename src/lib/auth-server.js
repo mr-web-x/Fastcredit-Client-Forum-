@@ -43,6 +43,7 @@ export async function getServerUser() {
       return null;
     }
 
+
     return data.data;
   } catch (error) {
     if (process.env.NODE_ENV === "development") {

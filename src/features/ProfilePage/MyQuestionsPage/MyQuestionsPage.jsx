@@ -95,6 +95,10 @@ export default function MyQuestionsPage({
     );
   };
 
+  const handleViewQuestion = (question) => {
+    router.push(`/forum/questions/${question.slug || question._id}`);
+  };
+
   const statusCounts = getStatusCounts();
 
   return (
@@ -240,6 +244,7 @@ export default function MyQuestionsPage({
                 onEdit={handleEdit}
                 onDelete={handleDelete}
                 onShare={handleShare}
+                onClick={() => handleViewQuestion(question)}
               />
             ))}
           </div>

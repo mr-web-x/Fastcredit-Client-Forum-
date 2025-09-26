@@ -142,7 +142,7 @@ export default function UserCard({
                   : targetUser.username || "Neznámy používateľ"}
               </div>
 
-              <div className="user-card__email">{targetUser.email}</div>
+              <div className="user-card__email">{targetUser.originalEmail}</div>
             </div>
           </div>
         </div>
