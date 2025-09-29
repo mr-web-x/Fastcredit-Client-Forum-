@@ -57,7 +57,7 @@ export default function QuestionsListPage({
           aria-label="Breadcrumb"
         >
           <Link
-            href={`/forum`}
+            href={`/forum/`}
             className="questions-list-page__breadcrumb-link"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">

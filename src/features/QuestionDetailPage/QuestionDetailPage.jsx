@@ -24,7 +24,7 @@ export default function QuestionDetailPage({
           aria-label="Breadcrumb"
         >
           <Link
-            href={`/forum`}
+            href={`/forum/`}
             className="question-detail-page__breadcrumb-link"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
