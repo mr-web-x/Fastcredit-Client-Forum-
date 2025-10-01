@@ -5,7 +5,7 @@ import Header from "@/src/components/Header/Header";
 import Footer from "@/src/components/Footer/Footer";
 import { Montserrat } from "next/font/google";
 import { getServerUser } from "@/src/lib/auth-server";
-import { getForumBaseStructuredData } from "@/src/lib/seo/structured-data";
+// import { getForumBaseStructuredData } from "@/src/lib/seo/structured-data";
 import Script from "next/script";
 
 const montserrat = Montserrat({
@@ -371,14 +371,14 @@ export default async function RootLayout({ children }) {
         />
         {/* Максимальные prefetches */}
         <MaxSEOPrefetches />
-        <Script
+        {/* <Script
           id="forum-structured-data"
           type="application/ld+json"
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(getForumBaseStructuredData()),
           }}
-        />
+        /> */}
       </head>
 
       <body itemScope itemType="https://schema.org/WebPage">
@@ -392,8 +392,6 @@ export default async function RootLayout({ children }) {
           <main
             id="main-content"
             role="main"
-            itemProp="mainEntity"
-            itemScope
             itemType="https://schema.org/QAPage"
           >
             {children}

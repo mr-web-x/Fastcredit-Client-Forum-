@@ -84,6 +84,25 @@ export function getForumHomepageStructuredData(latestQuestions = []) {
     "@context": "https://schema.org",
     "@graph": [
       {
+        "@type": "WebSite",
+        "@id": "https://fastcredit.sk/forum/#website",
+        url: "https://fastcredit.sk/forum/",
+        name: "FastCredit Forum",
+        description: "Bezplatné finančné poradenstvo od expertov na Slovensku",
+        inLanguage: "sk-SK",
+        publisher: { "@id": "https://fastcredit.sk/forum/#organization" },
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://fastcredit.sk/forum/#organization",
+        name: "FastCredit Forum",
+        url: "https://fastcredit.sk/forum/",
+        logo: {
+          "@type": "ImageObject",
+          url: "https://fastcredit.sk/forum/logo.svg",
+        },
+      },
+      {
         "@type": "QAPage",
         "@id": "https://fastcredit.sk/forum/#qapage",
         url: "https://fastcredit.sk/forum/",
@@ -93,6 +112,30 @@ export function getForumHomepageStructuredData(latestQuestions = []) {
         inLanguage: "sk-SK",
         datePublished: "2024-01-01T00:00:00+01:00",
         dateModified: new Date().toISOString(),
+        mainEntity: {
+          "@type": "Question",
+          name: "Ako získať finančné poradenstvo zadarmo?",
+          text: "Bezplatné finančné poradenstvo k pôžičkám, bankám a poisteniam na Slovensku",
+          answerCount: 1, // <-- ДОДАЙ (обов'язкове!)
+          datePublished: "2024-01-01T00:00:00+01:00", // <-- ДОДАЙ
+          author: {
+            url: "https://fastcredit.sk/forum/",
+            "@type": "Organization",
+            name: "FastCredit Forum",
+          },
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Registrujte sa na FastCredit Forum a zadajte svoju otázku. Experti vám odpovedia do 24 hodín úplne zadarmo.",
+            datePublished: "2024-01-01T00:00:00+01:00", // <-- ДОДАЙ
+            url: "https://fastcredit.sk/forum/", // <-- ДОДАЙ
+            author: {
+              "@type": "Organization",
+              name: "FastCredit Forum Expert Team",
+              url: "https://fastcredit.sk/forum/",
+            },
+            upvoteCount: 0, // <-- ДОДАЙ
+          },
+        },
         about: [
           {
             "@type": "Thing",
@@ -169,6 +212,47 @@ export function getForumHomepageStructuredData(latestQuestions = []) {
           ],
         },
       },
+      {
+        "@type": "FAQPage",
+        "@id": "https://fastcredit.sk/forum/#faq",
+        url: "https://fastcredit.sk/forum/",
+        name: "Často kladené otázky - FastCredit Forum",
+        inLanguage: "sk-SK",
+        mainEntity: [
+          {
+            "@type": "Question",
+            name: "Ako môžem zadať finančnú otázku?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "Registrujte sa zadarmo a kliknite na 'Zadať otázku'. Opíšte svoj finančný problém a expert vám odpovie do 24 hodín.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "Je poradenstvo naozaj zadarmo?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "Áno, všetko finančné poradenstvo na našom fóre je úplne bezplatné. Experti poskytujú rady zadarmo.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "Kto mi bude odpovedať na otázky?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "Odpovedajú certifikovaní finanční experti a právni poradcovia s praktickými skúsenosťami.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "Ako rýchlo dostanem odpoveď?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "Experti odpovedajú zvyčajne do 24 hodín. Na urgentné otázky môžete dostať odpoveď aj skôr.",
+            },
+          },
+        ],
+      },
       // Ak máme najnovšie otázky
       ...(latestQuestions.length > 0
         ? [
@@ -206,14 +290,17 @@ export function getForumHomepageStructuredData(latestQuestions = []) {
   };
 }
 
-/**
- * FAQ для форума
- */
+// /**
+//  * FAQ для форума
+//  */
 export function getForumFAQStructuredData() {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "@id": "https://fastcredit.sk/forum/#faq",
+    url: "https://fastcredit.sk/forum/",
+    name: "Často kladené otázky - FastCredit Forum",
+    inLanguage: "sk-SK",
     mainEntity: [
       {
         "@type": "Question",
@@ -280,6 +367,28 @@ export function getQuestionsListStructuredData({
   return {
     "@context": "https://schema.org",
     "@graph": [
+      // 1. WebSite (ДОДАЙ)
+      {
+        "@type": "WebSite",
+        "@id": "https://fastcredit.sk/forum/#website",
+        url: "https://fastcredit.sk/forum/",
+        name: "FastCredit Forum",
+        description: "Bezplatné finančné poradenstvo od expertov na Slovensku",
+        inLanguage: "sk-SK",
+        publisher: { "@id": "https://fastcredit.sk/forum/#organization" },
+      },
+
+      // 2. Organization (ДОДАЙ)
+      {
+        "@type": "Organization",
+        "@id": "https://fastcredit.sk/forum/#organization",
+        name: "FastCredit Forum",
+        url: "https://fastcredit.sk/forum/",
+        logo: {
+          "@type": "ImageObject",
+          url: "https://fastcredit.sk/forum/logo.svg",
+        },
+      },
       {
         "@type": "CollectionPage",
         "@id": `${baseUrl}#page`,
@@ -353,6 +462,28 @@ export function getQuestionDetailStructuredData(question, answers = []) {
   return {
     "@context": "https://schema.org",
     "@graph": [
+      // 1. WebSite (ДОДАЙ)
+      {
+        "@type": "WebSite",
+        "@id": "https://fastcredit.sk/forum/#website",
+        url: "https://fastcredit.sk/forum/",
+        name: "FastCredit Forum",
+        description: "Bezplatné finančné poradenstvo od expertov na Slovensku",
+        inLanguage: "sk-SK",
+        publisher: { "@id": "https://fastcredit.sk/forum/#organization" },
+      },
+
+      // 2. Organization (ДОДАЙ)
+      {
+        "@type": "Organization",
+        "@id": "https://fastcredit.sk/forum/#organization",
+        name: "FastCredit Forum",
+        url: "https://fastcredit.sk/forum/",
+        logo: {
+          "@type": "ImageObject",
+          url: "https://fastcredit.sk/forum/logo.svg",
+        },
+      },
       {
         "@type": "QAPage",
         "@id": `${questionUrl}#qapage`,
@@ -444,31 +575,57 @@ export function getQuestionDetailStructuredData(question, answers = []) {
 export function getLoginPageStructuredData() {
   return {
     "@context": "https://schema.org",
-    "@type": "WebPage",
-    "@id": "https://fastcredit.sk/forum/login#webpage",
-    url: "https://fastcredit.sk/forum/login",
-    name: "Prihlásenie do FastCredit Forum",
-    description:
-      "Prihláste sa do svojho účtu a získajte prístup k bezplatnému finančnému poradenstvu",
-    inLanguage: "sk-SK",
-    isPartOf: { "@id": "https://fastcredit.sk/forum/#website" },
-    breadcrumb: {
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        {
-          "@type": "ListItem",
-          position: 1,
-          name: "Forum",
-          item: "https://fastcredit.sk/forum/",
+    "@graph": [
+      // 1. WebSite (ДОДАЙ)
+      {
+        "@type": "WebSite",
+        "@id": "https://fastcredit.sk/forum/#website",
+        url: "https://fastcredit.sk/forum/",
+        name: "FastCredit Forum",
+        description: "Bezplatné finančné poradenstvo od expertov na Slovensku",
+        inLanguage: "sk-SK",
+        publisher: { "@id": "https://fastcredit.sk/forum/#organization" },
+      },
+
+      // 2. Organization (ДОДАЙ)
+      {
+        "@type": "Organization",
+        "@id": "https://fastcredit.sk/forum/#organization",
+        name: "FastCredit Forum",
+        url: "https://fastcredit.sk/forum/",
+        logo: {
+          "@type": "ImageObject",
+          url: "https://fastcredit.sk/forum/logo.svg",
         },
-        {
-          "@type": "ListItem",
-          position: 2,
-          name: "Prihlásenie",
-          item: "https://fastcredit.sk/forum/login",
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://fastcredit.sk/forum/login#webpage",
+        url: "https://fastcredit.sk/forum/login",
+        name: "Prihlásenie do FastCredit Forum",
+        description:
+          "Prihláste sa do svojho účtu a získajte prístup k bezplatnému finančnému poradenstvu",
+        inLanguage: "sk-SK",
+        isPartOf: { "@id": "https://fastcredit.sk/forum/#website" },
+        breadcrumb: {
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            {
+              "@type": "ListItem",
+              position: 1,
+              name: "Forum",
+              item: "https://fastcredit.sk/forum/",
+            },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: "Prihlásenie",
+              item: "https://fastcredit.sk/forum/login",
+            },
+          ],
         },
-      ],
-    },
+      },
+    ],
   };
 }
 
@@ -478,36 +635,62 @@ export function getLoginPageStructuredData() {
 export function getRegisterPageStructuredData() {
   return {
     "@context": "https://schema.org",
-    "@type": "WebPage",
-    "@id": "https://fastcredit.sk/forum/register#webpage",
-    url: "https://fastcredit.sk/forum/register",
-    name: "Registrácia do FastCredit Forum",
-    description:
-      "Vytvorte si bezplatný účet a začnite sa pýtať finančných expertov",
-    inLanguage: "sk-SK",
-    isPartOf: { "@id": "https://fastcredit.sk/forum/#website" },
-    about: {
-      "@type": "Service",
-      name: "Bezplatná registrácia",
-      description:
-        "Vytvorte si účet a získajte prístup k finančnému poradenstvu zadarmo",
-    },
-    breadcrumb: {
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        {
-          "@type": "ListItem",
-          position: 1,
-          name: "Forum",
-          item: "https://fastcredit.sk/forum/",
+    "@graph": [
+      // 1. WebSite (ДОДАЙ)
+      {
+        "@type": "WebSite",
+        "@id": "https://fastcredit.sk/forum/#website",
+        url: "https://fastcredit.sk/forum/",
+        name: "FastCredit Forum",
+        description: "Bezplatné finančné poradenstvo od expertov na Slovensku",
+        inLanguage: "sk-SK",
+        publisher: { "@id": "https://fastcredit.sk/forum/#organization" },
+      },
+
+      // 2. Organization (ДОДАЙ)
+      {
+        "@type": "Organization",
+        "@id": "https://fastcredit.sk/forum/#organization",
+        name: "FastCredit Forum",
+        url: "https://fastcredit.sk/forum/",
+        logo: {
+          "@type": "ImageObject",
+          url: "https://fastcredit.sk/forum/logo.svg",
         },
-        {
-          "@type": "ListItem",
-          position: 2,
-          name: "Registrácia",
-          item: "https://fastcredit.sk/forum/register",
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://fastcredit.sk/forum/register#webpage",
+        url: "https://fastcredit.sk/forum/register",
+        name: "Registrácia do FastCredit Forum",
+        description:
+          "Vytvorte si bezplatný účet a začnite sa pýtať finančných expertov",
+        inLanguage: "sk-SK",
+        isPartOf: { "@id": "https://fastcredit.sk/forum/#website" },
+        about: {
+          "@type": "Service",
+          name: "Bezplatná registrácia",
+          description:
+            "Vytvorte si účet a získajte prístup k finančnému poradenstvu zadarmo",
         },
-      ],
-    },
+        breadcrumb: {
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            {
+              "@type": "ListItem",
+              position: 1,
+              name: "Forum",
+              item: "https://fastcredit.sk/forum/",
+            },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: "Registrácia",
+              item: "https://fastcredit.sk/forum/register",
+            },
+          ],
+        },
+      },
+    ],
   };
 }

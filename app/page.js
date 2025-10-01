@@ -40,14 +40,14 @@ export default async function Home() {
           __html: JSON.stringify(getForumHomepageStructuredData(questions)),
         }}
       />
-      <Script
+      {/* <Script
         id="forum-faq-structured-data"
         type="application/ld+json"
         strategy="beforeInteractive"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(getForumFAQStructuredData()),
         }}
-      />
+      /> */}
       <HomePage questions={questions} />
     </>
   );

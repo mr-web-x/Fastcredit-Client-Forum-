@@ -83,7 +83,7 @@ const FAQ = () => {
   }, []);
 
   return (
-    <section className="faq-section" id="faq-content">
+    <section className="faq-section" id="faq">
       <div className="container">
         <h2 className="faq-section__title">Časté otázky</h2>
         <p className="faq-section__subtitle">
