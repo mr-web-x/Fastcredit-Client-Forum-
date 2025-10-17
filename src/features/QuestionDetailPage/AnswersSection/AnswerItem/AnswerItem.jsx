@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { useActionState } from "react";
 import "./AnswerItem.scss";
 import { formatDate } from "@/src/utils/formatDate";
+import { decodeHtmlEntities } from "@/src/utils/decodeHtmlEntities";
 import {
   getUserInitials,
   getDisplayName,
@@ -19,22 +20,27 @@ import {
   Error as ErrorIcon,
   Save as SaveIcon,
   Close as CloseIcon,
+  Visibility as VisibilityIcon,
 } from "@mui/icons-material";
+import { IconButton } from "@mui/material";
+import { toast } from "sonner";
 import {
   updateApprovedAnswerAction,
   deleteAnswerAction,
   updateAnswerAction,
 } from "@/app/actions/answers";
+import AnswerPreviewModal from "../AnswerPreviewModal/AnswerPreviewModal";
 
 export default function AnswerItem({ answer, user, permissions }) {
   const [isDeleteConfirm, setIsDeleteConfirm] = useState(false);
   const [isRejectConfirm, setIsRejectConfirm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editContent, setEditContent] = useState(answer.content);
+  const [editContent, setEditContent] = useState(decodeHtmlEntities(answer.content));
+  const [showEditPreview, setShowEditPreview] = useState(false);
 
   // Синхронизация локального состояния с props после ревалидации
   useEffect(() => {
-    setEditContent(answer.content);
+    setEditContent(decodeHtmlEntities(answer.content));
   }, [answer.content]);
 
   const roleInfo = getRoleBadge(answer.expert?.role);
@@ -56,7 +62,10 @@ export default function AnswerItem({ answer, user, permissions }) {
         isApproved,
         isApproved ? "Approved by admin" : "Rejected by admin"
       );
-      if (result.success) setIsRejectConfirm(false);
+      if (result.success) {
+        toast.success(result.message);
+        setIsRejectConfirm(false);
+      }
       return result;
     },
     { success: false, message: null, error: null }
@@ -66,7 +75,10 @@ export default function AnswerItem({ answer, user, permissions }) {
   const [deleteState, deleteAction, isDeletePending] = useActionState(
     async () => {
       const result = await deleteAnswerAction(answer._id);
-      if (result.success) setIsDeleteConfirm(false);
+      if (result.success) {
+        toast.success(result.message);
+        setIsDeleteConfirm(false);
+      }
       return result;
     },
     { success: false, message: null, error: null }
@@ -79,8 +91,8 @@ export default function AnswerItem({ answer, user, permissions }) {
         content: formData.get("content"),
       });
       if (result.success) {
+        toast.success(result.message);
         setIsEditing(false);
-        // сохраняем новое содержимое
         setEditContent(formData.get("content"));
       }
       return result;
@@ -90,7 +102,7 @@ export default function AnswerItem({ answer, user, permissions }) {
 
   const handleEditCancel = () => {
     setIsEditing(false);
-    setEditContent(answer.content);
+    setEditContent(decodeHtmlEntities(answer.content));
   };
 
   return (
@@ -149,8 +161,8 @@ export default function AnswerItem({ answer, user, permissions }) {
                 name="content"
                 className="answer-item__edit-textarea"
                 value={editContent}
-                onChange={(e) => setEditContent(e.target.value)}
-                rows={6}
+                onInput={(e) => setEditContent(e.target.value)}
+                rows={18}
                 disabled={isEditPending}
                 placeholder="Upravte svoju odpoveď..."
               />
@@ -166,29 +178,43 @@ export default function AnswerItem({ answer, user, permissions }) {
 
             {/* Кнопки управления вынесены за форму */}
             <div className="answer-item__edit-actions">
-              <button
-                type="button"
-                onClick={handleEditCancel}
-                className="answer-item__btn answer-item__btn--secondary"
-                disabled={isEditPending}
-              >
-                <CloseIcon fontSize="small" />
-                Zrušiť
-              </button>
-              <button
-                type="submit"
-                form="edit-form"
-                className="answer-item__btn answer-item__btn--success"
-                disabled={
-                  isEditPending ||
-                  editContent.length < 50 ||
-                  editContent.length > 5000 ||
-                  editContent === answer.content // 🔑 запрет, если текст не изменился
-                }
-              >
-                <SaveIcon fontSize="small" />
-                {isEditPending ? "Ukladá sa..." : "Uložiť"}
-              </button>
+              <div className="answer-item__edit-left-actions">
+                <IconButton
+                  onClick={() => setShowEditPreview(true)}
+                  disabled={!editContent.trim() || isEditPending}
+                  className="answer-item__preview-btn"
+                  title="Ukážka odpovede"
+                  size="small"
+                >
+                  <VisibilityIcon fontSize="small" />
+                </IconButton>
+              </div>
+
+              <div className="answer-item__edit-right-actions">
+                <button
+                  type="button"
+                  onClick={handleEditCancel}
+                  className="answer-item__btn answer-item__btn--secondary"
+                  disabled={isEditPending}
+                >
+                  <CloseIcon fontSize="small" />
+                  Zrušiť
+                </button>
+                <button
+                  type="submit"
+                  form="edit-form"
+                  className="answer-item__btn answer-item__btn--success"
+                  disabled={
+                    isEditPending ||
+                    editContent.length < 50 ||
+                    editContent.length > 5000 ||
+                    editContent === answer.content
+                  }
+                >
+                  <SaveIcon fontSize="small" />
+                  {isEditPending ? "Ukladá sa..." : "Uložiť"}
+                </button>
+              </div>
             </div>
           </>
         ) : (
@@ -198,7 +224,7 @@ export default function AnswerItem({ answer, user, permissions }) {
                 .split("\n")
                 .map((paragraph, index) =>
                   paragraph.trim() ? (
-                    <p key={index}>{paragraph}</p>
+                    <p key={index}>{decodeHtmlEntities(paragraph)}</p>
                   ) : (
                     <br key={index} />
                   )
@@ -278,7 +304,7 @@ export default function AnswerItem({ answer, user, permissions }) {
                 {/* Действия автора */}
                 {!isAdmin && isAnswerAuthor && (
                   <div className="answer-item__answer-author-actions">
-                    {!answer.wasApproved && ( // 🔑 теперь и для редактирования
+                    {!answer.wasApproved && (
                       <>
                         <button
                           onClick={() => setIsEditing(true)}
@@ -368,6 +394,13 @@ export default function AnswerItem({ answer, user, permissions }) {
           </div>
         )}
       </footer>
+
+      {/* Модалка превью для редактирования */}
+      <AnswerPreviewModal
+        open={showEditPreview}
+        onClose={() => setShowEditPreview(false)}
+        content={editContent}
+      />
     </div>
   );
 }

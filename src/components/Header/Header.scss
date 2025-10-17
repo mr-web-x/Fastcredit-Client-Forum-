@@ -2,11 +2,20 @@
 header {
   padding: 15px 0;
   background: var(--white);
+
   .header__wrapper {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 30px;
+  }
+
+  .header__menu-list li {
+    padding: 6px 0;
+  }
+
+  .header__menu-list .dropdown-toggle::after {
+    display: none
   }
 
   .header__menu-list {
@@ -128,9 +137,11 @@ header {
     0% {
       box-shadow: 2px 2px 6px #049ca1;
     }
+
     50% {
       box-shadow: 3px 3px 12px #049ca1, -2px -2px 8px #049ca1;
     }
+
     100% {
       box-shadow: 2px 2px 6px #049ca1;
     }
@@ -173,15 +184,74 @@ header {
       figure:nth-child(1) {
         transform: rotate(45deg) translate(5px, 7px);
       }
+
       figure:nth-child(2) {
         transform: translate(-15px);
         width: 0;
       }
+
       figure:nth-child(3) {
         transform: rotate(-45deg) translate(6px, -7px);
       }
     }
   }
+
+
+  /* --- Дропдаун --- */
+  .dropdown {
+    position: relative;
+  }
+
+  .dropdown-toggle::after {
+    content: " ▼";
+    font-size: 0.7em;
+    color: #045c68;
+  }
+
+  .dropdown-toggle span {
+    color: #045c68;
+  }
+
+  /* Скрываем вложенное меню по умолчанию */
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    text-align: center;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    list-style: none;
+    padding: 8px 0;
+    margin: 0;
+    border-radius: 8px;
+    box-shadow: 4px 6px 20px rgba(0, 0, 0, 0.35);
+    min-width: 180px;
+    z-index: 10;
+  }
+
+  /* Элементы дропдауна */
+  .dropdown-menu li a {
+    display: block;
+    padding: 8px 16px;
+    white-space: nowrap;
+  }
+
+  .dropdown-menu li a::after {
+    display: none;
+  }
+
+  .dropdown-menu li a:hover {
+    background: #f5f5f5;
+  }
+
+  /* --- ПК: показываем при наведении --- */
+  @media (hover: hover) {
+    .dropdown:hover .dropdown-menu {
+      display: block;
+    }
+  }
+
 }
 
 /* Responsive */
@@ -219,13 +289,14 @@ header {
     }
 
     .header__menu-list {
-      gap: 60px;
+      gap: 24px;
       flex-direction: column;
     }
 
     .header-btn {
       display: none; // кнопка "Získať pôžičku" убирается на мобилках
     }
+
     .header__profile {
       margin-left: auto;
       order: 2;
@@ -238,6 +309,7 @@ header {
         margin-left: 0;
       }
     }
+
     .logo {
       order: 2;
     }
@@ -245,11 +317,54 @@ header {
     .header__registracia {
       display: none;
     }
+
+    .dropdown-menu {
+      position: static;
+      display: none;
+      box-shadow: none;
+      border: none;
+      transform: translate(0);
+    }
+
+    .dropdown.open .dropdown-menu {
+      display: block;
+    }
+
+    /* добавим кнопку-стрелочку для открытия */
+    .dropdown-toggle {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .dropdown-toggle span {
+      font-size: 0.8em;
+      transform: rotate(0deg);
+      transition: transform 0.3s;
+      color: #045c68;
+    }
+
+    .dropdown.open .dropdown-toggle span {
+      transform: rotate(180deg);
+      color: #045c68;
+    }
+
+    .dropdown-menu li {
+      margin-top: 10px;
+    }
+
+    .dropdown-menu li a {
+      color: #454545;
+      font-size: 16px;
+      padding: 0;
+    }
   }
 }
 
 @media all and (max-width: 768px) {
   header {
+
     .header__login,
     .header__logout {
       font-size: 12px;

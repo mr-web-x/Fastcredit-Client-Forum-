@@ -7,6 +7,10 @@
   color: white;
 }
 
+.FooterMain .row {
+  gap: 30px;
+}
+
 .footer__contacts {
   display: flex;
   gap: 30px;
@@ -35,7 +39,7 @@
   padding-left: 0;
 }
 
-.footer-sitemap > ul > li {
+.footer-sitemap>ul>li {
   font-weight: bold;
   margin-bottom: 10px;
 }
@@ -56,9 +60,11 @@
 }
 
 .footer-sitemap-ul {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
 }
 
 .footer-sitemap ul ul li a {
@@ -66,18 +72,24 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 200px; /* или другая нужная ширина */
+  max-width: 200px;
+  /* или другая нужная ширина */
 }
 
 .footer__item-second {
   width: 100%;
 }
 
+.footer__stranky {
+  font-size: 18px;
+  font-weight: 700;
+}
+
 footer .row {
   display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
-  gap: 50px;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
 }
 
 .footer__under p {
@@ -130,6 +142,10 @@ footer .row {
     justify-content: flex-start;
   }
 
+  footer .row {
+    align-items: flex-start;
+  }
+
   .FooterMain .row {
     gap: 20px;
   }
@@ -144,11 +160,14 @@ footer .row {
     padding-left: 0;
   }
 
+
+
   .footer__wrapper,
   .footer__contacts {
     flex-direction: column;
     justify-content: center;
   }
+
   .footer-sitemap-ul {
     display: grid;
     grid-template-columns: 1fr;
@@ -161,7 +180,8 @@ footer .row {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 420px; /* или другая нужная ширина */
+    max-width: 420px;
+    /* или другая нужная ширина */
   }
 
   .footer__under p {

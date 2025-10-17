@@ -63,7 +63,7 @@ export default function QuestionsListPage({
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
             </svg>
-            Domov
+            Fórum
           </Link>
           <span className="questions-list-page__breadcrumb-separator">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">

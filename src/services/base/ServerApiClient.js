@@ -38,6 +38,7 @@ class ServerApiClient {
   }
 
   handleResponse(response) {
+    console.log(response)
     // API возвращает стандартный формат: { success, data, message }
     if (response.data && response.data.success) {
       return response.data.data;

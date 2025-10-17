@@ -7,6 +7,7 @@
   padding: 20px;
   transition: all 0.3s ease;
   position: relative;
+  animation: fadeInUp 0.3s ease-out;
 
   &:hover {
     box-shadow: var(--shadow-card-hover);
@@ -22,20 +23,16 @@
 
   &--best {
     border-left: 4px solid #ffc107;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 193, 7, 0.02) 0%,
-      rgba(255, 152, 0, 0.02) 100%
-    );
+    background: linear-gradient(135deg,
+        rgba(255, 193, 7, 0.02) 0%,
+        rgba(255, 152, 0, 0.02) 100%);
   }
 
   &--pending {
     border-left: 4px solid #ff9800;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 152, 0, 0.02) 0%,
-      rgba(255, 193, 7, 0.02) 100%
-    );
+    background: linear-gradient(135deg,
+        rgba(255, 152, 0, 0.02) 0%,
+        rgba(255, 193, 7, 0.02) 100%);
   }
 
   // ===============================================
@@ -193,6 +190,98 @@
   }
 
   // ===============================================
+  // РЕДАКТИРОВАНИЕ ОТВЕТА
+  // ===============================================
+
+  &__edit-form {
+    width: 100%;
+  }
+
+  &__edit-textarea {
+    width: 100%;
+    min-height: 150px;
+    padding: 16px;
+    border: 2px solid var(--card-border);
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--black);
+    background: var(--white);
+    resize: vertical;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+    &:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    &:disabled {
+      background: var(--background);
+      color: #6b7280;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    &::placeholder {
+      color: #9ca3af;
+    }
+  }
+
+  &__character-count {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #6b7280;
+
+    &--invalid {
+      color: #ef4444;
+    }
+  }
+
+  &__character-help {
+    font-size: 11px;
+    color: #f59e0b;
+    font-weight: 600;
+  }
+
+  &__preview-btn {
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+      color: var(--accent);
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+    }
+  }
+
+  &__edit-left-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  &__edit-right-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  &__edit-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 12px;
+    gap: 8px;
+  }
+
+  // ===============================================
   // FOOTER С ДАТОЙ И ДЕЙСТВИЯМИ
   // ===============================================
 
@@ -278,11 +367,20 @@
     }
 
     &--secondary {
-      background: var(--background);
-      color: var(--text-secondary);
+      background: #f3f4f6;
+      border: 1px solid #d1d5db;
+      color: #374151;
 
       &:hover:not(:disabled) {
-        background: var(--card-border-light);
+        background: #e5e7eb;
+        border-color: #9ca3af;
+      }
+
+      &:disabled {
+        background: #f9fafb;
+        color: #9ca3af;
+        cursor: not-allowed;
+        opacity: 0.6;
       }
     }
   }
@@ -406,6 +504,40 @@
         margin-bottom: 8px;
       }
     }
+
+    // Редактирование
+    &__edit-textarea {
+      min-height: 120px;
+      padding: 12px;
+      font-size: 14px;
+    }
+
+    &__edit-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    &__edit-left-actions {
+      justify-content: center;
+      order: 2;
+      margin-top: 8px;
+    }
+
+    &__edit-right-actions {
+      flex-direction: column;
+      order: 1;
+    }
+
+    &__character-count {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+
+    .answer-item__btn {
+      width: 100%;
+      justify-content: center;
+    }
   }
 
   @media (max-width: 480px) {
@@ -428,129 +560,7 @@
       padding: 4px 8px;
       font-size: 11px;
     }
-  }
 
-  // Добавить в конец файла src/features/QuestionDetailPage/AnswersSection/AnswerItem/AnswerItem.scss
-
-  // ===============================================
-  // РЕДАКТИРОВАНИЕ ОТВЕТА
-  // ===============================================
-
-  &__edit-form {
-    width: 100%;
-  }
-
-  &__edit-textarea {
-    width: 100%;
-    min-height: 150px;
-    padding: 16px;
-    border: 2px solid var(--card-border);
-    border-radius: 12px;
-    font-family: inherit;
-    font-size: 15px;
-    line-height: 1.6;
-    color: var(--black);
-    background: var(--white);
-    resize: vertical;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-
-    &:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    }
-
-    &:disabled {
-      background: var(--background);
-      color: #6b7280;
-      cursor: not-allowed;
-      opacity: 0.7;
-    }
-
-    &::placeholder {
-      color: #9ca3af;
-    }
-  }
-
-  &__character-count {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 12px;
-    color: #6b7280;
-
-    &--invalid {
-      color: #ef4444;
-    }
-  }
-
-  &__character-help {
-    font-size: 11px;
-    color: #f59e0b;
-    font-weight: 600;
-  }
-
-  &__edit-actions {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    margin-top: 4px;
-    gap: 8px;
-  }
-
-  // ===============================================
-  // ДОПОЛНИТЕЛЬНЫЕ СТИЛИ КНОПОК
-  // ===============================================
-
-  &__btn {
-    &--secondary {
-      background: #f3f4f6;
-      border: 1px solid #d1d5db;
-      color: #374151;
-
-      &:hover:not(:disabled) {
-        background: #e5e7eb;
-        border-color: #9ca3af;
-      }
-
-      &:disabled {
-        background: #f9fafb;
-        color: #9ca3af;
-        cursor: not-allowed;
-        opacity: 0.6;
-      }
-    }
-  }
-
-  // ===============================================
-  // АДАПТИВНОСТЬ ДЛЯ РЕДАКТИРОВАНИЯ
-  // ===============================================
-
-  @media (max-width: 768px) {
-    &__edit-textarea {
-      min-height: 120px;
-      padding: 12px;
-      font-size: 14px;
-    }
-
-    &__edit-actions {
-      flex-direction: column;
-      gap: 8px;
-
-      .answer-item__btn {
-        width: 100%;
-        justify-content: center;
-      }
-    }
-
-    &__character-count {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 4px;
-    }
-  }
-
-  @media (max-width: 480px) {
     &__edit-textarea {
       min-height: 100px;
       padding: 10px;
@@ -567,12 +577,9 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-.answer-item {
-  animation: fadeInUp 0.3s ease-out;
 }

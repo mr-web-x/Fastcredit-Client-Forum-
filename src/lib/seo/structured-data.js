@@ -240,7 +240,7 @@ export function getForumHomepageStructuredData(latestQuestions = []) {
             name: "Kto mi bude odpovedať na otázky?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "Odpovedajú certifikovaní finanční experti a právni poradcovia s praktickými skúsenosťami.",
+              text: "Odpovedajú  finanční experti a právni poradcovia s praktickými skúsenosťami.",
             },
           },
           {
@@ -256,35 +256,34 @@ export function getForumHomepageStructuredData(latestQuestions = []) {
       // Ak máme najnovšie otázky
       ...(latestQuestions.length > 0
         ? [
-            {
-              "@type": "ItemList",
-              "@id": "https://fastcredit.sk/forum/#latestquestions",
-              name: "Najnovšie finančné otázky",
-              description: "Posledné otázky od používateľov",
-              numberOfItems: latestQuestions.length,
-              itemListElement: latestQuestions
-                .slice(0, 5)
-                .map((question, index) => ({
-                  "@type": "ListItem",
-                  position: index + 1,
-                  item: {
-                    "@type": "Question",
-                    name: question.title,
-                    url: `https://fastcredit.sk/forum/questions/${
-                      question.slug || question._id
+          {
+            "@type": "ItemList",
+            "@id": "https://fastcredit.sk/forum/#latestquestions",
+            name: "Najnovšie finančné otázky",
+            description: "Posledné otázky od používateľov",
+            numberOfItems: latestQuestions.length,
+            itemListElement: latestQuestions
+              .slice(0, 5)
+              .map((question, index) => ({
+                "@type": "ListItem",
+                position: index + 1,
+                item: {
+                  "@type": "Question",
+                  name: question.title,
+                  url: `https://fastcredit.sk/forum/questions/${question.slug || question._id
                     }`,
-                    dateCreated: question.createdAt,
-                    author: {
-                      "@type": "Person",
-                      name:
-                        `${question.author?.firstName} ${question.author?.lastName}` ||
-                        "Používateľ",
-                    },
-                    answerCount: question.answersCount || 0,
+                  dateCreated: question.createdAt,
+                  author: {
+                    "@type": "Person",
+                    name:
+                      `${question.author?.firstName} ${question.author?.lastName}` ||
+                      "Používateľ",
                   },
-                })),
-            },
-          ]
+                  answerCount: question.answersCount || 0,
+                },
+              })),
+          },
+        ]
         : []),
     ],
   };
@@ -323,7 +322,7 @@ export function getForumFAQStructuredData() {
         name: "Kto mi bude odpovedať na otázky?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Odpovedajú certifikovaní finanční experti a právni poradcovia s praktickými skúsenosťami.",
+          text: "Odpovedajú  finanční experti a právni poradcovia s praktickými skúsenosťami.",
         },
       },
       {
@@ -417,33 +416,32 @@ export function getQuestionsListStructuredData({
       },
       ...(questions.length > 0
         ? [
-            {
-              "@type": "ItemList",
-              "@id": `${baseUrl}#questionslist`,
-              name: pageTitle,
-              numberOfItems: questions.length,
-              itemListElement: questions.map((question, index) => ({
-                "@type": "ListItem",
-                position: index + 1,
-                item: {
-                  "@type": "Question",
-                  name: question.title,
-                  text: question.content?.substring(0, 200) + "...",
-                  url: `https://fastcredit.sk/forum/questions/${
-                    question.slug || question._id
+          {
+            "@type": "ItemList",
+            "@id": `${baseUrl}#questionslist`,
+            name: pageTitle,
+            numberOfItems: questions.length,
+            itemListElement: questions.map((question, index) => ({
+              "@type": "ListItem",
+              position: index + 1,
+              item: {
+                "@type": "Question",
+                name: question.title,
+                text: question.content?.substring(0, 200) + "...",
+                url: `https://fastcredit.sk/forum/questions/${question.slug || question._id
                   }`,
-                  dateCreated: question.createdAt,
-                  author: {
-                    "@type": "Person",
-                    name:
-                      `${question.author?.firstName} ${question.author?.lastName}` ||
-                      "Používateľ",
-                  },
-                  answerCount: question.answersCount || 0,
+                dateCreated: question.createdAt,
+                author: {
+                  "@type": "Person",
+                  name:
+                    `${question.author?.firstName} ${question.author?.lastName}` ||
+                    "Používateľ",
                 },
-              })),
-            },
-          ]
+                answerCount: question.answersCount || 0,
+              },
+            })),
+          },
+        ]
         : []),
     ],
   };
@@ -455,9 +453,8 @@ export function getQuestionsListStructuredData({
 export function getQuestionDetailStructuredData(question, answers = []) {
   if (!question) return null;
 
-  const questionUrl = `https://fastcredit.sk/forum/questions/${
-    question.slug || question._id
-  }`;
+  const questionUrl = `https://fastcredit.sk/forum/questions/${question.slug || question._id
+    }`;
 
   return {
     "@context": "https://schema.org",

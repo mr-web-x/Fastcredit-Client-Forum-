@@ -120,7 +120,7 @@ export async function loginAction(prevState, formData) {
       user: user,
     };
   } catch (error) {
-    console.error("[loginAction] Error:", error);
+    console.error("[loginAction] Error:", error, error.message);
     return {
       success: false,
       error: "Chyba servera. Skúste to znovu.",
@@ -253,7 +253,7 @@ export async function registerAction(prevState, formData) {
       fieldErrors: null,
     };
   } catch (error) {
-    console.error("[registerAction] Error:", error);
+    console.error("[registerAction] Error:", error, error.message);
     return {
       success: false,
       error: "Chyba servera. Skúste to znovu.",
@@ -307,7 +307,7 @@ export async function sendVerificationAction(prevState, formData) {
       fieldErrors: null,
     };
   } catch (error) {
-    console.error("[sendVerificationAction] Error:", error);
+    console.error("[sendVerificationAction] Error:", error, error.message);
     return {
       success: false,
       error: "Chyba servera. Skúste to znovu.",
@@ -389,7 +389,7 @@ export async function verifyEmailAction(prevState, formData) {
       fieldErrors: null,
     };
   } catch (error) {
-    console.error("[verifyEmailAction] Error:", error);
+    console.error("[verifyEmailAction] Error:", error, error.message);
     return {
       success: false,
       error: "Chyba servera. Skúste to znovu.",
@@ -453,7 +453,7 @@ export async function forgotPasswordAction(prevState, formData) {
       fieldErrors: null,
     };
   } catch (error) {
-    console.error("[forgotPasswordAction] Error:", error);
+    console.error("[forgotPasswordAction] Error:", error, error.message);
     return {
       success: false,
       error: "Chyba servera. Skúste to znovu.",
@@ -521,7 +521,7 @@ export async function verifyResetCodeAction(prevState, formData) {
       fieldErrors: null,
     };
   } catch (error) {
-    console.error("[verifyResetCodeAction] Error:", error);
+    console.error("[verifyResetCodeAction] Error:", error, error.message);
     return {
       success: false,
       error: "Chyba servera. Skúste to znovu.",
@@ -612,7 +612,7 @@ export async function resetPasswordAction(prevState, formData) {
       fieldErrors: null,
     };
   } catch (error) {
-    console.error("[resetPasswordAction] Error:", error);
+    console.error("[resetPasswordAction] Error:", error, error.message);
     return {
       success: false,
       error: "Chyba servera. Skúste to znovu.",
@@ -636,7 +636,7 @@ export async function logoutAction() {
     // Redirect на главную
     redirect("/");
   } catch (error) {
-    console.error("[logoutAction] Error:", error);
+    console.error("[logoutAction] Error:", error, error.message);
     // В случае ошибки все равно пытаемся очистить cookie и редирект
     await clearAuthCookie();
     redirect("/");

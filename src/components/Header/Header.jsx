@@ -25,6 +25,13 @@ export default function Header({ user = null }) {
     setMenuOpen(!menuOpen);
   };
 
+  const handleDropdownToggle = (e) => {
+    if (window.innerWidth <= 1180) {
+      e.preventDefault();
+      e.currentTarget.parentElement.classList.toggle("open");
+    }
+  }
+
   const closeMenu = () => {
     setMenuOpen(false);
     document.body.classList.remove("active-modal");
@@ -77,10 +84,22 @@ export default function Header({ user = null }) {
                   Podmienky používania
                 </a>
               </li>
-              <li>
-                <a itemProp="url" href="/blog.html" onClick={closeMenu}>
-                  Blog
+              <li className="dropdown">
+                <a
+                  href="/#clanky"
+                  className="dropdown-toggle"
+                  itemprop="url"
+                  onClick={handleDropdownToggle}
+                >
+                  Viem viac
+                  <span>▼</span>
                 </a>
+                <ul className="dropdown-menu">
+                  <li><a href="https://fastcredit.sk/#typy-poziciek">Typy pôžičiek</a></li>
+                  <li><a href="https://fastcredit.sk/#blog">Blog</a></li>
+                  <li><a href="https://fastcredit.sk/#news">Novinky</a></li>
+                  <li><a href="https://fastcredit.sk/#slovnik-pojmov">Slovník pojmov</a></li>
+                </ul>
               </li>
               {/* Форумные ссылки */}
               <li>
@@ -98,9 +117,8 @@ export default function Header({ user = null }) {
                 <div className="header__user">
                   <Link href="/forum/profile" className="header__profile-link">
                     <span className="header__user-name">
-                      {`${user.firstName || ""} ${
-                        user.lastName || ""
-                      }`.trim() || user.username}
+                      {`${user.firstName || ""} ${user.lastName || ""
+                        }`.trim() || user.username}
                     </span>
                     <div className="header__user-avatar">
                       {getUserInitials()}

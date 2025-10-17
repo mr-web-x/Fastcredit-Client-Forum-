@@ -97,7 +97,6 @@
     &:hover {
       background: var(--accent-hover);
       transform: translateY(-1px);
-      box-shadow: var(--shadow-button-hover);
     }
 
     &:active {
@@ -128,11 +127,9 @@
   &__permission-info {
     margin-bottom: 24px;
     padding: 20px;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 152, 0, 0.05) 0%,
-      rgba(255, 193, 7, 0.05) 100%
-    );
+    background: linear-gradient(135deg,
+        rgba(255, 152, 0, 0.05) 0%,
+        rgba(255, 193, 7, 0.05) 100%);
     border: 1px solid rgba(255, 152, 0, 0.1);
     border-radius: 12px;
     border-left: 4px solid #ff9800;
@@ -209,7 +206,7 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 12px 20px;
+    padding: 20px;
     background: var(--accent);
     color: var(--white);
     border: none;
@@ -223,7 +220,6 @@
     &:hover {
       background: var(--accent-hover);
       transform: translateY(-2px);
-      box-shadow: var(--shadow-button-hover);
     }
 
     &:active {
@@ -232,6 +228,8 @@
 
     svg {
       opacity: 0.9;
+      color: white;
+      margin: 0;
     }
   }
 
@@ -365,7 +363,7 @@
     }
 
     &__empty-cta {
-      padding: 10px 16px;
+      padding: 16px;
       font-size: 14px;
     }
 
@@ -414,6 +412,7 @@
     transform: translateY(-10px);
     max-height: 0;
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

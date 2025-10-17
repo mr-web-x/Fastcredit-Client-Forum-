@@ -118,11 +118,10 @@ export default function LoginPage({ redirectTo = "/forum/profile" }) {
                     type="text"
                     name="login"
                     placeholder="Zadajte email alebo používateľské meno"
-                    className={`login-page__input ${
-                      formState?.fieldErrors?.login
+                    className={`login-page__input ${formState?.fieldErrors?.login
                         ? "login-page__input--error"
                         : ""
-                    }`}
+                      }`}
                     disabled={isPending}
                     autoComplete="username"
                     required
@@ -145,11 +144,10 @@ export default function LoginPage({ redirectTo = "/forum/profile" }) {
                       type={showPassword ? "text" : "password"}
                       name="password"
                       placeholder="Zadajte heslo"
-                      className={`login-page__input ${
-                        formState?.fieldErrors?.password
+                      className={`login-page__input ${formState?.fieldErrors?.password
                           ? "login-page__input--error"
                           : ""
-                      }`}
+                        }`}
                       disabled={isPending}
                       autoComplete="current-password"
                       required
@@ -186,11 +184,10 @@ export default function LoginPage({ redirectTo = "/forum/profile" }) {
                 {/* Forgot password link */}
                 <div className="login-page__forgot">
                   <Link
-                    href={`/forum/forgot-password${
-                      redirectTo !== "/"
+                    href={`/forum/forgot-password${redirectTo !== "/"
                         ? `?next=${encodeURIComponent(redirectTo)}`
                         : ""
-                    }`}
+                      }`}
                     className="login-page__forgot-link"
                   >
                     Zabudli ste heslo?
@@ -204,11 +201,10 @@ export default function LoginPage({ redirectTo = "/forum/profile" }) {
               <p className="login-page__register-link">
                 Nemáte účet?{" "}
                 <Link
-                  href={`/forum/register${
-                    redirectTo !== "/"
+                  href={`/forum/register${redirectTo !== "/"
                       ? `?next=${encodeURIComponent(redirectTo)}`
                       : ""
-                  }`}
+                    }`}
                 >
                   Registrovať sa
                 </Link>

@@ -1,10 +1,15 @@
 "use client";
 import { createAnswerAction } from "@/app/actions/answers";
 import { useActionState, useState } from "react";
+import { Visibility } from "@mui/icons-material";
+import { IconButton } from "@mui/material";
+import { toast } from "sonner";
 import "./AnswerForm.scss";
+import AnswerPreviewModal from "../AnswerPreviewModal/AnswerPreviewModal";
 
 export default function AnswerForm({ question, onCancel }) {
   const [content, setContent] = useState("");
+  const [showPreview, setShowPreview] = useState(false);
 
   const [formState, formAction, isPending] = useActionState(
     async (prevState, formData) => {
@@ -12,11 +17,10 @@ export default function AnswerForm({ question, onCancel }) {
         content: formData.get("content"),
       });
 
-      // После успешного ответа просто закрываем форму
-      // revalidatePath в Server Action обновит данные автоматически
       if (result.success) {
+        toast.success(result.message); // зелений
         setContent("");
-        onCancel(); // Закрываем форму
+        onCancel();
       }
 
       return result;
@@ -37,21 +41,14 @@ export default function AnswerForm({ question, onCancel }) {
         <div className="answer-form__input-container">
           <textarea
             name="content"
-            className={`answer-form__textarea ${
-              formState.error ? "answer-form__textarea--error" : ""
-            }`}
+            className={`answer-form__textarea ${formState.error ? "answer-form__textarea--error" : ""}`}
             value={content}
-            onChange={(e) => setContent(e.target.value)}
+            onInput={(e) => setContent(e.target.value)} // ЗАМІНИТИ onChange на onInput
             placeholder="Napíšte svoju podrobnú odpoveď... (minimálne 50 znakov)"
-            rows={6}
+            rows={18}
             disabled={isPending}
           />
-
-          <div
-            className={`answer-form__character-count ${
-              !isValid ? "answer-form__character-count--invalid" : ""
-            }`}
-          >
+          <div className={`answer-form__character-count ${!isValid ? "answer-form__character-count--invalid" : ""}`}>
             {characterCount}/5000
             {characterCount < 50 && (
               <span className="answer-form__character-help">
@@ -71,24 +68,43 @@ export default function AnswerForm({ question, onCancel }) {
         )}
 
         <div className="answer-form__footer">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="answer-form__cancel-btn"
-            disabled={isPending}
-          >
-            Zrušiť
-          </button>
+          <div className="answer-form__left-actions">
+            <IconButton
+              onClick={() => setShowPreview(true)}
+              disabled={!content.trim() || isPending}
+              className="answer-form__preview-btn"
+              title="Ukážka odpovede"
+            >
+              <Visibility />
+            </IconButton>
+          </div>
 
-          <button
-            type="submit"
-            className="answer-form__submit-btn"
-            disabled={!content.trim() || !isValid || isPending}
-          >
-            {isPending ? "Odosiela sa..." : "Odoslať odpoveď"}
-          </button>
+          <div className="answer-form__right-actions">
+            <button
+              type="button"
+              onClick={onCancel}
+              className="answer-form__cancel-btn"
+              disabled={isPending}
+            >
+              Zrušiť
+            </button>
+
+            <button
+              type="submit"
+              className="answer-form__submit-btn"
+              disabled={!content.trim() || !isValid || isPending}
+            >
+              {isPending ? "Odosiela sa..." : "Odoslať odpoveď"}
+            </button>
+          </div>
         </div>
       </form>
+
+      <AnswerPreviewModal
+        open={showPreview}
+        onClose={() => setShowPreview(false)}
+        content={content}
+      />
     </div>
   );
 }

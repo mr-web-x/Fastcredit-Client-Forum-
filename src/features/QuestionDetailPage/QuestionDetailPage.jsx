@@ -23,15 +23,25 @@ export default function QuestionDetailPage({
           className="question-detail-page__breadcrumbs"
           aria-label="Breadcrumb"
         >
+          <a href="https://fastcredit.sk" className="question-detail-page__breadcrumb-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+            </svg>
+          </a>
+
+          <span className="question-detail-page__breadcrumb-separator">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6l6 6-6 6z" />
+            </svg>
+          </span>
+
           <Link
             href={`/forum/`}
             className="question-detail-page__breadcrumb-link"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-            </svg>
-            Domov
+            Fórum
           </Link>
+
           <span className="question-detail-page__breadcrumb-separator">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6l6 6-6 6z" />

@@ -95,6 +95,7 @@
     &:hover {
       text-decoration: underline;
     }
+
     &:focus-visible {
       outline: 2px solid var(--accent);
       outline-offset: 2px;
@@ -149,6 +150,7 @@
       transform: translateY(-1px);
       filter: brightness(0.95);
     }
+
     &:focus-visible {
       outline: 2px solid var(--accent);
       outline-offset: 3px;
@@ -180,6 +182,7 @@
       background: var(--background);
       transform: translateY(-1px);
     }
+
     &:focus-visible {
       outline: 2px solid var(--accent);
       outline-offset: 2px;
@@ -191,7 +194,7 @@
       border-color: transparent;
 
       &:hover {
-        filter: brightness(0.95);
+        transform: translateY(-1px);
       }
     }
   }
@@ -277,10 +280,12 @@
       background: #dbeafe;
       color: #1d4ed8;
     }
+
     &--moderator {
       background: #fef3c7;
       color: #b45309;
     }
+
     &--admin {
       background: #fee2e2;
       color: #b91c1c;
@@ -371,6 +376,7 @@
     &:hover {
       text-decoration: underline;
     }
+
     &:focus-visible {
       outline: 2px solid var(--accent);
       outline-offset: 2px;
@@ -417,6 +423,7 @@
       background: #eef2f7;
       transform: translateY(-1px);
     }
+
     &:focus-visible {
       outline: 2px solid var(--accent);
       outline-offset: 2px;
@@ -427,6 +434,7 @@
     font-size: 18px;
     line-height: 1;
   }
+
   &__action-text {
     font-size: 14px;
     font-weight: 700;
@@ -440,6 +448,7 @@
     opacity: 0;
     transform: translateY(-8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -453,6 +462,7 @@
       grid-template-columns: 1fr;
       gap: 16px;
     }
+
     &__actions-grid {
       grid-template-columns: repeat(3, 1fr);
     }
@@ -464,6 +474,7 @@
     &__title {
       font-size: 28px;
     }
+
     &__subtitle {
       font-size: 15px;
     }
@@ -478,6 +489,7 @@
     &__stat {
       padding: 12px;
     }
+
     &__stat-value {
       font-size: 20px;
     }
@@ -485,6 +497,7 @@
     &__actions-grid {
       grid-template-columns: repeat(2, 1fr);
     }
+
     &__questions-actions {
       gap: 10px;
     }
@@ -504,9 +517,11 @@
     &__header {
       margin-bottom: 24px;
     }
+
     &__title {
       font-size: 24px;
     }
+
     &__subtitle {
       font-size: 14px;
     }
@@ -515,6 +530,7 @@
       font-size: 16px;
       gap: 8px;
     }
+
     &__question-title {
       font-size: 16px;
     }
@@ -522,6 +538,7 @@
     &__actions-grid {
       grid-template-columns: 1fr;
     }
+
     &__question-meta span {
       font-weight: 600;
     }
@@ -537,6 +554,7 @@
 /* ===== REDUCED MOTION ===== */
 @media (prefers-reduced-motion: reduce) {
   .profile-page {
+
     &,
     * {
       animation: none !important;
@@ -547,15 +565,18 @@
 
 /* ===== OPTIONAL DARK THEME (если используете data-theme="dark") ===== */
 [data-theme="dark"] .profile-page {
+
   &__subtitle,
   &__no-questions-text,
   &__role-description p {
     color: #9ca3af;
   }
+
   &__question-meta span {
     background: #111827;
     color: #e5e7eb;
   }
+
   &__action-card:hover {
     background: #0f172a;
   }

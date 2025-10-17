@@ -37,10 +37,16 @@ const faqs = [
   },
   {
     question: "Kto mi bude odpovedať na otázky?",
+
     answer: (
       <>
         <p>
-          Odpovedajú <strong>certifikovaní finanční experti</strong> a{" "}
+          Odpovedajú <strong> finanční experti</strong> a{" "}
+          <strong>právni poradcovia</strong> s dlhoročnými praktickými
+          skúsenosťami.
+        </p>
+        <p>
+          Odpovedajú <strong> finanční experti</strong> a{" "}
           <strong>právni poradcovia</strong> s dlhoročnými praktickými
           skúsenosťami.
         </p>
@@ -68,6 +74,12 @@ const faqs = [
     ),
   },
 ];
+
+{/* <p>
+          Odpovedajú <strong>certifikovaní finanční experti</strong> a{" "}
+          <strong>právni poradcovia</strong> s dlhoročnými praktickými
+          skúsenosťami.
+        </p> */}
 
 const FAQ = () => {
   useEffect(() => {

@@ -6,7 +6,7 @@ import Footer from "@/src/components/Footer/Footer";
 import { Montserrat } from "next/font/google";
 import { getServerUser } from "@/src/lib/auth-server";
 // import { getForumBaseStructuredData } from "@/src/lib/seo/structured-data";
-import Script from "next/script";
+import ToastProvider from "@/src/providers/ToastProvider/ToastProvider";
 
 const montserrat = Montserrat({
   subsets: ["latin", "latin-ext", "cyrillic"],
@@ -371,14 +371,6 @@ export default async function RootLayout({ children }) {
         />
         {/* Максимальные prefetches */}
         <MaxSEOPrefetches />
-        {/* <Script
-          id="forum-structured-data"
-          type="application/ld+json"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(getForumBaseStructuredData()),
-          }}
-        /> */}
       </head>
 
       <body itemScope itemType="https://schema.org/WebPage">
@@ -399,6 +391,8 @@ export default async function RootLayout({ children }) {
 
           <Footer />
         </div>
+
+        <ToastProvider />
         {/* Analytics и другие скрипты только в production */}
         {process.env.NODE_ENV === "production" && (
           <>
@@ -418,10 +412,9 @@ export default async function RootLayout({ children }) {
                       gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
                       
                       // Track user role если авторизован
-                      ${
-                        user
-                          ? `gtag('set', { user_role: '${user.role}' });`
-                          : ""
+                      ${user
+                        ? `gtag('set', { user_role: '${user.role}' });`
+                        : ""
                       }
                     `,
                   }}

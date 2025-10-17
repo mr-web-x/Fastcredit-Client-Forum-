@@ -2,6 +2,7 @@
   --background: #edfffc;
   --white: #ffffff;
   --accent: #049ca1;
+  --accent-hover: #007478;
   --accentLight: #d2fdff;
   --black: #000000;
   --accentGradient: linear-gradient(to bottom, #049ca1, #29e1d2);
@@ -12,11 +13,9 @@
   --accent-border-light: rgba(4, 156, 161, 0.2);
   --card-filter-bg: linear-gradient(135deg, var(--background) 0%, #f0fffe 100%);
   --card-filter-hover: linear-gradient(135deg, var(--white) 0%, #f8ffff 100%);
-  --card-category-bg: linear-gradient(
-    135deg,
-    var(--background) 0%,
-    #f5ffff 100%
-  );
+  --card-category-bg: linear-gradient(135deg,
+      var(--background) 0%,
+      #f5ffff 100%);
   --card-category-hover: linear-gradient(135deg, var(--white) 0%, #fafffe 100%);
   /* Новые для LatestQuestions */
   --card-border: #e5e5e5;
@@ -161,7 +160,7 @@ a {
 }
 
 .btn:hover {
-  filter: brightness(0.92);
+  transform: translateY(-1px);
 }
 
 .btn img {
@@ -180,6 +179,7 @@ section {
 }
 
 @media (max-width: 480px) {
+
   .logo,
   .logo img {
     height: 48px;

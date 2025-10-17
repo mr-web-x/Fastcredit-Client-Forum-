@@ -1,5 +1,3 @@
-// Файл: src/features/AskQuestionPage/AskQuestionPage.jsx
-
 "use client";
 
 import { useActionState, useEffect } from "react";
@@ -32,11 +30,13 @@ export default function AskQuestionPage({ user }) {
       <div className="container">
         {/* Breadcrumbs */}
         <nav className="ask-question-page__breadcrumbs">
-          <a href="/" className="ask-question-page__breadcrumb-link">
-            FastCredit
+          <a href="https://fastcredit.sk" className="ask-question-page__breadcrumb-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+            </svg>
           </a>
           <span className="ask-question-page__breadcrumb-separator">›</span>
-          <a href="/forum" className="ask-question-page__breadcrumb-link">
+          <a href="/forum/" className="ask-question-page__breadcrumb-link">
             Fórum
           </a>
           <span className="ask-question-page__breadcrumb-separator">›</span>
@@ -102,11 +102,10 @@ export default function AskQuestionPage({ user }) {
               type="text"
               name="title"
               placeholder="Ako získať úver s negatívnou históriou?"
-              className={`ask-question-page__input ${
-                state?.fieldErrors?.title
-                  ? "ask-question-page__input--error"
-                  : ""
-              }`}
+              className={`ask-question-page__input ${state?.fieldErrors?.title
+                ? "ask-question-page__input--error"
+                : ""
+                }`}
               disabled={isPending}
               maxLength={200}
               required
@@ -129,11 +128,10 @@ export default function AskQuestionPage({ user }) {
             <select
               id="category"
               name="category"
-              className={`ask-question-page__select ${
-                state?.fieldErrors?.category
-                  ? "ask-question-page__select--error"
-                  : ""
-              }`}
+              className={`ask-question-page__select ${state?.fieldErrors?.category
+                ? "ask-question-page__select--error"
+                : ""
+                }`}
               disabled={isPending}
               required
             >
@@ -194,11 +192,10 @@ export default function AskQuestionPage({ user }) {
               id="content"
               name="content"
               placeholder="Opíšte svoju situáciu podrobne. Čím viac informácií poskytnete, tým lepšie vám experti budú môcť poradiť..."
-              className={`ask-question-page__textarea ${
-                state?.fieldErrors?.content
-                  ? "ask-question-page__textarea--error"
-                  : ""
-              }`}
+              className={`ask-question-page__textarea ${state?.fieldErrors?.content
+                ? "ask-question-page__textarea--error"
+                : ""
+                }`}
               disabled={isPending}
               rows={8}
               minLength={50}
@@ -220,9 +217,8 @@ export default function AskQuestionPage({ user }) {
             <button
               type="submit"
               disabled={isPending}
-              className={`ask-question-page__submit-btn ${
-                isPending ? "ask-question-page__submit-btn--loading" : ""
-              }`}
+              className={`ask-question-page__submit-btn ${isPending ? "ask-question-page__submit-btn--loading" : ""
+                }`}
             >
               {isPending ? (
                 <>
