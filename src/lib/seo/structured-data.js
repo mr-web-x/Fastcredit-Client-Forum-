@@ -481,6 +481,7 @@ export function getQuestionDetailStructuredData(question, answers = []) {
           url: "https://fastcredit.sk/forum/logo.svg",
         },
       },
+
       {
         "@type": "QAPage",
         "@id": `${questionUrl}#qapage`,
@@ -514,6 +515,7 @@ export function getQuestionDetailStructuredData(question, answers = []) {
             },
           ],
         },
+
         mainEntity: {
           "@type": "Question",
           "@id": `${questionUrl}#question`,

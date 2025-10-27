@@ -6,6 +6,7 @@ import AuthorInfo from "./AuthorInfo/AuthorInfo";
 import QuestionContent from "./QuestionContent/QuestionContent";
 import QuestionMeta from "./QuestionMeta/QuestionMeta";
 import AnswersSection from "./AnswersSection/AnswersSection";
+import SimilarQuestions from "./SimilarQuestions/SimilarQuestions";
 import "./QuestionDetailPage.scss";
 import Link from "next/link";
 
@@ -14,6 +15,7 @@ export default function QuestionDetailPage({
   answers = [],
   user,
   permissions,
+  similarQuestions = [],
 }) {
   return (
     <div className="question-detail-page">
@@ -86,7 +88,9 @@ export default function QuestionDetailPage({
               user={user}
               permissions={permissions}
             />
+
           </div>
+          <SimilarQuestions similarQuestions={similarQuestions} />
         </div>
       </section>
     </div>

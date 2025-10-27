@@ -95,6 +95,10 @@
     flex-wrap: wrap;
   }
 
+  &__author-link {
+    text-decoration: none;
+  }
+
   &__author-name {
     font-size: 15px;
     font-weight: 600;

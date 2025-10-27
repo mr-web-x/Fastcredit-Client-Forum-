@@ -28,9 +28,9 @@ export function middleware(request) {
   }
 
   // === ЗАЩИЩЕННЫЕ МАРШРУТЫ ===
-  const isProtectedRoute = protectedRoutes.some((route) =>
-    pathname.startsWith(route)
-  );
+  const isProtectedRoute = protectedRoutes.some((route) => {
+    return pathname === route || pathname.startsWith(route + "/");
+  });
 
   if (isProtectedRoute && !token) {
     // Redirect на /login (в браузере станет /forum/login)

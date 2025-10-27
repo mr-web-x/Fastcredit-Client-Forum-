@@ -43,6 +43,22 @@ class UsersServiceServer {
     }
   }
 
+  /** Профиль эксперта (сервер) */
+  async getExpertProfileBySlug(slug) {
+    try {
+      return await this.client.get(`/experts/slug/${slug}`);
+    } catch (e) {
+      if (process.env.NODE_ENV === "development") {
+        console.error(
+          "[UsersServiceServer.getExpertProfile]",
+          userId,
+          e.message
+        );
+      }
+      throw e; // важно для 404
+    }
+  }
+
   /** Профиль пользователя (сервер) */
   async getUserProfile(userId) {
     try {

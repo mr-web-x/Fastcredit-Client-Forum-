@@ -30,6 +30,8 @@ import {
   updateAnswerAction,
 } from "@/app/actions/answers";
 import AnswerPreviewModal from "../AnswerPreviewModal/AnswerPreviewModal";
+import Link from "next/link";
+import ExpertContacts from "@/src/components/ExpertContacts/ExpertContacts";
 
 export default function AnswerItem({ answer, user, permissions }) {
   const [isDeleteConfirm, setIsDeleteConfirm] = useState(false);
@@ -105,6 +107,8 @@ export default function AnswerItem({ answer, user, permissions }) {
     setEditContent(decodeHtmlEntities(answer.content));
   };
 
+  console.log(answer.expert)
+
   return (
     <div className={`answer-item ${!isApproved ? "answer-item--pending" : ""}`}>
       {/* Заголовок ответа */}
@@ -125,7 +129,9 @@ export default function AnswerItem({ answer, user, permissions }) {
 
           <div className="answer-item__author-info">
             <div className="answer-item__author-name-section">
-              <span className="answer-item__author-name">{displayName}</span>
+              <Link href={`/forum/experts/${answer.expert?.slug}`} className="answer-item__author-link">
+                <span className="answer-item__author-name">{displayName}</span>
+              </Link>
               {roleInfo && (
                 <span
                   className={`answer-item__role answer-item__role--${roleInfo.class}`}
@@ -236,6 +242,7 @@ export default function AnswerItem({ answer, user, permissions }) {
             )}
           </div>
         )}
+        {answer.expert.contacts && <ExpertContacts contacts={answer.expert.contacts} />}
       </div>
 
       {/* Футер */}

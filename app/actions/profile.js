@@ -31,10 +31,25 @@ export async function updateMyDataAction(prevState, formData) {
 
     const username = formData.get("username")?.toString().trim();
     const bio = formData.get("bio")?.toString().trim();
+    const website = formData.get("website")?.toString().trim();
+    const email = formData.get("email")?.toString().trim();
+    const phone = formData.get("phone")?.toString().trim();
+
+    // Отримуємо соціальні мережі
+    const socialsCount = parseInt(formData.get("socials_count") || "0");
+    const socials = [];
+
+    for (let i = 0; i < socialsCount; i++) {
+      const social = formData.get(`social_${i}`)?.toString().trim();
+      if (social) {
+        socials.push(social);
+      }
+    }
 
     // Серверная валидация
     const fieldErrors = {};
 
+    // ===== ВАЛИДАЦИЯ USERNAME =====
     if (!username || username.length === 0) {
       fieldErrors.username = "Používateľské meno je povinné";
     } else if (username.length < 3) {
@@ -46,10 +61,96 @@ export async function updateMyDataAction(prevState, formData) {
         "Používateľské meno môže obsahovať len písmená, číslice a podčiarkovník";
     }
 
-    if (bio && bio.length > 500) {
-      fieldErrors.bio = "Popis môže mať maximálne 500 znakov";
+    // ===== ВАЛИДАЦИЯ BIO =====
+    if (bio && bio.length > 8000) {
+      fieldErrors.bio = "Popis môže mať maximálne 8000 znakov";
     }
 
+    // ===== ВАЛИДАЦИЯ WEBSITE =====
+    if (website) {
+      if (!website.startsWith("http://") && !website.startsWith("https://")) {
+        fieldErrors.website = "URL musí začínať http:// alebo https://";
+      } else {
+        try {
+          const urlObj = new URL(website);
+          if (!urlObj.hostname || urlObj.hostname.length < 3) {
+            fieldErrors.website = "Neplatný názov domény";
+          }
+          if (website.length > 500) {
+            fieldErrors.website = "URL je príliš dlhá (max 500 znakov)";
+          }
+        } catch (e) {
+          fieldErrors.website = "Neplatná URL adresa";
+        }
+      }
+    }
+
+    // ===== ВАЛИДАЦИЯ EMAIL =====
+    if (email) {
+      const emailRegex = /^[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+      if (!emailRegex.test(email)) {
+        fieldErrors.email = "Neplatný formát emailu (text@domain.com)";
+      } else {
+        if (email.length > 254) {
+          fieldErrors.email = "Email je príliš dlhý (max 254 znakov)";
+        } else {
+          const [localPart, domain] = email.split("@");
+          if (localPart.length > 64) {
+            fieldErrors.email = "Neplatný email";
+          }
+        }
+      }
+    }
+
+    // ===== ВАЛИДАЦИЯ PHONE =====
+    if (phone) {
+      const cleanPhone = phone.replace(/\s/g, "");
+
+      if (!cleanPhone.startsWith("+421")) {
+        fieldErrors.phone = "Telefónne číslo musí začínať +421";
+      } else {
+        const phoneDigits = cleanPhone.substring(4);
+
+        if (phoneDigits.length !== 9) {
+          fieldErrors.phone = "Slovenské číslo musí mať 9 číslic po +421";
+        } else if (!/^\d{9}$/.test(phoneDigits)) {
+          fieldErrors.phone = "Telefónne číslo môže obsahovať iba číslice";
+        } else {
+          const firstDigit = phoneDigits[0];
+          if (firstDigit !== "9") {
+            fieldErrors.phone = "Slovenské mobilné čísla začínajú 9";
+          }
+        }
+      }
+    }
+
+    // ===== ВАЛИДАЦИЯ SOCIALS =====
+    if (socials.length > 5) {
+      fieldErrors.socials = "Môžete pridať maximálne 5 sociálnych sietí";
+    }
+
+    // Валідація кожної соціальної мережі
+    socials.forEach((social, index) => {
+      if (!social.startsWith("http://") && !social.startsWith("https://")) {
+        fieldErrors[`social_${index}`] =
+          "URL musí začínať http:// alebo https://";
+      } else {
+        try {
+          const urlObj = new URL(social);
+          if (!urlObj.hostname || urlObj.hostname.length < 3) {
+            fieldErrors[`social_${index}`] = "Neplatný názov domény";
+          }
+          if (social.length > 500) {
+            fieldErrors[`social_${index}`] = "URL je príliš dlhá";
+          }
+        } catch (e) {
+          fieldErrors[`social_${index}`] = "Neplatná URL adresa";
+        }
+      }
+    });
+
+    // Якщо є помилки валідації, повертаємо їх
     if (Object.keys(fieldErrors).length > 0) {
       return {
         success: false,
@@ -69,6 +170,26 @@ export async function updateMyDataAction(prevState, formData) {
       redirect(`/forum/login`);
     }
 
+    // Готуємо дані для відправки
+    const updateData = {
+      username,
+      bio: bio || "",
+      contacts: {
+        socials: socials, // додаємо масив соціальних мереж
+      },
+    };
+
+    // Додаємо опціональні поля тільки якщо вони заповнені
+    if (website) {
+      updateData.contacts.website = website;
+    }
+    if (email) {
+      updateData.contacts.email = email;
+    }
+    if (phone) {
+      updateData.contacts.phone = phone;
+    }
+
     const response = await fetch(`${backendUrl}/auth/profile`, {
       method: "PUT",
       headers: {
@@ -76,10 +197,7 @@ export async function updateMyDataAction(prevState, formData) {
         "Content-Type": "application/json",
       },
       cache: "no-store",
-      body: JSON.stringify({
-        username,
-        bio: bio || "",
-      }),
+      body: JSON.stringify(updateData),
     });
 
     // Безопасный парсинг JSON

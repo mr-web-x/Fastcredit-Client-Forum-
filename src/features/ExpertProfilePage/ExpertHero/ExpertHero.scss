@@ -1,0 +1,440 @@
+// Файл: src/features/ExpertProfilePage/ExpertHero/ExpertHero.scss
+
+.expert-hero {
+    background: var(--white);
+    border-bottom: 1px solid var(--card-border);
+    padding: 48px 0;
+    margin-bottom: 0;
+
+
+    // ===============================================
+    // WRAPPER (Flex контейнер для двух колонок)
+    // ===============================================
+
+    &__wrapper {
+        display: flex;
+        gap: 48px;
+        align-items: flex-start;
+        justify-content: space-between;
+    }
+
+    // ===============================================
+    // ЛЕВАЯ КОЛОНКА (Аватар, Имя, Роль, Статистика)
+    // ===============================================
+
+    &__box {}
+
+
+    &__left {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        min-width: 0; // Для правильного переноса текста
+    }
+
+    // ===============================================
+    // АВАТАР
+    // ===============================================
+
+    &__avatar-wrapper {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        flex-shrink: 0;
+    }
+
+    &__avatar-image {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid var(--accent);
+        box-shadow: 0 8px 20px rgba(4, 156, 161, 0.25);
+    }
+
+    &__avatar-placeholder {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: var(--accent);
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        font-weight: 800;
+        border: 4px solid var(--accent);
+        box-shadow: 0 8px 20px rgba(4, 156, 161, 0.25);
+    }
+
+    &__verified-badge {
+        position: absolute;
+        bottom: 4px;
+        right: 4px;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: var(--accent);
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 3px solid var(--white);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    // ===============================================
+    // ИНФОРМАЦИЯ (Имя, Роль, Статистика)
+    // ===============================================
+
+    &__info {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    &__name {
+        margin: 0;
+        font-size: 32px;
+        font-weight: 800;
+        color: var(--black);
+        line-height: 1.2;
+        word-wrap: break-word;
+    }
+
+    // ===============================================
+    // РОЛЬ
+    // ===============================================
+
+    &__role-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        width: fit-content;
+
+        &--expert {
+            background: linear-gradient(135deg, rgba(4, 156, 161, 0.15) 0%, rgba(4, 156, 161, 0.1) 100%);
+            color: var(--accent);
+            border: 2px solid rgba(4, 156, 161, 0.3);
+        }
+
+        &--admin {
+            background: linear-gradient(135deg, rgba(220, 53, 69, 0.15) 0%, rgba(220, 53, 69, 0.1) 100%);
+            color: #dc3545;
+            border: 2px solid rgba(220, 53, 69, 0.3);
+        }
+    }
+
+    // ===============================================
+    // СТАТИСТИКА
+    // ===============================================
+
+    &__stats {
+        display: flex;
+        gap: 24px;
+        align-items: center;
+        margin-top: 4px;
+    }
+
+    &__stat-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--text-secondary);
+        font-size: 14px;
+        font-weight: 500;
+
+        svg {
+            color: var(--accent);
+            font-size: 18px !important;
+        }
+
+        span {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+    }
+
+    // ===============================================
+    // ПРАВАЯ КОЛОНКА (Кнопка и Биография)
+    // ===============================================
+
+    &__right {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        flex: 1;
+    }
+
+    // ===============================================
+    // КНОПКА КОНТАКТА
+    // ===============================================
+
+    &__contact-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 14px 28px;
+        background: var(--accent);
+        color: var(--white);
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(4, 156, 161, 0.2);
+        cursor: pointer;
+        width: 100%;
+        max-width: 280px;
+
+        &:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(4, 156, 161, 0.3);
+        }
+
+        &:active {
+            transform: translateY(0);
+        }
+
+        svg {
+            font-size: 18px !important;
+        }
+    }
+
+    // ===============================================
+    // БИОГРАФИЯ
+    // ===============================================
+
+    &__bio {
+        padding: 20px;
+        background: var(--background);
+        border: 1px solid var(--card-border);
+        border-radius: 12px;
+
+        p {
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        &-toggle {
+            margin-top: 12px;
+            font-size: 14px;
+            color: var(--accent);
+            cursor: pointer;
+            background: none;
+            border: none;
+            user-select: none;
+            float: right;
+        }
+    }
+
+    // ===============================================
+    // RESPONSIVE - TABLET
+    // ===============================================
+
+    @media (max-width: 1024px) {
+        &__wrapper {
+            gap: 32px;
+        }
+
+        &__right {
+            max-width: 350px;
+        }
+
+        &__name {
+            font-size: 28px;
+        }
+
+        &__avatar-wrapper {
+            width: 100px;
+            height: 100px;
+        }
+
+        &__avatar-placeholder {
+            font-size: 36px;
+        }
+    }
+
+    // ===============================================
+    // RESPONSIVE - MOBILE (Вертикальная компоновка)
+    // ===============================================
+
+    @media (max-width: 768px) {
+        padding: 32px 0;
+
+        &__wrapper {
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        &__box {
+            width: 100%;
+        }
+
+        &__expert-contacts-list {
+            justify-content: center;
+            align-items: center;
+        }
+
+        &__expert-contacts-title {
+            text-align: center;
+        }
+
+        &__left {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+        }
+
+        &__info {
+            align-items: center;
+        }
+
+        &__stats {
+            justify-content: center;
+        }
+
+        &__right {
+            width: 100%;
+            max-width: none;
+            // ВАЖНО: На мобилке кнопка сверху, биография снизу (flex-direction по умолчанию column)
+        }
+
+        &__name {
+            font-size: 26px;
+        }
+
+        &__avatar-wrapper {
+            width: 100px;
+            height: 100px;
+        }
+
+        &__avatar-placeholder {
+            font-size: 36px;
+        }
+
+        &__verified-badge {
+            width: 32px;
+            height: 32px;
+
+            svg {
+                font-size: 24px !important;
+            }
+        }
+
+        &__role-badge {
+            font-size: 12px;
+            padding: 6px 12px;
+        }
+
+        &__stat-item {
+            font-size: 13px;
+
+            svg {
+                font-size: 16px !important;
+            }
+        }
+
+        &__contact-btn {
+            padding: 12px 24px;
+            font-size: 15px;
+        }
+
+        &__bio {
+            padding: 16px;
+
+            p {
+                font-size: 14px;
+            }
+        }
+    }
+
+    // ===============================================
+    // RESPONSIVE - SMALL MOBILE
+    // ===============================================
+
+    @media (max-width: 480px) {
+        padding: 24px 0;
+
+        &__wrapper {
+            gap: 20px;
+        }
+
+        &__left {
+            gap: 16px;
+        }
+
+        &__avatar-wrapper {
+            width: 80px;
+            height: 80px;
+        }
+
+        &__avatar-placeholder {
+            font-size: 28px;
+        }
+
+        &__verified-badge {
+            width: 28px;
+            height: 28px;
+            border: 2px solid var(--white);
+
+            svg {
+                font-size: 20px !important;
+            }
+        }
+
+        &__name {
+            font-size: 22px;
+        }
+
+        &__role-badge {
+            font-size: 11px;
+            padding: 5px 10px;
+        }
+
+        &__stats {
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        &__stat-item {
+            font-size: 12px;
+
+            svg {
+                font-size: 14px !important;
+            }
+        }
+
+        &__contact-btn {
+            padding: 11px 20px;
+            font-size: 14px;
+            max-width: 100%;
+
+            svg {
+                font-size: 16px !important;
+            }
+        }
+
+        &__bio {
+            padding: 14px;
+
+            p {
+                font-size: 13px;
+            }
+        }
+    }
+}

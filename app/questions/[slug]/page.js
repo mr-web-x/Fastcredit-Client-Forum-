@@ -162,6 +162,7 @@ export default async function QuestionPage({ params }) {
           answers={answers}
           user={user}
           permissions={permissions}
+          similarQuestions={question.similarQuestions || []}
         />
       </>
     );
